@@ -1,21 +1,18 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
 export default class Chat extends Component {
-  constructor(){
+  constructor() {
     super()
 
-    this.state={}
+    this.state = {}
   }
 
-  componentDidMount() {
-  }
-
+  componentDidMount() {}
 
   render() {
-
     return (
-      <div >
-        <h1></h1>
+      <div>
+        <h1 />
       </div>
     )
   }

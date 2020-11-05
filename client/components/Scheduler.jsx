@@ -1,45 +1,55 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
 export default class Scheduler extends Component {
-  constructor(){
+  constructor() {
     super()
 
-    this.state={schedule:{}}
+    this.state = {schedule: {}}
   }
 
   render() {
-
     return (
-      <div >
-        <br/><br/><br/>
+      <div>
+        <br />
+        <br />
+        <br />
         <div>Upload Video</div>
-        <form ref='uploadForm'
-          id='uploadForm'
-          action='/api/src/upload'
-          method='post'
-          encType="multipart/form-data">
-            <input type="file" name="sampleFile" />
-            <input type='submit' value='Upload!' />
+        <form
+          ref="uploadForm"
+          id="uploadForm"
+          action="/api/src/upload"
+          method="post"
+          encType="multipart/form-data"
+        >
+          <input type="file" name="sampleFile" />
+          <input type="submit" value="Upload!" />
         </form>
-        <br/><br/>
-          My Videos:
-          (if not recent try refreshing page)
-          <div>Name Duration</div>
-          {this.props.vids.map((vid)=>{
-            console.log(vid)
-            return (<div>{vid.src} - {vid.duration}</div>)
-          })}
-
-        <br/><br/><br/>
+        <br />
+        <br />
+        My Videos: (if not recent try refreshing page)
+        <div>Name Duration</div>
+        {this.props.vids.map(vid => {
+          console.log(vid)
+          return (
+            <div>
+              {vid.src} - {vid.duration}
+            </div>
+          )
+        })}
+        <br />
+        <br />
+        <br />
         <div>Add Video to Timeslot</div>
-        <div>Video: <select id="src">
-          {
-            this.props.vids.map((vid)=>{
-              return (<option value={`${vid.src}`}>{vid.src}</option>)
-            })
-          }
-        </select></div>
-        <div>Day:
+        <div>
+          Video:{' '}
+          <select id="src">
+            {this.props.vids.map(vid => {
+              return <option value={`${vid.src}`}>{vid.src}</option>
+            })}
+          </select>
+        </div>
+        <div>
+          Day:
           <select id="day">
             <option value="0">Sun</option>
             <option value="1">Mon</option>
@@ -50,7 +60,9 @@ export default class Scheduler extends Component {
             <option value="6">Sat</option>
           </select>
         </div>
-        <div>Time: Hour: <select id="hr">
+        <div>
+          Time: Hour:{' '}
+          <select id="hr">
             <option value="0">12pm</option>
             <option value="1">1am</option>
             <option value="2">2am</option>
@@ -75,7 +87,8 @@ export default class Scheduler extends Component {
             <option value="21">9pm</option>
             <option value="22">10pm</option>
             <option value="23">11pm</option>
-        </select> Min:<select id="min">
+          </select>{' '}
+          Min:<select id="min">
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -136,15 +149,15 @@ export default class Scheduler extends Component {
             <option value="57">57</option>
             <option value="58">58</option>
             <option value="59">59</option>
-        </select></div>
+          </select>
+        </div>
         <button onClick={this.props.submitHandler}>submit</button>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
       </div>
-
     )
   }
 }
