@@ -38,6 +38,11 @@ async function seed() {
     let segment = segments[k]
     await segment.setProgram(programs[i])
     segment.progress=j
+    if(j<3||j>(programs[i].duration-3)){
+      segment.playmargin=true
+    }else{
+      segment.playmargin=false
+    }
     await segment.save()
     if(j===parseInt(programs[i].duration)){
       j=0

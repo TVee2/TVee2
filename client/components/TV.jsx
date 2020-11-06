@@ -7,7 +7,7 @@ var socket = io()
 export default class TV extends Component {
   constructor() {
     super()
-    this.state = {src: 'null', progress: 0, mute: true, loop: false}
+    this.state = {src: '', progress: 0, playmargin:null, mute: true, loop: false}
   }
 
   componentDidMount() {
@@ -15,8 +15,8 @@ export default class TV extends Component {
     socket.on('emission', segment => {
       // this.getSrc()
       var src = segment.program.src
-      var progress = segment.progress
-      this.setState({src, progress})
+      var {progress, playmargin} = segment
+      this.setState({src, progress, playmargin})
     })
   }
 
@@ -46,6 +46,7 @@ export default class TV extends Component {
           getSrc={this.getSrc}
           src={this.state.src}
           progress={this.state.progress}
+          playmargin={this.state.playmargin}
           toggleMute={this.toggleMute}
           mute={this.state.mute}
           fillTime={this.fillTime}

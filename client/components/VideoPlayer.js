@@ -53,18 +53,6 @@ export default class VideoPlayer extends Component {
 
     vid.onended = () => {
       this.setState({empty:true})
-      console.log("oneneded")
-    }
-
-    // vid.onloadstart=()=>{
-    //   this.setState({empty:true})
-    //   console.log("onloadstart")
-
-    // }
-
-    vid.onloadeddata=()=>{
-      this.setState({empty:false})
-      console.log("oncanplay")
     }
   }
 
@@ -93,19 +81,34 @@ export default class VideoPlayer extends Component {
   }
 
   render() {
-    console.log(this.state.empty)
+    var hide_main = this.props.playmargin
+    var vis1 = this.props.playmargin?"hidden":null
+    var vis2 = !this.props.playmargin?"hidden":null
+    var ord1 = hide_main?2:1
+    var ord2 = !hide_main?2:1
+
     return (
       <div>
-        <video
-          style={{height: '400px'}}
-          id="vid"
-          src={this.props.src}
-          autoPlay
-          muted={this.props.mute}
-          loop={!this.props.src}
-          controls
-        />
-        {this.state.empty?<div style={{backgroundColor:"blue", height:"200px", width:"200px"}}>FILLER</div>:null}
+        <div className="video-container" style={{display:"flex", flexDirection:"column"}}>
+          <video
+            style={{height: '400px', visibility:vis1, order:ord1}}
+            id="vid"
+            src={this.props.src}
+            autoPlay
+            muted={this.props.mute}
+            loop={!this.props.src}
+            controls
+          />
+          <video
+            style={{height: '400px', visibility:vis2, order:ord2}}
+            id="vid"
+            src="./videos/test3.mp4"
+            autoPlay
+            muted={true}
+            loop={true}
+            controls
+          />
+        </div>
         <div>Click anywhere for sound</div>
         <button onClick={this.props.getSrc}>resync</button>
         <button onClick={this.props.toggleMute}>mute</button>
