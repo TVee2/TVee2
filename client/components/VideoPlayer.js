@@ -7,11 +7,13 @@ export default class VideoPlayer extends Component {
       dirty: false,
       empty: true,
       fill_time: false,
+      vid:null
     }
   }
 
   componentDidMount() {
     var vid = document.getElementById('vid')
+    this.setState({vid})
 
     vid.addEventListener(
       'loadedmetadata',
@@ -57,17 +59,13 @@ export default class VideoPlayer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    //what happens when im watching mutliple minute video, dont want it interrupted
+    if(!prevProps.src && this.props.src && this.state.fill_time){
+      this.setState({fill_time:false})
+    }
 
-    //how do you fill in spare seconds? default to channel advertisement?
-    var vid = document.getElementById('vid')
-    // if(vid.currentTime===0){
-    //   console.log("filling time")
-    //     this.props.fillTime()
-    // }else 
-    if(this.props.progress!==Math.round(vid.currentTime)){
+    if(this.props.progress!==Math.round(this.state.vid.currentTime)){
       console.log("unsynced, recorrecting...")
-      vid.currentTime=this.props.progress
+      this.state.vid.currentTime=this.props.progress
     }
     if (
       this.props.src !== prevProps.src ||
@@ -75,7 +73,7 @@ export default class VideoPlayer extends Component {
       this.state.empty
     ) {
       this.setState({empty: false}, () => {
-        vid.src = this.props.src
+        this.state.vid.src = this.props.src
       })
     }
   }
@@ -89,26 +87,27 @@ export default class VideoPlayer extends Component {
 
     return (
       <div>
-        <div className="video-container" style={{display:"flex", flexDirection:"column"}}>
-          <video
-            style={{height: '400px', visibility:vis1, order:ord1}}
-            id="vid"
-            src={this.props.src}
-            autoPlay
-            muted={this.props.mute}
-            loop={!this.props.src}
-            controls
-          />
-          <video
-            style={{height: '400px', visibility:vis2, order:ord2}}
-            id="vid"
-            src="./videos/test3.mp4"
-            autoPlay
-            muted={true}
-            loop={true}
-            controls
-          />
-        </div>
+        {!this.props.socketError?
+          <div className="video-container" style={{display:"flex", flexDirection:"column"}}>
+            <video
+              style={{height: '400px', visibility:vis1, order:ord1}}
+              id="vid"
+              src={this.props.src}
+              autoPlay
+              muted={this.props.mute}
+              loop={!this.props.src}
+              controls
+            />
+            <video
+              style={{height: '400px', visibility:vis2, order:ord2}}
+              src="./videos/test3.mp4"
+              autoPlay
+              muted={true}
+              loop={true}
+              controls
+            />
+          </div>
+        :<h3>Captain, we've lost contact with the mothership!</h3>}
         <div>Click anywhere for sound</div>
         <button onClick={this.props.getSrc}>resync</button>
         <button onClick={this.props.toggleMute}>mute</button>

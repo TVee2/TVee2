@@ -7,7 +7,7 @@ var socket = io()
 export default class TV extends Component {
   constructor() {
     super()
-    this.state = {src: '', progress: 0, playmargin:null, mute: true, loop: false}
+    this.state = {src: '', progress: 0, playmargin:null, mute: true, loop: false, socket_error:false}
   }
 
   componentDidMount() {
@@ -17,6 +17,12 @@ export default class TV extends Component {
       var src = segment.program.src
       var {progress, playmargin} = segment
       this.setState({src, progress, playmargin})
+    })
+    socket.on('connect_error', () => {
+      this.setState({socket_error:true})
+    })
+    socket.on('connect', () => {
+      this.setState({socket_error:false})
     })
   }
 
@@ -48,6 +54,7 @@ export default class TV extends Component {
           progress={this.state.progress}
           playmargin={this.state.playmargin}
           toggleMute={this.toggleMute}
+          socketError={this.state.socket_error}
           mute={this.state.mute}
           fillTime={this.fillTime}
           loop={this.state.loop}
