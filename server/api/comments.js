@@ -1,11 +1,11 @@
 const router = require('express').Router()
-const {User, Vote} = require('../db/models')
+const {User, Vote, Comment} = require('../db/models')
 module.exports = router
 
 router
 .get('/', (req, res, next) => {
   Comment.findAll({
-    include: {model: Vote},
+    include: {model: User},
   })
   .then((comments) => {
     res.status(200).json(comments)
@@ -18,10 +18,10 @@ router
 .post('/', (req, res, next) => {
   const user = req.user
   Comment.create(req.body)
-  .then((protest) => User.findOne({where: {id: user.id}})
-    .then((user) => protest.setUser(user))
+  .then((comment) => User.findOne({where: {id: user.id}})
+    .then((user) => comment.setUser(user))
     .then(() => Comment.findAll({
-      order: [['updated_at', 'DESC']]
+      order: [['updatedAt', 'DESC']]
     }))
   )
   .then((comments) => {
@@ -36,11 +36,11 @@ router
   Comment.findOne({
     where: {id: req.params.id}
   })
-  .then((protest) => {
-    if (protest) {
-      return protest.destroy()
+  .then((comment) => {
+    if (comment) {
+      return comment.destroy()
     } else {
-      throw new Error('No protest found with matching id.')
+      throw new Error('No comment found with matching id.')
     }
   })
   .then((comments) => {
@@ -53,10 +53,10 @@ router
 
 .post('/vote', (req, res, next) => {
   const {dir, pid} = req.query
-  Vote.findOne({where: {pid, user_id: req.user.id, protest_id: pid}})
+  Vote.findOne({where: {pid, userId: req.user.id, comment_id: pid}})
   .then((vote) => {
     if (!vote) {
-      return Vote.create({dir, pid, user_id: req.user.id, protest_id: pid})
+      return Vote.create({dir, pid, user_id: req.user.id, commentId: pid})
     } else {
       vote.dir = dir
       return vote.save()

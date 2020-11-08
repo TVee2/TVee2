@@ -20,6 +20,16 @@ router.post('/login', async (req, res, next) => {
 })
 
 router.post('/signup', async (req, res, next) => {
+  var randColor = ()=>{
+    const d = 185
+    const a = Math.ceil(Math.random() * 80 + d)
+    const b = Math.ceil(Math.random() * 80 + d)
+    const c = Math.ceil(Math.random() * 80 + d)
+    const color = `rgb(${a},${b},${c})`
+    return color
+  }
+  var color = randColor()
+  req.body.color = color
   try {
     const user = await User.create(req.body)
     req.login(user, err => (err ? next(err) : res.json(user)))

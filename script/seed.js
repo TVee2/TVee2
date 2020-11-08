@@ -1,7 +1,7 @@
 'use strict'
 
 const db = require('../server/db')
-const {User, Segment, Schedule, Program} = require('../server/db/models')
+const {User, Segment, Channel, Program} = require('../server/db/models')
 
 async function seed() {
   await db.sync({force: true})
@@ -12,10 +12,10 @@ async function seed() {
     User.create({email: 'murphy@email.com', password: '123'})
   ])
 
-  const schedule = await Schedule.create()
+  const channel = await Channel.create()
 
     //this is useful
-    //await Segment.create({tkey:`d3/h${Math.floor(i/3600)}/m${Math.floor((i%3600)/60)}/s${i%60}`, scheduleId:schedule.id})
+    //await Segment.create({tkey:`d3/h${Math.floor(i/3600)}/m${Math.floor((i%3600)/60)}/s${i%60}`, channelId:channel.id})
 
   // seed next hour
   var now = Math.floor(new Date().valueOf()/1000)
@@ -28,7 +28,7 @@ async function seed() {
 
   for(let i=0;i<60*60;i++){
     var new_time = now + i    
-    await Segment.create({tkey:new_time, progress:0, scheduleId:schedule.id})
+    await Segment.create({tkey:new_time, progress:0, channelId:channel.id})
   }
   var segments = await Segment.findAll({order: [['tkey', 'ASC']]})
   var i = 0
