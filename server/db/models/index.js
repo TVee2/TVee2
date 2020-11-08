@@ -1,7 +1,8 @@
 const User = require('./user')
 const Segment = require('./segment')
 const Program = require('./program')
-const Schedule = require('./schedule')
+const Channel = require('./channel')
+const Comment = require('./comment')
 
 /**
  * If we had any associations to make, this would be a great place to put them!
@@ -12,8 +13,11 @@ const Schedule = require('./schedule')
 
 Segment.belongsTo(Program)
 
-Schedule.hasMany(Segment)
-Segment.belongsTo(Schedule)
+Comment.belongsTo(User)
+Comment.belongsTo(Channel)
+
+Channel.hasMany(Segment)
+Segment.belongsTo(Channel)
 
 /**
  * We'll export all of our models here, so that any time a module needs a model,
@@ -24,8 +28,9 @@ Segment.belongsTo(Schedule)
 
 module.exports = {
   Program,
-  Schedule,
+  Channel,
   Segment,
   User,
+  Comment,
 }
 

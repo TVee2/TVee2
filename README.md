@@ -2,9 +2,10 @@ More to come
 
 to do
 
-make cron job that populates segments, segments are every second and just use for quick lookup
-seed this data for a bit
+make castable
+make so can upload videos to segments
 
-emitter that emits every second
+make cheap client that functions through webrtc
+make real time chat alongside with timestamp
 
 

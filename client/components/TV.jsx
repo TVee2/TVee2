@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import VideoPlayer from './VideoPlayer'
+import Chat from './Chat'
 import axios from 'axios'
 import io from 'socket.io-client'
 var socket = io()
@@ -49,6 +50,7 @@ export default class TV extends Component {
           fillTime={this.fillTime}
           loop={this.state.loop}
         />
+        <Chat channelId={1} />>
       </div>
     )
   }
