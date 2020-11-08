@@ -38,8 +38,6 @@ export default class VideoPlayer extends Component {
       false
     )
 
-    this.props.getSrc()
-
     var listener = () => {
       if (!this.state.dirty) {
         this.setState({muted: false, dirty: true}, () => {
@@ -59,17 +57,24 @@ export default class VideoPlayer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(!prevProps.src && this.props.src && this.state.fill_time){
+    if(this.props.src==="no source" && !this.state.fill_time){
+      console.log("no source")
+      this.setState({fill_time:true})
+    }
+
+    if((!prevProps.src || prevProps.src==="no source") && this.props.src && this.props.src!=="no source" && this.state.fill_time){
+      console.log("was no src, now have src")
       this.setState({fill_time:false})
     }
 
     if(this.props.progress!==Math.round(this.state.vid.currentTime)){
       console.log("unsynced, recorrecting...")
+      console.log(this.props.progress)
       this.state.vid.currentTime=this.props.progress
     }
+
     if (
       this.props.src !== prevProps.src ||
-      // this.props.progress !== prevProps.progress ||
       this.state.empty
     ) {
       this.setState({empty: false}, () => {
@@ -78,28 +83,39 @@ export default class VideoPlayer extends Component {
     }
   }
 
+  fullscreen=()=>{
+    var elem = document.getElementById("vidcontainer")
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+      elem.msRequestFullscreen();
+    }
+  }
+
   render() {
-    var hide_main = this.props.playmargin
-    var vis1 = this.props.playmargin?"hidden":null
-    var vis2 = !this.props.playmargin?"hidden":null
+    var hide_main = this.props.playmargin || this.state.fill_time
+    var vis1 = hide_main?"hidden":null
+    var vis2 = !hide_main?"hidden":null
     var ord1 = hide_main?2:1
     var ord2 = !hide_main?2:1
 
     return (
-      <div>
+      <div style={{width:"600px"}}>
         {!this.props.socketError?
-          <div className="video-container" style={{display:"flex", flexDirection:"column"}}>
+          <div id="vidcontainer" className="video-container" style={{display:"grid"}}>
             <video
-              style={{height: '400px', visibility:vis1, order:ord1}}
+              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1, order:ord1}}
               id="vid"
               src={this.props.src}
               autoPlay
-              muted={this.props.mute}
+              muted={this.props.mute || hide_main}
               loop={!this.props.src}
               controls
             />
             <video
-              style={{height: '400px', visibility:vis2, order:ord2}}
+              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis2, order:ord2}}
               src="./videos/test3.mp4"
               autoPlay
               muted={true}
@@ -109,8 +125,9 @@ export default class VideoPlayer extends Component {
           </div>
         :<h3>Captain, we've lost contact with the mothership!</h3>}
         <div>Click anywhere for sound</div>
-        <button onClick={this.props.getSrc}>resync</button>
         <button onClick={this.props.toggleMute}>mute</button>
+        <button onClick={this.fullscreen}>fullscreen</button>
+
       </div>
     )
   }

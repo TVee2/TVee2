@@ -11,12 +11,14 @@ export default class TV extends Component {
   }
 
   componentDidMount() {
-    // socket.emit('pix', 'test payload')
     socket.on('emission', segment => {
-      // this.getSrc()
-      var src = segment.program.src
-      var {progress, playmargin} = segment
-      this.setState({src, progress, playmargin})
+        if(!segment||!segment.program.src){
+          this.setState({src:"no source"})
+        }else{
+          var src = segment.program.src
+          var {progress, playmargin} = segment
+          this.setState({src, progress, playmargin})
+        }
     })
     socket.on('connect_error', () => {
       this.setState({socket_error:true})
@@ -26,18 +28,7 @@ export default class TV extends Component {
     })
   }
 
-  getSrc = () => {
-    axios
-      .get('/api/src')
-      .then(res => res.data)
-      .then(data => {
-        console.log('got data', data)
-        this.setState({progress: data.progress, src: data.src, loop: false})
-      })
-  }
-
   toggleMute = () => {
-    console.log('mute?', !this.state.mute)
     this.setState({mute: !this.state.mute})
   }
 
@@ -49,7 +40,6 @@ export default class TV extends Component {
     return (
       <div>
         <VideoPlayer
-          getSrc={this.getSrc}
           src={this.state.src}
           progress={this.state.progress}
           playmargin={this.state.playmargin}
