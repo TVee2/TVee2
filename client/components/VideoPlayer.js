@@ -7,6 +7,7 @@ export default class VideoPlayer extends Component {
       dirty: false,
       empty: true,
       fill_time: false,
+      init_loading:true,
       vid:null
     }
   }
@@ -50,9 +51,15 @@ export default class VideoPlayer extends Component {
     }
 
     document.addEventListener('click', listener)
+    
+    vid.onplay = () => {
+      console.log("playing")
+      this.setState({fill_time:false, init_loading:false})
+    }
 
     vid.onended = () => {
-      this.setState({empty:true})
+      console.log("ended")
+      this.setState({fill_time:true})
     }
   }
 
@@ -95,18 +102,30 @@ export default class VideoPlayer extends Component {
   }
 
   render() {
-    var hide_main = this.props.playmargin || this.state.fill_time
-    var vis1 = hide_main?"hidden":null
-    var vis2 = !hide_main?"hidden":null
-    var ord1 = hide_main?2:1
-    var ord2 = !hide_main?2:1
+    var hide_main = this.state.fill_time
+    var vis1 
+    var vis2
+    var vis3 
+    if(this.state.init_loading){
+      vis1="hidden"
+      vis2="hidden"
+    }else{
+      if(hide_main){
+        vis1="hidden"
+      }else{
+        vis2="hidden"
+      }
+      vis3="hidden"
+    }
+
 
     return (
       <div style={{width:"600px"}}>
         {!this.props.socketError?
           <div id="vidcontainer" className="video-container" style={{display:"grid"}}>
+            <img src="/static.gif" style={{width:"100%", gridColumn:"1", gridRow:"1", visibility:vis3}}></img>
             <video
-              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1, order:ord1}}
+              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1}}
               id="vid"
               src={this.props.src}
               autoPlay
@@ -115,7 +134,7 @@ export default class VideoPlayer extends Component {
               controls
             />
             <video
-              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis2, order:ord2}}
+              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis2}}
               src="./videos/test3.mp4"
               autoPlay
               muted={true}
