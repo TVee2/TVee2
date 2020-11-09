@@ -6,6 +6,8 @@ router
 .get('/', (req, res, next) => {
   Comment.findAll({
     include: {model: User},
+    order: [['createdAt', 'DESC']],
+    limit: 50
   })
   .then((comments) => {
     res.status(200).json(comments)
@@ -16,16 +18,21 @@ router
 })
 
 .post('/', (req, res, next) => {
+  var io = req.app.locals.io
   const user = req.user
   Comment.create(req.body)
   .then((comment) => User.findOne({where: {id: user.id}})
     .then((user) => comment.setUser(user))
-    .then(() => Comment.findAll({
-      order: [['updatedAt', 'DESC']]
-    }))
+    // .then(() => Comment.findAll({
+    //   order: [['updatedAt', 'DESC']]
+    // }))
   )
-  .then((comments) => {
-    res.status(201).json(comments)
+  .then((comment) => {
+    Comment.findByPk(comment.id, {include:[{model:User}]})
+    .then((comment)=>{
+      io.emit('comment', comment)
+      res.status(201).json(comment)
+    })
   })
   .catch((err) => {
     res.status(400).json({error: err.message})

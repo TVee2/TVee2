@@ -8,7 +8,7 @@ var socket = io()
 export default class TV extends Component {
   constructor() {
     super()
-    this.state = {src: '', progress: 0, init_loading:true, mute: true, loop: false, socket_error:false}
+    this.state = {src: '', progress: 0, init_loading:true, mute: true, loop: false, socket_error:false, comments:[]}
   }
 
   componentDidMount() {
@@ -21,6 +21,12 @@ export default class TV extends Component {
           this.setState({src, progress})
         }
     })
+    socket.on('comment', comment => {
+      this.setState({comments: [comment, ...this.state.comments]}, () => {
+        var div = document.getElementById("commentcontainer");
+        div.scrollTop = div.scrollHeight - div.clientHeight;
+      })
+    })
     socket.on('connect_error', () => {
       this.setState({socket_error:true, src:'', progress:0})
     })
@@ -31,6 +37,19 @@ export default class TV extends Component {
 
   toggleMute = () => {
     this.setState({mute: !this.state.mute})
+  }
+
+  getComments = (channelId) => {
+    axios.get(`/api/comments`)
+    .then((res) => {
+      this.setState({comments:res.data}, () => {
+        var div = document.getElementById("commentcontainer");
+        div.scrollTop = div.scrollHeight - div.clientHeight;
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
   }
 
   render() {
@@ -46,6 +65,8 @@ export default class TV extends Component {
         />
         <Chat
           {...this.props}
+          getComments={this.getComments}
+          comments={this.state.comments}
           channelId={1}
         />
       </div>

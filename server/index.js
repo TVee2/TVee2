@@ -93,6 +93,7 @@ const createApp = () => {
     console.error(err.stack)
     res.status(err.status || 500).send(err.message || 'Internal server error.')
   })
+  return app
 }
 
 const startListening = () => {
@@ -104,6 +105,7 @@ const startListening = () => {
   // set up our socket control center
   const io = socketio(server)
   require('./socket')(io)
+  app.locals.io=io
 }
 
 const syncDb = () => db.sync()

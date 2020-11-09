@@ -68,24 +68,18 @@ export default class VideoPlayer extends Component {
       this.setState({init_loading:true})
     }
 
-    if(this.props.src==="no source" && !this.state.fill_time){
+    if(this.props.src==="no source" && (!this.state.fill_time || this.state.init_loading)){
       console.log("no source")
-      this.setState({fill_time:true})
+      this.setState({fill_time:true, init_loading:false})
     }
 
     if(this.props.progress!==Math.round(this.state.vid.currentTime)){
       console.log("unsynced, recorrecting...")
-      console.log(this.props.progress)
       this.state.vid.currentTime=this.props.progress
     }
 
-    if (
-      this.props.src !== prevProps.src ||
-      this.state.empty
-    ) {
-      this.setState({empty: false}, () => {
-        this.state.vid.src = this.props.src
-      })
+    if(this.props.src !== prevProps.src) {
+      this.state.vid.src = this.props.src
     }
   }
 
@@ -101,7 +95,7 @@ export default class VideoPlayer extends Component {
   }
 
   render() {
-    var hide_main = this.state.fill_time
+    var hide_main = this.state.fill_time || this.props.src
     var vis1
     var vis2
     var vis3
@@ -128,7 +122,7 @@ export default class VideoPlayer extends Component {
 
 
     return (
-      <div style={{width:"600px", height:"337.5px"}}>
+      <div style={{width:"640px", height:"360px", display:"inline-block", position:"absolute"}}>
           <div id="vidcontainer" className="video-container" style={{display:"grid"}}>
             <img src="/static.gif" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis3}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis4}}></img>
@@ -149,8 +143,10 @@ export default class VideoPlayer extends Component {
               loop={true}
               controls={false}
             />
-            <button onClick={this.props.toggleMute}>mute</button>
-            <button onClick={this.fullscreen}>fullscreen</button>
+            <div>
+              <button onClick={this.props.toggleMute}>mute</button>
+              <button onClick={this.fullscreen}>fullscreen</button>
+            </div>
             <div>Click anywhere for sound</div>
           </div>
       </div>
