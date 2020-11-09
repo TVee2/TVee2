@@ -103,27 +103,35 @@ export default class VideoPlayer extends Component {
 
   render() {
     var hide_main = this.state.fill_time
-    var vis1 
+    var vis1
     var vis2
-    var vis3 
-    if(this.state.init_loading){
-      vis1="hidden"
-      vis2="hidden"
-    }else{
-      if(hide_main){
+    var vis3
+    var vis4
+    if(this.props.socketError){
         vis1="hidden"
-      }else{
+        vis2="hidden"  
+        vis3="hidden"
+    }else{
+       vis4="hidden"
+      if(this.state.init_loading){
+        vis1="hidden"
         vis2="hidden"
+      }else{
+        if(hide_main){
+          vis1="hidden"
+        }else{
+          vis2="hidden"
+        }
+        vis3="hidden"
       }
-      vis3="hidden"
     }
 
 
     return (
-      <div style={{width:"600px"}}>
-        {!this.props.socketError?
+      <div style={{width:"600px", height:"337.5px"}}>
           <div id="vidcontainer" className="video-container" style={{display:"grid"}}>
-            <img src="/static.gif" style={{width:"100%", gridColumn:"1", gridRow:"1", visibility:vis3}}></img>
+            <img src="/static.gif" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis3}}></img>
+            <img src="/no_signal.png" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis4}}></img>
             <video
               style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1}}
               id="vid"
@@ -131,7 +139,7 @@ export default class VideoPlayer extends Component {
               autoPlay
               muted={this.props.mute || hide_main}
               loop={!this.props.src}
-              controls
+              controls={false}
             />
             <video
               style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis2}}
@@ -139,14 +147,12 @@ export default class VideoPlayer extends Component {
               autoPlay
               muted={true}
               loop={true}
-              controls
+              controls={false}
             />
+            <button onClick={this.props.toggleMute}>mute</button>
+            <button onClick={this.fullscreen}>fullscreen</button>
+            <div>Click anywhere for sound</div>
           </div>
-        :<h3>Captain, we've lost contact with the mothership!</h3>}
-        <div>Click anywhere for sound</div>
-        <button onClick={this.props.toggleMute}>mute</button>
-        <button onClick={this.fullscreen}>fullscreen</button>
-
       </div>
     )
   }

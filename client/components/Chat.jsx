@@ -72,7 +72,7 @@ export default class App extends React.Component {
     let list = this.state.comments
     const user = this.props.user
     return (
-      <div style={{border: "1px solid black"}}>
+      <div style={{border: "1px solid black", marginTop:"100px"}}>
         <h1 className="center">***Sample Channel Name Here***</h1>
         {this.props.user.id
           ?<form className="center" onSubmit={this.handleSubmit}>

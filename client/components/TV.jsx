@@ -50,7 +50,7 @@ export default class TV extends Component {
           fillTime={this.fillTime}
           loop={this.state.loop}
         />
-        <Chat 
+        <Chat
           {...this.props}
           channelId={1}
         />

@@ -7,9 +7,6 @@ module.exports = db.define('segment', {
     type: Sequelize.INTEGER,
     allowNull: false
   },
-  playmargin:{
-    type: Sequelize.BOOLEAN
-  },
   progress:{
     type: Sequelize.INTEGER,
   },
