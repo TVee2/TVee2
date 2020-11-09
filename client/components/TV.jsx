@@ -8,7 +8,7 @@ var socket = io()
 export default class TV extends Component {
   constructor() {
     super()
-    this.state = {src: '', progress: 0, playmargin:null, mute: true, loop: false, socket_error:false}
+    this.state = {src: '', progress: 0, init_loading:true, mute: true, loop: false, socket_error:false}
   }
 
   componentDidMount() {
@@ -17,12 +17,12 @@ export default class TV extends Component {
           this.setState({src:"no source"})
         }else{
           var src = segment.program.src
-          var {progress, playmargin} = segment
-          this.setState({src, progress, playmargin})
+          var {progress} = segment
+          this.setState({src, progress})
         }
     })
     socket.on('connect_error', () => {
-      this.setState({socket_error:true})
+      this.setState({socket_error:true, src:'', progress:0})
     })
     socket.on('connect', () => {
       this.setState({socket_error:false})
@@ -33,21 +33,15 @@ export default class TV extends Component {
     this.setState({mute: !this.state.mute})
   }
 
-  fillTime = () => {
-    this.setState({src: './videos/test3.mp4', loop: true})
-  }
-
   render() {
     return (
       <div>
         <VideoPlayer
           src={this.state.src}
           progress={this.state.progress}
-          playmargin={this.state.playmargin}
           toggleMute={this.toggleMute}
           socketError={this.state.socket_error}
           mute={this.state.mute}
-          fillTime={this.fillTime}
           loop={this.state.loop}
         />
         <Chat

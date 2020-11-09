@@ -54,24 +54,23 @@ export default class VideoPlayer extends Component {
     
     vid.onplay = () => {
       console.log("playing")
-      this.setState({fill_time:false, init_loading:false})
+      this.setState({playing:true, fill_time:false, init_loading:false})
     }
 
     vid.onended = () => {
       console.log("ended")
-      this.setState({fill_time:true})
+      this.setState({fill_time:true, playing:false})
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if(prevProps.socketError && !this.props.socketError){
+      this.setState({init_loading:true})
+    }
+
     if(this.props.src==="no source" && !this.state.fill_time){
       console.log("no source")
       this.setState({fill_time:true})
-    }
-
-    if((!prevProps.src || prevProps.src==="no source") && this.props.src && this.props.src!=="no source" && this.state.fill_time){
-      console.log("was no src, now have src")
-      this.setState({fill_time:false})
     }
 
     if(this.props.progress!==Math.round(this.state.vid.currentTime)){
@@ -107,6 +106,7 @@ export default class VideoPlayer extends Component {
     var vis2
     var vis3
     var vis4
+
     if(this.props.socketError){
         vis1="hidden"
         vis2="hidden"  
