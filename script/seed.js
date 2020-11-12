@@ -26,30 +26,31 @@ async function seed() {
     // Program.create({src: './videos/test3.mp4', duration: 5, ad:false}),
   ])
 
-  for(let i=0;i<60*60;i++){
-    var new_time = now + i    
-    await Segment.create({tkey:new_time, progress:0, channelId:channel.id})
-  }
-  var segments = await Segment.findAll({order: [['tkey', 'ASC']]})
-  var i = 0
-  var j = 0
-  var progress
-  for(var k = 0; k<segments.length;k++){
-    let segment = segments[k]
-    await segment.setProgram(programs[i])
-    segment.progress=j
-    await segment.save()
-    if(j===parseInt(programs[i].duration)){
-      j=0
-      if(i==programs.length-1){
-        i=0
-      }else{
-        i++
-      }
-    }else{
-      j++
-    }
-  }
+  // for(let i=0;i<60*60;i++){
+  //   var new_time = now + i    
+  //   await Segment.create({tkey:new_time, progress:0, channelId:channel.id})
+  // }
+  // var segments = await Segment.findAll({order: [['tkey', 'ASC']]})
+  // var i = 0
+  // var j = 0
+  // var progress
+  // for(var k = 0; k<segments.length;k++){
+  //   let segment = segments[k]
+  //   await segment.setProgram(programs[i])
+  //   segment.progress=j
+  //   await segment.save()
+  //   if(j===parseInt(programs[i].duration)){
+  //     j=0
+  //     if(i==programs.length-1){
+  //       i=0
+  //     }else{
+  //       i++
+  //     }
+  //   }else{
+  //     j++
+  //   }
+  // }
+
   console.log(`seeded ${users.length} users`)
   console.log(`seeded successfully`)
 }

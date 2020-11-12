@@ -28,34 +28,16 @@ export default class App extends React.Component {
 
   addComment = (comment, channelId) => {
     axios.post(`/api/comments`, comment)
-    .then((comments) => {
-      // this.props.getComments(this.props.channelId)
-    })
     .catch((err) => {
       console.log(err)
     })
   }
 
-  // getComments = (channelId) => {
-  //   axios.get(`/api/comments`)
-  //   .then((res) => {
-  //     this.setState({comments:res.data}, () => {
-  //       var div = document.getElementById("commentcontainer");
-  //       div.scrollTop = div.scrollHeight - div.clientHeight;
-  //     })
-  //   })
-  //   .catch((err) => {
-  //     console.log(err)
-  //   })
-  // }
-
   render() {
     let list = this.props.comments.slice().reverse()
     const user = this.props.user
     var display_chat
-    // if(window.innerWidth<1015){
-    //   display_chat = "hidden"
-    // }
+
     return (
       <div style={{border: "1px solid black", position:"absolute", left:"640px", display:"inline-block", margin:"0 20px", visibility:display_chat}}>
         <h1 className="center">***Sample Channel Name Here***</h1>

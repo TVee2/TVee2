@@ -3,6 +3,8 @@ const Segment = require('./segment')
 const Program = require('./program')
 const Channel = require('./channel')
 const Comment = require('./comment')
+const Video = require('./video')
+const Timeslot = require('./timeslot')
 
 /**
  * If we had any associations to make, this would be a great place to put them!
@@ -11,13 +13,20 @@ const Comment = require('./comment')
  *    BlogPost.belongsTo(User)
  */
 
+Timeslot.belongsTo(Program)
+Timeslot.belongsTo(Channel)
+
 Segment.belongsTo(Program)
+Segment.belongsTo(Timeslot)
 
 Comment.belongsTo(User)
 Comment.belongsTo(Channel)
 
 Channel.hasMany(Segment)
 Segment.belongsTo(Channel)
+
+Program.belongsTo(User)
+Program.belongsToMany(Video, {through: "videosrc"})
 
 /**
  * We'll export all of our models here, so that any time a module needs a model,
@@ -32,5 +41,6 @@ module.exports = {
   Segment,
   User,
   Comment,
+  Video,
+  Timeslot,
 }
-
