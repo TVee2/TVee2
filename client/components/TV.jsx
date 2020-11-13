@@ -13,13 +13,13 @@ export default class TV extends Component {
 
   componentDidMount() {
     socket.on('emission', segment => {
-        if(!segment||!segment.program.src){
-          this.setState({src:"no source"})
-        }else{
-          var src = segment.program.src
-          var {progress} = segment
-          this.setState({src, progress})
-        }
+      if(!segment||!segment.program||!segment.program.videos.length===0||!segment.program.videos[0].path){
+        this.setState({src:"no source"})
+      }else{
+        var src = segment.program.videos[0].path
+        var {progress} = segment
+        this.setState({src, progress})
+      }
     })
     socket.on('comment', comment => {
       this.setState({comments: [comment, ...this.state.comments]}, () => {

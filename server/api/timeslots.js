@@ -6,11 +6,27 @@ const {Op} = require('sequelize')
 router
 .get('/:channelId', (req, res, next) => {
   var channelId = req.params.channelId
-  // Timeslot.findAll({where:{channelId}})
-  Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}})
-  .then((timeslots)=>{
-    res.json(timeslots)
+
+  const where_after = {
+    starttime: {
+      [Op.gt]: new Date().getTime()
+    }
+  }
+
+  const where_before = {
+    starttime: {
+      [Op.lt]: new Date().getTime()
+    }
+  }
+
+  Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:where_before})
+  .then((before_ts)=>{
+    return Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:where_after})
+    .then((after_ts)=>{
+      res.json({before_ts, after_ts})
+    })
   })
+
 })
 
 .delete('/:timeslotId', (req, res, next) => {

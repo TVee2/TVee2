@@ -7,7 +7,7 @@ export default class Scheduler extends Component {
   constructor() {
     super()
 
-    this.state = {timeslots: [], videos:[], uploads:[]}
+    this.state = {timeslots: { before_ts:[], after_ts:[] }, videos:[], uploads:[]}
   }
 
   componentDidMount(){
@@ -153,10 +153,14 @@ export default class Scheduler extends Component {
         <br />
         <br />
         <br />
-        <div>
-        </div>
-        {this.state.timeslots.map((ts) => {
-          return <div>Title - {ts.program.title}   &&    Timeslot - {new Date(parseInt(ts.starttime)).toGMTString()} - {new Date(parseInt(ts.endtime)).toGMTString()}</div>
+        <div>Current Datetime - {new Date().toLocaleString()}</div>
+        <div>Scheduled for Before Now</div>
+        {this.state.timeslots.before_ts.map((ts) => {
+          return <div>Title - {ts.program.title}   &&    Timeslot - {new Date(parseInt(ts.starttime)).toLocaleString()} - {new Date(parseInt(ts.endtime)).toLocaleString()}</div>
+        })}
+        <div>Scheduled for After Now</div>
+        {this.state.timeslots.after_ts.map((ts) => {
+          return <div>Title - {ts.program.title}   &&    Timeslot - {new Date(parseInt(ts.starttime)).toLocaleString()} - {new Date(parseInt(ts.endtime)).toLocaleString()}</div>
         })}
       </div>
     )

@@ -81,6 +81,10 @@ export default class VideoPlayer extends Component {
     if(this.props.src !== prevProps.src) {
       this.state.vid.src = this.props.src
     }
+
+    if(this.props.src !== prevProps.src) {
+      this.state.vid.src = this.props.src
+    }
   }
 
   fullscreen=()=>{
@@ -95,12 +99,12 @@ export default class VideoPlayer extends Component {
   }
 
   render() {
-    var hide_main = this.state.fill_time || this.props.src
+    var hide_main = this.state.fill_time || !this.props.src
     var vis1
     var vis2
     var vis3
     var vis4
-
+    console.log(hide_main)
     if(this.props.socketError){
         vis1="hidden"
         vis2="hidden"  
@@ -119,7 +123,6 @@ export default class VideoPlayer extends Component {
         vis3="hidden"
       }
     }
-
 
     return (
       <div style={{width:"640px", height:"360px", display:"inline-block", position:"absolute"}}>
