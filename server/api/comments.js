@@ -23,9 +23,6 @@ router
   Comment.create(req.body)
   .then((comment) => User.findOne({where: {id: user.id}})
     .then((user) => comment.setUser(user))
-    // .then(() => Comment.findAll({
-    //   order: [['updatedAt', 'DESC']]
-    // }))
   )
   .then((comment) => {
     Comment.findByPk(comment.id, {include:[{model:User}]})

@@ -24,6 +24,7 @@ Comment.belongsTo(Channel)
 
 Channel.hasMany(Segment)
 Segment.belongsTo(Channel)
+Channel.belongsTo(User)
 
 Program.belongsTo(User)
 Program.belongsToMany(Video, {through: "videosrc"})

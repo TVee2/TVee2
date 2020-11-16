@@ -104,7 +104,6 @@ export default class VideoPlayer extends Component {
     var vis2
     var vis3
     var vis4
-    console.log(hide_main)
     if(this.props.socketError){
         vis1="hidden"
         vis2="hidden"  
@@ -140,7 +139,7 @@ export default class VideoPlayer extends Component {
             />
             <video
               style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis2}}
-              src="./videos/test3.mp4"
+              src="/videos/test3.mp4"
               autoPlay
               muted={true}
               loop={true}

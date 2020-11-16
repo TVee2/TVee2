@@ -12,7 +12,7 @@ export default class TV extends Component {
   }
 
   componentDidMount() {
-    socket.on('emission', segment => {
+    socket.on(`${this.props.match.params.channelname}`, segment => {
       if(!segment||!segment.program||!segment.program.videos.length===0||!segment.program.videos[0].path){
         this.setState({src:"no source"})
       }else{
@@ -37,6 +37,10 @@ export default class TV extends Component {
 
   toggleMute = () => {
     this.setState({mute: !this.state.mute})
+  }
+
+  componentWillUnmount() {
+    socket.off()
   }
 
   getComments = (channelId) => {

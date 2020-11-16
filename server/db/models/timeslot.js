@@ -8,4 +8,7 @@ module.exports = db.define('timeslot', {
   endtime:{
     type: Sequelize.BIGINT,
   },
+  recurring:{
+    type: Sequelize.STRING
+  }
 })

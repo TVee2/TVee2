@@ -5,7 +5,7 @@ module.exports = db.define('segment', {
   tkey: {
     //should include channel id + time
     primaryKey: true,
-    type: Sequelize.INTEGER,
+    type: Sequelize.STRING,
     allowNull: false
   },
   progress:{

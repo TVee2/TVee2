@@ -6,6 +6,7 @@ import {Login, Signup, UserHome} from './components'
 import TV from './components/TV'
 import Scheduler from './components/Scheduler'
 import {me} from './store'
+import ChannelBrowse from './components/ChannelBrowse'
 
 /**
  * COMPONENT
@@ -21,10 +22,11 @@ class Routes extends Component {
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route path="/tv" render={() => (
-            <TV {...this.props} />
+        <Route path="/tv/:channelname" render={(props) => (
+            <TV  {...props} user={this.props.user}/>
           )}
         />
+        <Route path="/tvbrowse" component={ChannelBrowse} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         {isLoggedIn && (

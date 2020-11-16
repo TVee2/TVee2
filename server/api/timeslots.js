@@ -8,15 +8,21 @@ router
   var channelId = req.params.channelId
 
   const where_after = {
-    starttime: {
-      [Op.gt]: new Date().getTime()
-    }
+    [Op.and]: [
+      {channelId: req.params.channelId},
+      {starttime: {
+        [Op.gt]: new Date().getTime()
+      }}
+    ]
   }
 
   const where_before = {
-    starttime: {
-      [Op.lt]: new Date().getTime()
-    }
+    [Op.and]: [
+      {channelId: req.params.channelId},
+      {starttime: {
+        [Op.lt]: new Date().getTime()
+      }}
+    ]
   }
 
   Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:where_before})
@@ -40,12 +46,11 @@ router
 })
 
 .post('/:channelId', (req, res, next) => {
-  var {vid_title, date, hr, min, sec} = req.body
+  var {vid_title, date, hr, min, sec, recurring} = req.body
   var date = new Date(date)
   var now = new Date()
-
-  if(now.getTime() > date.getTime()){
-
+  if(recurring==="dailyrecurring"){
+    date = new Date()
   }
 
   date.setHours(hr, min, sec)
@@ -53,34 +58,38 @@ router
   Program.findOne({where:{title: vid_title}})
   .then((program) => {
     if(!program || !program.duration){
-      return
+      console.log(vid_title)
+      res.sendStatus(400)
     }else{
       var startDate = date
       var endDate = date + program.duration*1000
 
       const where = {
-          [Op.or]: [{
-              starttime: {
-                  [Op.between]: [startDate, endDate]
-              }
+        [Op.and]: [
+          {channelId:req.params.channelId},
+          {[Op.or]: [{
+            starttime: {
+                [Op.between]: [startDate, endDate]
+            }
           }, {
-              endtime: {
-                  [Op.between]: [startDate, endDate]
-              }
-          }]
+            endtime: {
+                [Op.between]: [startDate, endDate]
+            }
+          }]}
+        ]
       }
 
       Timeslot.findOne({where})
       .then((ts)=>{
         if(!ts){
-          return Timeslot.create({starttime:date, endtime:date+program.duration*1000})
+          return Timeslot.create({starttime:date, endtime:Math.ceil(date+program.duration*1000), recurring, channelId:req.params.channelId})
           .then((ts) => {
             return ts.setProgram(program)
           })
           .then(async (ts)=>{
-            for(let i=0;i<Math.ceil((ts.endtime - ts.starttime)/1000);i++){
-              var new_time = Math.floor((ts.starttime/1000) + i)    
-              var segment = await Segment.create({tkey:new_time, progress:i, programId:program.id, timeslotId: ts.id, channelId:1})
+            for(let i=0;i<(ts.endtime - ts.starttime)/1000;i++){
+              var new_time = Math.floor((ts.starttime/1000) + i)
+              var segment = await Segment.create({tkey:req.params.channelId + '' + new_time, progress:i, programId:program.id, timeslotId: ts.id, channelId:req.params.channelId})
             }
           })
           .then(()=>{

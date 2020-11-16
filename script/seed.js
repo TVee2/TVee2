@@ -12,7 +12,9 @@ async function seed() {
     User.create({email: 'murphy@email.com', password: '123'})
   ])
 
-  const channel = await Channel.create()
+  const channel = await Channel.create({name:"SciFi"})
+  const channel2 = await Channel.create({name:"Horror"})
+  const channel3 = await Channel.create({name:"Classics"})
 
     //this is useful
     //await Segment.create({tkey:`d3/h${Math.floor(i/3600)}/m${Math.floor((i%3600)/60)}/s${i%60}`, channelId:channel.id})
