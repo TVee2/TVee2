@@ -30,7 +30,7 @@ router.post('/', upload.single('videofile' /* name attribute of <file> element i
   (req, res) => {
     var mime = req.file.mimetype.split('/')[0] 
     const tempPath = req.file.path
-    const newPath = req.file.path.split('/').slice(1).join('/')
+    const newPath = '/'+req.file.path.split('/').slice(1).join('/')
     var duration
     ffprobe(tempPath, {
       path: ffprobeStatic.path

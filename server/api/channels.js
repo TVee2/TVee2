@@ -17,6 +17,19 @@ router
   })
 })
 
+.get('/:id', (req, res, next) => {
+  Channel.findOne({
+    where: {id: req.params.id},
+    include: {model: User},
+  })
+  .then((channels) => {
+    res.status(200).json(channels)
+  })
+  .catch((err) => {
+    res.status(400).json({error: err.message})
+  })
+})
+
 .post('/', (req, res, next) => {
   const user = req.user
   Channel.create(req.body)

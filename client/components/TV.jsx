@@ -8,19 +8,11 @@ var socket = io()
 export default class TV extends Component {
   constructor() {
     super()
-    this.state = {src: '', progress: 0, init_loading:true, mute: true, loop: false, socket_error:false, comments:[]}
+    this.state = {src: '', channel:null, progress: 0, init_loading:true, mute: true, loop: false, socket_error:false, comments:[]}
   }
 
   componentDidMount() {
-    socket.on(`${this.props.match.params.channelname}`, segment => {
-      if(!segment||!segment.program||!segment.program.videos.length===0||!segment.program.videos[0].path){
-        this.setState({src:"no source"})
-      }else{
-        var src = segment.program.videos[0].path
-        var {progress} = segment
-        this.setState({src, progress})
-      }
-    })
+    this.getChannel()
     socket.on('comment', comment => {
       this.setState({comments: [comment, ...this.state.comments]}, () => {
         var div = document.getElementById("commentcontainer");
@@ -43,8 +35,28 @@ export default class TV extends Component {
     socket.off()
   }
 
-  getComments = (channelId) => {
-    axios.get(`/api/comments`)
+  getChannel = () => {
+    axios.get(`/api/channels/${this.props.match.params.channelId}`)
+    .then((res) => {
+      this.setState({channel:res.data}, () => {
+        socket.on(this.state.channel.name, segment => {
+          if(!segment||!segment.program||!segment.program.videos.length===0||!segment.program.videos[0].path){
+            this.setState({src:"no source"})
+          }else{
+            var src = segment.program.videos[0].path
+            var {progress} = segment
+            this.setState({src, progress})
+          }
+        })
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
+  getComments = () => {
+    axios.get(`/api/comments?channel=${this.props.match.params.channelId}`)
     .then((res) => {
       this.setState({comments:res.data}, () => {
         var div = document.getElementById("commentcontainer");
@@ -71,7 +83,7 @@ export default class TV extends Component {
           {...this.props}
           getComments={this.getComments}
           comments={this.state.comments}
-          channelId={1}
+          channelId={this.props.match.params.channelId}
         />
       </div>
     )

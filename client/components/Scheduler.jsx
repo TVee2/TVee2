@@ -7,7 +7,7 @@ export default class Scheduler extends Component {
   constructor() {
     super()
 
-    this.state = {channels:[], selectedChannelId:null, frequency:"single", timeslots: { before_ts:[], after_ts:[] }, videos:[], uploads:[]}
+    this.state = {channels:[], selectedChannelId:null, timeslotuploadloading:false, frequency:"single", timeslots: { before_ts:[], after_ts:[] }, videos:[], uploads:[]}
   }
 
   componentDidMount(){
@@ -49,8 +49,14 @@ export default class Scheduler extends Component {
     var min = document.getElementById("min").value
     var sec = document.getElementById("sec").value
     var vid_title = document.getElementById("vid").value
+    
+    this.setState({timeslotuploadloading:true})
     axios.post(`/api/timeslots/${this.state.selectedChannelId}`, {vid_title, date: this.state.startdate, hr, min, sec, recurring})
-    .then((res) => {this.getChannelSchedule()})
+    .then((res) => {
+      this.setState({timeslotuploadloading:false}, () => {
+        this.getChannelSchedule()
+      })
+    })
     .catch((err) => {console.log(err)})
   }
 
@@ -90,8 +96,9 @@ export default class Scheduler extends Component {
   }
 
   onChannelChange = (e) => {
-    this.setState({selectedChannelId: e.target.value})
-    this.getChannelSchedule(e.target.value)
+    this.setState({selectedChannelId: e.target.value}, () => {
+      this.getChannelSchedule(this.state.selectedChannelId)
+    })
   }
 
   render() {
@@ -143,63 +150,68 @@ export default class Scheduler extends Component {
             <br />
             <br />
             <div>Add Video to Timeslot</div>
-            <div>
-              Video:
-              <select id="vid">
-                {this.state.videos.map(vid => {
-                  return <option value={`${vid.title}`}>{vid.title}</option>
-                })}
-              </select>
-            </div>
-            <div>
-              Singleton or Daily Recurring:
-              <select id="frequency" defaultValue='single' onChange={ (e) => {this.setState({frequency: e.target.value})} }>
-                <option value='single'>Single</option>
-                <option value='dailyrecurring'>Daily Recurring</option>
-              </select>
-            </div>
-            <div>
-              Startdate
-              <DatePicker selected={this.state.startdate} onSelect={ date => { this.setState( { startdate: date } ) } } />
-              Starttime: Hour:{' '}
-              <select id="hr">
-                <option value="0">12pm</option>
-                <option value="1">1am</option>
-                <option value="2">2am</option>
-                <option value="3">3am</option>
-                <option value="4">4am</option>
-                <option value="5">5am</option>
-                <option value="6">6am</option>
-                <option value="7">7am</option>
-                <option value="8">8am</option>
-                <option value="9">9am</option>
-                <option value="10">10am</option>
-                <option value="11">11am</option>
-                <option value="12">12pm</option>
-                <option value="13">1pm</option>
-                <option value="14">2pm</option>
-                <option value="15">3pm</option>
-                <option value="16">4pm</option>
-                <option value="17">5pm</option>
-                <option value="18">6pm</option>
-                <option value="19">7pm</option>
-                <option value="20">8pm</option>
-                <option value="21">9pm</option>
-                <option value="22">10pm</option>
-                <option value="23">11pm</option>
-              </select>{' '}
-              Min:<select id="min">
-              {Array(60).fill(null).map((item, i) => {
-                return <option value={i}>{i}</option>
-              })}
-              </select>
-              Sec:<select id="sec">
-              {Array(60).fill(null).map((item, i) => {
-                return <option value={i}>{i}</option>
-              })}
-              </select>
-            </div>
-            <button onClick={this.timeslotSubmitHandler}>submit</button>
+            {this.state.timeslotuploadloading?
+              <div>--- !!!! Creating Timeslot - (This may take a few minutes) !!!! ----</div>:
+              <div>
+                <div>
+                  Video:
+                  <select id="vid">
+                    {this.state.videos.map(vid => {
+                      return <option value={`${vid.title}`}>{vid.title}</option>
+                    })}
+                  </select>
+                </div>
+                <div>
+                  Singleton or Daily Recurring:
+                  <select id="frequency" defaultValue='single' onChange={ (e) => {this.setState({frequency: e.target.value})} }>
+                    <option value='single'>Single</option>
+                    <option value='dailyrecurring'>Daily Recurring</option>
+                  </select>
+                </div>
+                <div>
+                  Startdate
+                  <DatePicker selected={this.state.startdate} onSelect={ date => { this.setState( { startdate: date } ) } } />
+                  Starttime: Hour:{' '}
+                  <select id="hr">
+                    <option value="0">12pm</option>
+                    <option value="1">1am</option>
+                    <option value="2">2am</option>
+                    <option value="3">3am</option>
+                    <option value="4">4am</option>
+                    <option value="5">5am</option>
+                    <option value="6">6am</option>
+                    <option value="7">7am</option>
+                    <option value="8">8am</option>
+                    <option value="9">9am</option>
+                    <option value="10">10am</option>
+                    <option value="11">11am</option>
+                    <option value="12">12pm</option>
+                    <option value="13">1pm</option>
+                    <option value="14">2pm</option>
+                    <option value="15">3pm</option>
+                    <option value="16">4pm</option>
+                    <option value="17">5pm</option>
+                    <option value="18">6pm</option>
+                    <option value="19">7pm</option>
+                    <option value="20">8pm</option>
+                    <option value="21">9pm</option>
+                    <option value="22">10pm</option>
+                    <option value="23">11pm</option>
+                  </select>{' '}
+                  Min:<select id="min">
+                  {Array(60).fill(null).map((item, i) => {
+                    return <option value={i}>{i}</option>
+                  })}
+                  </select>
+                  Sec:<select id="sec">
+                  {Array(60).fill(null).map((item, i) => {
+                    return <option value={i}>{i}</option>
+                  })}
+                  </select>
+                </div>
+                <button onClick={this.timeslotSubmitHandler}>submit</button>
+              </div>
+            }
             <br />
             <br />
             <br />

@@ -4,8 +4,10 @@ module.exports = router
 
 router
 .get('/', (req, res, next) => {
+  var channelId = req.query.channel
   Comment.findAll({
     include: {model: User},
+    where:{channelId},
     order: [['createdAt', 'DESC']],
     limit: 50
   })

@@ -24,7 +24,7 @@ export default class ChannelBrowse extends Component {
     return (
       <div>
         {this.state.channels.map((channel) => {
-          return <div><Link to={`/tv/${channel.name}`}>{channel.id} - {channel.name}</Link></div>
+          return <div><Link to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link></div>
         })}
       </div>
     )

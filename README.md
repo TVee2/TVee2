@@ -1,8 +1,4 @@
-multiple channels
-
 make castable
-
-make full channel with b movies
 
 make cheap client that functions through webrtc
 

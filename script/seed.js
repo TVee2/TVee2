@@ -23,8 +23,8 @@ async function seed() {
   var now = Math.floor(new Date().valueOf()/1000)
 
   const programs = await Promise.all([
-    Program.create({src: './videos/test1.mp4', duration: 35, ad:false}),
-    Program.create({src: './videos/test2.mp4', duration: 30, ad:false}),
+    Program.create({src: '/videos/test1.mp4', duration: 35, ad:false}),
+    Program.create({src: '/videos/test2.mp4', duration: 30, ad:false}),
     // Program.create({src: './videos/test3.mp4', duration: 5, ad:false}),
   ])
 

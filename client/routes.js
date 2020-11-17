@@ -22,7 +22,7 @@ class Routes extends Component {
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route path="/tv/:channelname" render={(props) => (
+        <Route path="/tv/:channelId" render={(props) => (
             <TV  {...props} user={this.props.user}/>
           )}
         />

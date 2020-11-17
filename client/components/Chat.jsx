@@ -40,7 +40,6 @@ export default class App extends React.Component {
 
     return (
       <div style={{border: "1px solid black", position:"absolute", left:"640px", display:"inline-block", margin:"0 20px", visibility:display_chat}}>
-        <h1 className="center">***Sample Channel Name Here***</h1>
         <div className="comment-container" id="commentcontainer" style={{height:"600px", overflow:"overlay", padding:"10px", backgroundColor:"ivory"}}>
           {
             list && list.length
