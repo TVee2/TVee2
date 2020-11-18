@@ -18,7 +18,7 @@ export default class App extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    this.addComment({content: this.state.value}, this.props.channelId)
+    this.addComment({content: this.state.value, channelId: this.props.channelId})
     this.setState({value: ''})
   }
 
@@ -26,8 +26,8 @@ export default class App extends React.Component {
     this.props.getComments(this.props.channelId)
   }
 
-  addComment = (comment, channelId) => {
-    axios.post(`/api/comments`, comment)
+  addComment = (obj) => {
+    axios.post(`/api/comments`, obj)
     .catch((err) => {
       console.log(err)
     })

@@ -4,7 +4,8 @@ module.exports = router
 
 router
 .get('/', (req, res, next) => {
-  var channelId = req.query.channel
+  var channelId = req.query.channelId
+  console.log(channelId, "test")
   Comment.findAll({
     include: {model: User},
     where:{channelId},

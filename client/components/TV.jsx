@@ -56,7 +56,7 @@ export default class TV extends Component {
   }
 
   getComments = () => {
-    axios.get(`/api/comments?channel=${this.props.match.params.channelId}`)
+    axios.get(`/api/comments?channelId=${this.props.match.params.channelId}`)
     .then((res) => {
       this.setState({comments:res.data}, () => {
         var div = document.getElementById("commentcontainer");

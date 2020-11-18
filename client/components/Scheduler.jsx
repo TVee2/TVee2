@@ -173,12 +173,6 @@ export default class Scheduler extends Component {
                   <DatePicker selected={this.state.startdate} onSelect={ date => { this.setState( { startdate: date } ) } } />
                   Starttime: Hour:{' '}
                   <select id="hr">
-                    <option value="0">12pm</option>
-                    <option value="1">1am</option>
-                    <option value="2">2am</option>
-                    <option value="3">3am</option>
-                    <option value="4">4am</option>
-                    <option value="5">5am</option>
                     <option value="6">6am</option>
                     <option value="7">7am</option>
                     <option value="8">8am</option>
@@ -197,6 +191,12 @@ export default class Scheduler extends Component {
                     <option value="21">9pm</option>
                     <option value="22">10pm</option>
                     <option value="23">11pm</option>
+                    <option value="0">12am</option>
+                    <option value="1">1am</option>
+                    <option value="2">2am</option>
+                    <option value="3">3am</option>
+                    <option value="4">4am</option>
+                    <option value="5">5am</option>
                   </select>{' '}
                   Min:<select id="min">
                   {Array(60).fill(null).map((item, i) => {
