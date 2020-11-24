@@ -1,15 +1,14 @@
 'use strict'
 
 const db = require('../server/db')
-const {User, Segment, Channel, Program} = require('../server/db/models')
+const {User, Segment, Channel, Program, Video} = require('../server/db/models')
 
 async function seed() {
   await db.sync({force: true})
   console.log('db synced!')
 
   const users = await Promise.all([
-    User.create({email: 'cody@email.com', password: '123'}),
-    User.create({email: 'murphy@email.com', password: '123'})
+    User.create({email: 'will@pix.com', password: '1234'}),
   ])
 
   const channel = await Channel.create({name:"SciFi"})
@@ -19,39 +18,31 @@ async function seed() {
     //this is useful
     //await Segment.create({tkey:`d3/h${Math.floor(i/3600)}/m${Math.floor((i%3600)/60)}/s${i%60}`, channelId:channel.id})
 
-  // seed next hour
+
+  const video1 = await Video.create({quality: "420p", path: '/videos/test1.mp4', duration: 35, original:true})
+  const video2 =  await Video.create({quality: "420p", path: '/videos/test2.mp4', duration: 30, original:true})
+
+  const program1 = await Program.create({title: 'wave', duration: 35, ad:false})
+  program1.addVideo(video1)
+  const program2 = await Program.create({title: 'city', duration: 30, ad:false, videoId:video2.id})
+  program2.addVideo(video2)
+
+
+  var counter = 0
+  var vidswitch = true
   var now = Math.floor(new Date().valueOf()/1000)
+  for(let i=0;i<2*60*60;i++){
+    var new_time = now + i
+    var program = vidswitch?program1:program2
+    await Segment.create({tkey:channel.id+""+new_time, progress:counter, programId:program.id, channelId:channel.id})
+    counter ++
+    if(program.duration < counter){
+      vidswitch = !vidswitch
+      counter = 0
+      i = i + 4
+    }
+  }
 
-  const programs = await Promise.all([
-    Program.create({src: '/videos/test1.mp4', duration: 35, ad:false}),
-    Program.create({src: '/videos/test2.mp4', duration: 30, ad:false}),
-    // Program.create({src: './videos/test3.mp4', duration: 5, ad:false}),
-  ])
-
-  // for(let i=0;i<60*60;i++){
-  //   var new_time = now + i    
-  //   await Segment.create({tkey:new_time, progress:0, channelId:channel.id})
-  // }
-  // var segments = await Segment.findAll({order: [['tkey', 'ASC']]})
-  // var i = 0
-  // var j = 0
-  // var progress
-  // for(var k = 0; k<segments.length;k++){
-  //   let segment = segments[k]
-  //   await segment.setProgram(programs[i])
-  //   segment.progress=j
-  //   await segment.save()
-  //   if(j===parseInt(programs[i].duration)){
-  //     j=0
-  //     if(i==programs.length-1){
-  //       i=0
-  //     }else{
-  //       i++
-  //     }
-  //   }else{
-  //     j++
-  //   }
-  // }
 
   console.log(`seeded ${users.length} users`)
   console.log(`seeded successfully`)

@@ -40,7 +40,7 @@ const castDebugLogger = cast.debug.CastDebugLogger.getInstance();
  * Uncomment below line to enable debug logger and show a 'DEBUG MODE' tag at
  * top left corner.
  */
-// castDebugLogger.setEnabled(true);
+castDebugLogger.setEnabled(true);
 
 /**
  * Uncomment below line to show debug overlay.
@@ -82,6 +82,21 @@ playerManager.addEventListener(
     }
 });
 
+playerManager.addEventListener(
+  cast.framework.events.EventType.PLAYING, (event) => {
+    castDebugLogger.error("playing");
+});
+
+playerManager.addEventListener(
+  cast.framework.events.EventType.BUFFERING, (event) => {
+    castDebugLogger.error("buffering");
+});
+
+playerManager.addEventListener(
+  cast.framework.events.EventType.MEDIA_FINISHED, (event) => {
+    castDebugLogger.error("media finished");
+});
+
 /**
  * Intercept the LOAD request to be able to read in a contentId and get data.
  */
@@ -117,36 +132,36 @@ playbackConfig.autoResumeDuration = 5;
 castDebugLogger.info(LOG_RECEIVER_TAG,
   `autoResumeDuration set to: ${playbackConfig.autoResumeDuration}`);
 
-/**
- * Set the control buttons in the UI controls.
- */
-const controls = cast.framework.ui.Controls.getInstance();
-controls.clearDefaultSlotAssignments();
+// /**
+//  * Set the control buttons in the UI controls.
+//  */
+// const controls = cast.framework.ui.Controls.getInstance();
+// controls.clearDefaultSlotAssignments();
 
-/**
- * Assign buttons to control slots.
- */
-controls.assignButton(
-  cast.framework.ui.ControlsSlot.SLOT_1,
-  cast.framework.ui.ControlsButton.QUEUE_PREV
-);
-controls.assignButton(
-  cast.framework.ui.ControlsSlot.SLOT_2,
-  cast.framework.ui.ControlsButton.CAPTIONS
-);
-controls.assignButton(
-  cast.framework.ui.ControlsSlot.SLOT_3,
-  cast.framework.ui.ControlsButton.SEEK_FORWARD_15
-);
-controls.assignButton(
-  cast.framework.ui.ControlsSlot.SLOT_4,
-  cast.framework.ui.ControlsButton.QUEUE_NEXT
-);
+// /**
+//  * Assign buttons to control slots.
+//  */
+// controls.assignButton(
+//   cast.framework.ui.ControlsSlot.SLOT_1,
+//   cast.framework.ui.ControlsButton.QUEUE_PREV
+// );
+// controls.assignButton(
+//   cast.framework.ui.ControlsSlot.SLOT_2,
+//   cast.framework.ui.ControlsButton.CAPTIONS
+// );
+// controls.assignButton(
+//   cast.framework.ui.ControlsSlot.SLOT_3,
+//   cast.framework.ui.ControlsButton.SEEK_FORWARD_15
+// );
+// controls.assignButton(
+//   cast.framework.ui.ControlsSlot.SLOT_4,
+//   cast.framework.ui.ControlsButton.QUEUE_NEXT
+// );
 
-context.start({
-  queue: new CastQueue(),
-  playbackConfig: playbackConfig,
-  supportedCommands: cast.framework.messages.Command.ALL_BASIC_MEDIA |
-                      cast.framework.messages.Command.QUEUE_PREV |
-                      cast.framework.messages.Command.QUEUE_NEXT
-});
+// context.start({
+//   queue: new CastQueue(),
+//   playbackConfig: playbackConfig,
+//   supportedCommands: cast.framework.messages.Command.ALL_BASIC_MEDIA |
+//                       cast.framework.messages.Command.QUEUE_PREV |
+//                       cast.framework.messages.Command.QUEUE_NEXT
+// });

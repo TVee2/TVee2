@@ -110,13 +110,14 @@ export default class VideoPlayer extends Component {
     var vis3
     var vis4
     var vis5
-    if(this.state.isCasting){
-      // vis1="hidden"
-      vis2="hidden"  
-      vis3="hidden"
-      vis4="hidden"
-      vis5="hidden"
-    }else if(this.props.socketError){
+    // if(this.state.isCasting){
+    //   // vis1="hidden"
+    //   vis2="hidden"  
+    //   vis3="hidden"
+    //   vis4="hidden"
+    //   vis5="hidden"
+    // }else 
+    if(this.props.socketError){
       vis1="hidden"
       vis2="hidden"  
       vis3="hidden"

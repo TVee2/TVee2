@@ -102,3 +102,35 @@ router
   })
   .catch((err)=>{console.log(err)})
 })
+
+// .post('/:channelId/experimental', (req, res, next) => {
+//   var date = new Date(date)
+//   var now = new Date()
+
+//   date.setHours(hr, min, sec)
+//   var date = date.getTime()
+
+//   var startDate = date
+//   var endDate = date + program.duration*1000
+
+//   for(var i = 0;i<120;i++){
+//     //seed 120 segments from now till 120 segments from now, alternate sample videos
+
+//   }
+
+//   Timeslot.create({starttime:date, endtime:Math.ceil(date+program.duration*1000), recurring, channelId:req.params.channelId})
+//     .then((ts) => {
+//       return ts.setProgram(program)
+//     })
+//     .then(async (ts)=>{
+//       for(let i=0;i<(ts.endtime - ts.starttime)/1000;i++){
+//         var new_time = Math.floor((ts.starttime/1000) + i)
+//         var segment = await Segment.create({tkey:req.params.channelId + '' + new_time, progress:i, programId:program.id, timeslotId: ts.id, channelId:req.params.channelId})
+//       }
+//     })
+//     .then(()=>{
+//       res.json(ts)
+//     })
+//   .catch((err)=>{console.log(err)})
+// })
+
