@@ -21,7 +21,7 @@ export default class CastButton extends Component {
     console.log("INITIALIZE CAST PLAYER")
     var options = {};
 
-    options.receiverApplicationId = 'CC1AD845';
+    options.receiverApplicationId = '7EE53CCB';
     options.autoJoinPolicy = chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED;
     options.androidReceiverCompatible = true;
     cast.framework.CastContext.getInstance().setOptions(options);

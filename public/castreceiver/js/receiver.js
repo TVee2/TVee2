@@ -158,10 +158,10 @@ castDebugLogger.info(LOG_RECEIVER_TAG,
 //   cast.framework.ui.ControlsButton.QUEUE_NEXT
 // );
 
-// context.start({
-//   queue: new CastQueue(),
-//   playbackConfig: playbackConfig,
-//   supportedCommands: cast.framework.messages.Command.ALL_BASIC_MEDIA |
-//                       cast.framework.messages.Command.QUEUE_PREV |
-//                       cast.framework.messages.Command.QUEUE_NEXT
-// });
+context.start({
+  queue: new CastQueue(),
+  playbackConfig: playbackConfig,
+  supportedCommands: cast.framework.messages.Command.ALL_BASIC_MEDIA |
+                      cast.framework.messages.Command.QUEUE_PREV |
+                      cast.framework.messages.Command.QUEUE_NEXT
+});
