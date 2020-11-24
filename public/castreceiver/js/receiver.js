@@ -23,11 +23,6 @@ limitations under the License.
 
 import { CastQueue } from './queuing.js';
 
-const context = cast.framework.CastReceiverContext.getInstance();
-const playerManager = context.getPlayerManager();
-
-
-const LOG_RECEIVER_TAG = 'Receiver';
 
 /**
  * Debug Logger
@@ -41,6 +36,12 @@ const castDebugLogger = cast.debug.CastDebugLogger.getInstance();
  * top left corner.
  */
 castDebugLogger.setEnabled(true);
+
+const context = cast.framework.CastReceiverContext.getInstance();
+const playerManager = context.getPlayerManager();
+
+
+const LOG_RECEIVER_TAG = 'Receiver';
 
 /**
  * Uncomment below line to show debug overlay.
@@ -90,11 +91,14 @@ playerManager.addEventListener(
 playerManager.addEventListener(
   cast.framework.events.EventType.BUFFERING, (event) => {
     castDebugLogger.error("buffering");
+    let playerElement = document.getElementsByTagName("cast-media-player")[0];
+    playerElement.style.setProperty('--splash-image', 'url("/res/static.gif")');
 });
 
 playerManager.addEventListener(
   cast.framework.events.EventType.MEDIA_FINISHED, (event) => {
-    castDebugLogger.error("media finished");
+    let playerElement = document.getElementsByTagName("cast-media-player")[0];
+    playerElement.style.setProperty('--splash-image', 'url("/res/no-source.png")');
 });
 
 /**
