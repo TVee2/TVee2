@@ -8,7 +8,7 @@ var socket = io()
 export default class TV extends Component {
   constructor() {
     super()
-    this.state = {src: '', channel:null, progress: 0, init_loading:true, mute: true, loop: false, socket_error:false, comments:[]}
+    this.state = {src: '', channel:null, progress: null, init_loading:true, mute: true, loop: false, socket_error:false, comments:[]}
   }
 
   componentDidMount() {

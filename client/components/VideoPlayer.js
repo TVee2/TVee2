@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-
+import CastButton from './CastButton'
 export default class VideoPlayer extends Component {
   constructor(props) {
     super(props)
@@ -8,7 +8,8 @@ export default class VideoPlayer extends Component {
       empty: true,
       fill_time: false,
       init_loading:true,
-      vid:null
+      vid:null,
+      isCasting:false
     }
   }
 
@@ -73,7 +74,8 @@ export default class VideoPlayer extends Component {
       this.setState({fill_time:true, init_loading:false})
     }
 
-    if(this.props.progress!==Math.round(this.state.vid.currentTime)){
+    if(this.props.progress!==Math.round(this.state.vid.currentTime) && !!this.props.progress){
+
       console.log("unsynced, recorrecting...")
       this.state.vid.currentTime=this.props.progress
     }
@@ -98,18 +100,29 @@ export default class VideoPlayer extends Component {
     }
   }
 
+  switchPlayer = () => {console.log("switching player"); this.setState({isCasting:!this.state.isCasting})}
+
+
   render() {
     var hide_main = this.state.fill_time || !this.props.src
     var vis1
     var vis2
     var vis3
     var vis4
-
-    if(this.props.socketError){
-        vis1="hidden"
-        vis2="hidden"  
-        vis3="hidden"
+    var vis5
+    if(this.state.isCasting){
+      // vis1="hidden"
+      vis2="hidden"  
+      vis3="hidden"
+      vis4="hidden"
+      vis5="hidden"
+    }else if(this.props.socketError){
+      vis1="hidden"
+      vis2="hidden"  
+      vis3="hidden"
+      vis5="hidden"
     }else{
+       vis5="hidden"
        vis4="hidden"
       if(this.state.init_loading){
         vis1="hidden"
@@ -129,12 +142,13 @@ export default class VideoPlayer extends Component {
           <div id="vidcontainer" className="video-container" style={{display:"grid"}}>
             <img src="/static.gif" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis3}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis4}}></img>
+            <img src="/no_signal.png" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis5}}></img>
             <video
               style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1}}
               id="vid"
               src={this.props.src}
               autoPlay
-              muted={this.props.mute || hide_main}
+              muted={this.props.mute || hide_main || this.state.isCasting}
               loop={!this.props.src}
               controls={false}
             />
@@ -149,6 +163,7 @@ export default class VideoPlayer extends Component {
             <div>
               <button onClick={this.props.toggleMute}>mute</button>
               <button onClick={this.fullscreen}>fullscreen</button>
+              <CastButton switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
             </div>
             <div>Click anywhere for sound</div>
           </div>

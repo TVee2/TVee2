@@ -58,7 +58,6 @@ router
   Program.findOne({where:{title: vid_title}})
   .then((program) => {
     if(!program || !program.duration){
-      console.log(vid_title)
       res.sendStatus(400)
     }else{
       var startDate = date
