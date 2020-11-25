@@ -1,4 +1,8 @@
 make castable
+  make so can flick through channels
+  make so socket disconnect shows error
+
+
 
 make cheap client that functions through webrtc
 

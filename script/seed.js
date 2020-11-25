@@ -22,9 +22,9 @@ async function seed() {
   const video1 = await Video.create({quality: "420p", path: '/videos/test1.mp4', duration: 35, original:true})
   const video2 =  await Video.create({quality: "420p", path: '/videos/test2.mp4', duration: 30, original:true})
 
-  const program1 = await Program.create({title: 'wave', duration: 35, ad:false})
+  const program1 = await Program.create({title: 'city', duration: 35, ad:false})
   program1.addVideo(video1)
-  const program2 = await Program.create({title: 'city', duration: 30, ad:false, videoId:video2.id})
+  const program2 = await Program.create({title: 'wave', duration: 30, ad:false, videoId:video2.id})
   program2.addVideo(video2)
 
 

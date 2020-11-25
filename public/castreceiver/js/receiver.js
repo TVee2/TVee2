@@ -35,7 +35,7 @@ const castDebugLogger = cast.debug.CastDebugLogger.getInstance();
  * Uncomment below line to enable debug logger and show a 'DEBUG MODE' tag at
  * top left corner.
  */
-castDebugLogger.setEnabled(true);
+// castDebugLogger.setEnabled(true);
 
 const context = cast.framework.CastReceiverContext.getInstance();
 const playerManager = context.getPlayerManager();
@@ -109,6 +109,7 @@ playerManager.addEventListener( cast.framework.events.EventType.MEDIA_FINISHED, 
     let splash2 = document.getElementById("splash2")
     splash2.style.visibility = "hidden"
 });
+
 
 /**
  * Intercept the LOAD request to be able to read in a contentId and get data.

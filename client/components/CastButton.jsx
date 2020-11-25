@@ -40,12 +40,13 @@ export default class CastButton extends Component {
       cast.framework.RemotePlayerEventType.PLAYER_STATE_CHANGED,
       function (e) {
         if(e.value){
+          console.log("PLAYERSTATE", e.value)
           if(e.value==="PLAYING"){
             this.setState({playerState:e.value, castdebounce:false})
           }else if(e.value==="BUFFERING"){
             this.setState({playerState:e.value, castdebounce:true})
           }else{
-            this.setState({playerState:e.value})
+            this.setState({playerState:e.value, castdebounce:false})
           }
         }else{
           this.setState({isMediaLoaded:e.value}, () => {
@@ -62,6 +63,7 @@ export default class CastButton extends Component {
     if(!this.props.src || this.props.src==="no source"){
       return
     }
+    console.log("casting!")
     let mediaInfo = new chrome.cast.media.MediaInfo(1, 'video/mp4')
     mediaInfo.contentUrl = window.location.origin+this.props.src
 
@@ -87,13 +89,29 @@ export default class CastButton extends Component {
     }
   }
 
+  stopSrc = () => {
+    var session = cast.framework.CastContext.getInstance().getCurrentSession()
+    if(session){
+      console.log("sending disconnect")
+      this.remotePlayerController.stop()
+    }
+  }
+
   componentDidUpdate(prevProps, prevState){
     if(this.state.castdebounce){
+    console.log(1)
       return
     }
 
     if(this.state.playerState=="BUFFERING"){
+          console.log(2)
+
       return
+    }
+
+    if(this.props.socketError){
+      console.log("attempt to stop")
+      this.stopSrc()
     }
 
     var remote_time = this.remotePlayer?this.remotePlayer.currentTime:null
@@ -102,14 +120,14 @@ export default class CastButton extends Component {
       this.remotePlayerController.seek()
     }
 
-    if(this.state.playerState=="IDLE" && this.state.isConnected && this.remotePlayer.mediaInfo && this.remotePlayer.mediaInfo.contentUrl!==window.location.origin+this.props.src) {
+    if(!this.props.socketError && this.state.playerState=="IDLE" && this.state.isConnected && this.remotePlayer.mediaInfo && this.remotePlayer.mediaInfo.contentUrl!==window.location.origin+this.props.src) {
       //media is loaded but local is different or null
       this.setState({castdebounce:true}, () => {
         this.castSrc()
       })
     }
 
-    if(this.state.playerState=="IDLE" && this.state.isConnected && !this.remotePlayer.mediaInfo && this.props.src && this.props.src!=="no source") {
+    if(!this.props.socketError && this.state.playerState=="IDLE" && this.state.isConnected && !this.remotePlayer.mediaInfo && this.props.src && this.props.src!=="no source") {
       //no media loaded, but there is local src
       this.setState({castdebounce:true}, () => {
         this.castSrc()

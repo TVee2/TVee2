@@ -164,7 +164,7 @@ export default class VideoPlayer extends Component {
             <div>
               <button onClick={this.props.toggleMute}>mute</button>
               <button onClick={this.fullscreen}>fullscreen</button>
-              <CastButton segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
+              <CastButton socketError={this.props.socketError} segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
             </div>
             <div>Click anywhere for sound</div>
           </div>
