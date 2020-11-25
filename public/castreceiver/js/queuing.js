@@ -77,6 +77,14 @@ class CastQueue extends cast.framework.QueueBase {
         item.media = loadRequestData.media;
         queueData.items = [item];
       }
+
+      let castplayer = document.getElementsByTagName("cast-media-player")[0]
+      castplayer.style.visibility = "hidden"
+      let splash1 = document.getElementById("splash1")
+      splash1.style.visibility = "hidden"
+      let splash2 = document.getElementById("splash2")
+      splash2.style.visibility = ""
+
       return queueData;
     }
  }

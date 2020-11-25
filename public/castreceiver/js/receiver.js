@@ -84,24 +84,30 @@ playerManager.addEventListener(
 });
 
 playerManager.addEventListener( cast.framework.events.EventType.PLAYING, (event) => {
-    let castplayer = document.getElementsById("castplayer")
+    let castplayer = document.getElementsByTagName("cast-media-player")[0]
     castplayer.style.visibility = ""
-    let splash = document.getElementsById("splash")
-    splash.style.visibility = "hidden"
+    let splash1 = document.getElementById("splash1")
+    splash1.style.visibility = "hidden"
+    let splash2 = document.getElementById("splash2")
+    splash2.style.visibility = "hidden"
 });
 
-playerManager.addEventListener( cast.framework.events.EventType.BUFFERING, (event) => {
-    let castplayer = document.getElementsById("castplayer")
+playerManager.addEventListener( cast.framework.events.EventType.LOAD_START, (event) => {
+    let castplayer = document.getElementsByTagName("cast-media-player")[0]
     castplayer.style.visibility = "hidden"
-    let splash = document.getElementsById("splash")
-    splash.style.visibility = ""
+    let splash1 = document.getElementById("splash1")
+    splash1.style.visibility = "hidden"
+    let splash2 = document.getElementById("splash2")
+    splash2.style.visibility = ""
 });
 
 playerManager.addEventListener( cast.framework.events.EventType.MEDIA_FINISHED, (event) => {
-    let castplayer = document.getElementsById("castplayer")
+    let castplayer = document.getElementsByTagName("cast-media-player")[0]
     castplayer.style.visibility = "hidden"
-    let splash = document.getElementsById("splash")
-    splash.style.visibility = ""
+    let splash1 = document.getElementById("splash1")
+    splash1.style.visibility = ""
+    let splash2 = document.getElementById("splash2")
+    splash2.style.visibility = "hidden"
 });
 
 /**

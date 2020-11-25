@@ -18,10 +18,9 @@ export default class CastButton extends Component {
   }
 
   initializeCastPlayer = () => {
-    console.log("INITIALIZE CAST PLAYER")
     var options = {};
 
-    options.receiverApplicationId = '7EE53CCB';
+    options.receiverApplicationId = '4C5553E4';
     options.autoJoinPolicy = chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED;
     options.androidReceiverCompatible = true;
     cast.framework.CastContext.getInstance().setOptions(options);
@@ -32,7 +31,6 @@ export default class CastButton extends Component {
       cast.framework.RemotePlayerEventType.IS_CONNECTED_CHANGED,
       function (e) {
         this.setState({isConnected:e.value}, () => {
-          console.log("set is connected to", this.state.isConnected)
         })
         //setstate !iscasting
         this.props.switchPlayer(e.value);
@@ -49,12 +47,8 @@ export default class CastButton extends Component {
           }else{
             this.setState({playerState:e.value})
           }
-          console.log("!!!! PLAYER STATE CHANGED", e.value)
-          // console.log("!!!$$$$$  set media loaded to true and removed debounce")
-          // this.setState({isMediaLoaded:e.value, castdebounce:false}, () => {console.log("set media loaded to true and removed debounce")})
         }else{
           this.setState({isMediaLoaded:e.value}, () => {
-            console.log("set media loaded to ", this.state.isMediaLoaded)
           })
         }
         this.props.switchPlayer(e.value);
@@ -69,18 +63,13 @@ export default class CastButton extends Component {
       return
     }
     let mediaInfo = new chrome.cast.media.MediaInfo(1, 'video/mp4')
-    console.log("CASTING...")
     mediaInfo.contentUrl = window.location.origin+this.props.src
 
     // mediaInfo.contentUrl = window.location.origin+this.props.src
 
     mediaInfo.streamType = chrome.cast.media.StreamType.LIVE;
     mediaInfo.metadata = new chrome.cast.media.TvShowMediaMetadata();
-    mediaInfo.metadata.title = "test title";
-    mediaInfo.metadata.subtitle = "test subtitle";
-    mediaInfo.metadata.images = [{
-      'url': "./no_signal.png"
-    }];
+    mediaInfo.metadata.title = this.props.segment.program.title;
 
     let request
     // if(!this.props.src || this.props.src=="no source"){
@@ -94,7 +83,6 @@ export default class CastButton extends Component {
     var session = cast.framework.CastContext.getInstance().getCurrentSession()
     if(session){
       session.loadMedia(request).then(() => {
-        console.log("media loaded?")
       }).catch((e) => {console.log(e)})
     }
   }
@@ -116,7 +104,6 @@ export default class CastButton extends Component {
 
     if(this.state.playerState=="IDLE" && this.state.isConnected && this.remotePlayer.mediaInfo && this.remotePlayer.mediaInfo.contentUrl!==window.location.origin+this.props.src) {
       //media is loaded but local is different or null
-      console.log("potential castSrc 1 ", this.remotePlayer.mediaInfo?this.remotePlayer.mediaInfo.contentUrl:null, window.location.origin+this.props.src)
       this.setState({castdebounce:true}, () => {
         this.castSrc()
       })
@@ -124,7 +111,6 @@ export default class CastButton extends Component {
 
     if(this.state.playerState=="IDLE" && this.state.isConnected && !this.remotePlayer.mediaInfo && this.props.src && this.props.src!=="no source") {
       //no media loaded, but there is local src
-      console.log("potential castSrc 2", this.remotePlayer.mediaInfo?this.remotePlayer.mediaInfo.contentUrl:null, window.location.origin+this.props.src)
       this.setState({castdebounce:true}, () => {
         this.castSrc()
       })

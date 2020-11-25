@@ -8,7 +8,7 @@ var socket = io()
 export default class TV extends Component {
   constructor() {
     super()
-    this.state = {src: '', channel:null, progress: null, init_loading:true, mute: true, loop: false, socket_error:false, comments:[]}
+    this.state = {segment:null, src: '', channel:null, progress: null, init_loading:true, mute: true, loop: false, socket_error:false, comments:[]}
   }
 
   componentDidMount() {
@@ -45,7 +45,7 @@ export default class TV extends Component {
           }else{
             var src = segment.program.videos[0].path
             var {progress} = segment
-            this.setState({src, progress})
+            this.setState({src, progress, segment})
           }
         })
       })
@@ -78,6 +78,7 @@ export default class TV extends Component {
           socketError={this.state.socket_error}
           mute={this.state.mute}
           loop={this.state.loop}
+          segment={this.state.segment}
         />
         <Chat
           {...this.props}

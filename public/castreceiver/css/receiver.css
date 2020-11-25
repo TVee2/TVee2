@@ -21,7 +21,7 @@ body {
 cast-media-player {
   --theme-hue: 180;
   --progress-color: rgb(0, 255, 255);
-  --splash-image: url('res/static.gif');
+  --splash-image: url('res/no_source.png');
   --splash-size: cover;
 }
 
@@ -41,14 +41,22 @@ cast-media-player:after {
   opacity: 0.5;
   color: red;
 }
-#splash{
-  background-image: url('/castreceiver/res/static.gif');
+
+.splash{
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   position:absolute;
   text-align: center;
   font-size: 44px;
-  height:400px;
+  height:100%;
   width:100%;
+}
+
+#splash1{
+  background-image: url('/castreceiver/res/no_source.png');
+}
+
+#splash2{
+  background-image: url('/castreceiver/res/static.gif');
 }
