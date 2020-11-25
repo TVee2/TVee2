@@ -83,22 +83,25 @@ playerManager.addEventListener(
     }
 });
 
-playerManager.addEventListener(
-  cast.framework.events.EventType.PLAYING, (event) => {
-    castDebugLogger.error("playing");
+playerManager.addEventListener( cast.framework.events.EventType.PLAYING, (event) => {
+    let castplayer = document.getElementsById("castplayer")
+    castplayer.style.visibility = ""
+    let splash = document.getElementsById("splash")
+    splash.style.visibility = "hidden"
 });
 
-playerManager.addEventListener(
-  cast.framework.events.EventType.BUFFERING, (event) => {
-    castDebugLogger.error("buffering");
-    let playerElement = document.getElementsByTagName("cast-media-player")[0];
-    playerElement.style.setProperty('--splash-image', 'url("/res/static.gif")');
+playerManager.addEventListener( cast.framework.events.EventType.BUFFERING, (event) => {
+    let castplayer = document.getElementsById("castplayer")
+    castplayer.style.visibility = "hidden"
+    let splash = document.getElementsById("splash")
+    splash.style.visibility = ""
 });
 
-playerManager.addEventListener(
-  cast.framework.events.EventType.MEDIA_FINISHED, (event) => {
-    let playerElement = document.getElementsByTagName("cast-media-player")[0];
-    playerElement.style.setProperty('--splash-image', 'url("/res/no-source.png")');
+playerManager.addEventListener( cast.framework.events.EventType.MEDIA_FINISHED, (event) => {
+    let castplayer = document.getElementsById("castplayer")
+    castplayer.style.visibility = "hidden"
+    let splash = document.getElementsById("splash")
+    splash.style.visibility = ""
 });
 
 /**

@@ -41,3 +41,14 @@ cast-media-player:after {
   opacity: 0.5;
   color: red;
 }
+#splash{
+  background-image: url('/castreceiver/res/static.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position:absolute;
+  text-align: center;
+  font-size: 44px;
+  height:400px;
+  width:100%;
+}
