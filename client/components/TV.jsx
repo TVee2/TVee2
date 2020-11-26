@@ -8,7 +8,7 @@ var socket = io()
 export default class TV extends Component {
   constructor() {
     super()
-    this.state = {segment:null, src: '', channel:null, progress: null, init_loading:true, mute: true, loop: false, socket_error:false, comments:[]}
+    this.state = {segment:null, showChannelId:false, src: '', channel:null, progress: null, init_loading:true, mute: true, loop: false, socket_error:false, comments:[]}
   }
 
   componentDidMount() {
@@ -38,7 +38,10 @@ export default class TV extends Component {
   getChannel = () => {
     axios.get(`/api/channels/${this.props.match.params.channelId}`)
     .then((res) => {
-      this.setState({channel:res.data}, () => {
+      this.setState({channel:res.data, showChannelId:true}, () => {
+        setTimeout(() => {
+          this.setState({showChannelId:false})
+        }, 1500)
         socket.on(this.state.channel.name, segment => {
           if(!segment||!segment.program||!segment.program.videos.length===0||!segment.program.videos[0].path){
             this.setState({src:"no source"})
@@ -71,6 +74,7 @@ export default class TV extends Component {
   render() {
     return (
       <div>
+        {this.state.showChannelId?<div style={{position:"absolute", color:"greenyellow", zIndex:"2", fontSize:"64px", margin:"15px"}}>{this.state.channel?this.state.channel.id:null}</div>:null}
         <VideoPlayer
           src={this.state.src}
           progress={this.state.progress}

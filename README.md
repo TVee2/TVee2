@@ -1,12 +1,10 @@
 make castable
   make so can flick through channels
-  make so socket disconnect shows error
+  when casting put cast cover over vid player
 
-
+make entrance cover with asci art of shellos?
 
 make cheap client that functions through webrtc
-
-make channels/ can reach channel with just url
 
 make channel agregator
 

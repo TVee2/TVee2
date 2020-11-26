@@ -110,13 +110,13 @@ export default class VideoPlayer extends Component {
     var vis3
     var vis4
     var vis5
-    // if(this.state.isCasting){
-    //   // vis1="hidden"
-    //   vis2="hidden"  
-    //   vis3="hidden"
-    //   vis4="hidden"
-    //   vis5="hidden"
-    // }else 
+    if(this.state.isCasting){
+      // vis1="hidden"
+      vis2="hidden"  
+      vis3="hidden"
+      vis4="hidden"
+      vis5="hidden"
+    }else 
     if(this.props.socketError){
       vis1="hidden"
       vis2="hidden"  
@@ -162,8 +162,8 @@ export default class VideoPlayer extends Component {
               controls={false}
             />
             <div>
-              <button onClick={this.props.toggleMute}>mute</button>
-              <button onClick={this.fullscreen}>fullscreen</button>
+              {this.props.mute?<button className="videobutton unmute" onClick={this.props.toggleMute}></button>:<button className="videobutton mute" onClick={this.props.toggleMute}></button>}
+              <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
               <CastButton socketError={this.props.socketError} segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
             </div>
             <div>Click anywhere for sound</div>

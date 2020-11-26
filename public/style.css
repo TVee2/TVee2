@@ -25,12 +25,37 @@ form div {
   margin: 10px 6px 14px 0px;
   width: 40px;
   height: 32px;
-  opacity: 0.7;
+  opacity: 0.9;
   border: none;
   outline: none;
-}
-
-#castbutton:hover {
+  background-size:cover;
+  background-image: url('./icons/cast.png');
   --disconnected-color: white;
   --connected-color: white;
+}
+
+.videobutton{
+  height: 40px;
+  width: 40px;
+  background-color: white;
+  background-size: cover;
+  display:inline-block;
+  margin: 10px 14px;
+  border-radius:5px;
+}
+
+.cast{
+  background-image: url('./icons/cast.png')
+}
+
+.mute{
+  background-image: url('./icons/mute.png')
+}
+
+.unmute{
+  background-image: url('./icons/unmute.png')
+}
+
+.fullscreen{
+  background-image: url('./icons/fullscreen.png')
 }

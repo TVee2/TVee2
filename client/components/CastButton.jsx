@@ -32,7 +32,6 @@ export default class CastButton extends Component {
       function (e) {
         this.setState({isConnected:e.value}, () => {
         })
-        //setstate !iscasting
         this.props.switchPlayer(e.value);
       }.bind(this)
     );
@@ -40,7 +39,6 @@ export default class CastButton extends Component {
       cast.framework.RemotePlayerEventType.PLAYER_STATE_CHANGED,
       function (e) {
         if(e.value){
-          console.log("PLAYERSTATE", e.value)
           if(e.value==="PLAYING"){
             this.setState({playerState:e.value, castdebounce:false})
           }else if(e.value==="BUFFERING"){
@@ -63,25 +61,17 @@ export default class CastButton extends Component {
     if(!this.props.src || this.props.src==="no source"){
       return
     }
-    console.log("casting!")
     let mediaInfo = new chrome.cast.media.MediaInfo(1, 'video/mp4')
     mediaInfo.contentUrl = window.location.origin+this.props.src
 
-    // mediaInfo.contentUrl = window.location.origin+this.props.src
 
     mediaInfo.streamType = chrome.cast.media.StreamType.LIVE;
     mediaInfo.metadata = new chrome.cast.media.TvShowMediaMetadata();
     mediaInfo.metadata.title = this.props.segment.program.title;
 
-    let request
-    // if(!this.props.src || this.props.src=="no source"){
-    //   request = new chrome.cast.media.StopRequest()
-    // }else{
-      request = new chrome.cast.media.LoadRequest(mediaInfo);
-      request.autoplay = true;
-      request.currentTime = this.currentMediaTime;
-    // }
-
+    let request = new chrome.cast.media.LoadRequest(mediaInfo);
+    request.autoplay = true;
+    request.currentTime = this.currentMediaTime;
     var session = cast.framework.CastContext.getInstance().getCurrentSession()
     if(session){
       session.loadMedia(request).then(() => {
@@ -92,25 +82,20 @@ export default class CastButton extends Component {
   stopSrc = () => {
     var session = cast.framework.CastContext.getInstance().getCurrentSession()
     if(session){
-      console.log("sending disconnect")
       this.remotePlayerController.stop()
     }
   }
 
   componentDidUpdate(prevProps, prevState){
     if(this.state.castdebounce){
-    console.log(1)
       return
     }
 
     if(this.state.playerState=="BUFFERING"){
-          console.log(2)
-
       return
     }
 
     if(this.props.socketError){
-      console.log("attempt to stop")
       this.stopSrc()
     }
 
@@ -137,9 +122,9 @@ export default class CastButton extends Component {
   }
 
   render() {
+        // <button onClick={this.castSrc}>load media</button>
     return (
       <div>
-        <button onClick={this.castSrc}>load media</button>
         <google-cast-launcher id="castbutton">Cast</google-cast-launcher>
       </div>
     )
