@@ -124,7 +124,7 @@ export default class CastButton extends Component {
   render() {
         // <button onClick={this.castSrc}>load media</button>
     return (
-      <div>
+      <div style={{display:"inline"}}>
         <google-cast-launcher id="castbutton">Cast</google-cast-launcher>
       </div>
     )

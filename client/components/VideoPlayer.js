@@ -69,13 +69,12 @@ export default class VideoPlayer extends Component {
       this.setState({init_loading:true})
     }
 
-    if(this.props.src==="no source" && (!this.state.fill_time || this.state.init_loading)){
+    if(this.props.src==="no source" && (!this.state.fill_time || this.state.init_loading && this.props.emitterChannelId == this.props.match.params.channelId)){
       console.log("no source")
       this.setState({fill_time:true, init_loading:false})
     }
 
     if(this.props.progress!==Math.round(this.state.vid.currentTime) && !!this.props.progress){
-
       console.log("unsynced, recorrecting...")
       this.state.vid.currentTime=this.props.progress
     }
@@ -102,6 +101,15 @@ export default class VideoPlayer extends Component {
 
   switchPlayer = () => {console.log("switching player"); this.setState({isCasting:!this.state.isCasting})}
 
+  upChannel= () => {
+    this.props.incrementChannel()
+    this.setState({init_loading:true}, ()=>{console.log(this.state.init_loading)})
+  }
+
+  downChannel= () => {
+    this.props.decrementChannel()
+    this.setState({init_loading:true}, ()=>{console.log(this.state.init_loading)})
+  }
 
   render() {
     var hide_main = this.state.fill_time || !this.props.src
@@ -111,15 +119,14 @@ export default class VideoPlayer extends Component {
     var vis4
     var vis5
     if(this.state.isCasting){
-      // vis1="hidden"
-      vis2="hidden"  
+      vis1="hidden"
+      vis2="hidden"
       vis3="hidden"
       vis4="hidden"
-      vis5="hidden"
     }else 
     if(this.props.socketError){
       vis1="hidden"
-      vis2="hidden"  
+      vis2="hidden"
       vis3="hidden"
       vis5="hidden"
     }else{
@@ -149,7 +156,7 @@ export default class VideoPlayer extends Component {
               id="vid"
               src={this.props.src}
               autoPlay
-              muted={this.props.mute || hide_main || this.state.isCasting}
+              muted={this.props.mute || hide_main || this.state.isCasting || this.state.init_loading}
               loop={!this.props.src}
               controls={false}
             />
@@ -164,6 +171,10 @@ export default class VideoPlayer extends Component {
             <div>
               {this.props.mute?<button className="videobutton unmute" onClick={this.props.toggleMute}></button>:<button className="videobutton mute" onClick={this.props.toggleMute}></button>}
               <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
+              <div>
+                <button onClick={this.upChannel} >channel up</button>
+                <button onClick={this.downChannel} >channel down</button>   
+              </div>     
               <CastButton socketError={this.props.socketError} segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
             </div>
             <div>Click anywhere for sound</div>

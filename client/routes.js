@@ -7,14 +7,29 @@ import TV from './components/TV'
 import Scheduler from './components/Scheduler'
 import {me} from './store'
 import ChannelBrowse from './components/ChannelBrowse'
+import axios from 'axios'
 
 /**
  * COMPONENT
  */
 
 class Routes extends Component {
+  constructor() {
+    super()
+
+    this.state = {channels:[]}
+  }
+
   componentDidMount() {
     this.props.loadInitialData()
+    this.getChannels()
+  }
+
+  getChannels = () => {
+    axios.get('/api/channels')
+   .then((ret) => {
+      this.setState({channels:ret.data})
+    })
   }
 
   render() {
@@ -23,10 +38,13 @@ class Routes extends Component {
       <Switch>
         {/* Routes placed here are available to all visitors */}
         <Route path="/tv/:channelId" render={(props) => (
-            <TV  {...props} user={this.props.user}/>
+            <TV  {...props} channels={this.state.channels} user={this.props.user}/>
           )}
         />
-        <Route path="/tvbrowse" component={ChannelBrowse} />
+        <Route path="/tvbrowse" render={(props) => (
+            <ChannelBrowse channels={this.state.channels}/>
+          )}
+        />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         {isLoggedIn && (

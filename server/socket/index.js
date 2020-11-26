@@ -27,7 +27,7 @@ module.exports = io => {
           var srctag = Math.floor(new Date().valueOf()/1000)
           Segment.findByPk(channel.id + '' + srctag, {include: [{model:Program, include:{model:Video}}]})
           .then((segment)=>{
-            io.emit(channel.name, segment)
+            io.emit(channel.id, segment)
           })
         },
         null,
