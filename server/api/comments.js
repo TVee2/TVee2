@@ -30,7 +30,7 @@ router
   .then((comment) => {
     Comment.findByPk(comment.id, {include:[{model:User}]})
     .then((comment)=>{
-      io.emit('comment', comment)
+      io.emit(`c${comment.channelId}`, comment)
       res.status(201).json(comment)
     })
   })

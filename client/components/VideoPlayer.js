@@ -123,8 +123,7 @@ export default class VideoPlayer extends Component {
       vis2="hidden"
       vis3="hidden"
       vis4="hidden"
-    }else 
-    if(this.props.socketError){
+    }else if(this.props.socketError){
       vis1="hidden"
       vis2="hidden"
       vis3="hidden"

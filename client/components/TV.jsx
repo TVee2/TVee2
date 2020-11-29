@@ -29,18 +29,7 @@ export default class TV extends Component {
 
   componentDidMount() {
     this.getChannel()
-    socket.on('comment', comment => {
-      this.setState({comments: [comment, ...this.state.comments]}, () => {
-        var div = document.getElementById("commentcontainer");
-        div.scrollTop = div.scrollHeight - div.clientHeight;
-      })
-    })
-    socket.on('connect_error', () => {
-      this.setState({socket_error:true, src:'', progress:0})
-    })
-    socket.on('connect', () => {
-      this.setState({socket_error:false})
-    })
+    // this.getComments()
   }
 
   toggleMute = () => {
@@ -55,6 +44,7 @@ export default class TV extends Component {
     if(!channelId){
       channelId = this.props.match.params.channelId
     }
+    this.getComments(channelId)
     axios.get(`/api/channels/${channelId}`)
     .then((res) => {
       this.setState({channel:res.data, showChannelId:true}, () => {
@@ -69,6 +59,18 @@ export default class TV extends Component {
             var {progress} = segment
             this.setState({src, progress, emitterChannelId:this.state.channel.id, segment})
           }
+        })
+        socket.on(`c${this.state.channel.id}`, comment => {
+          this.setState({comments: [comment, ...this.state.comments]}, () => {
+            var div = document.getElementById("commentcontainer");
+            div.scrollTop = div.scrollHeight - div.clientHeight;
+          })
+        })
+        socket.on('connect_error', () => {
+          this.setState({socket_error:true, src:'', progress:0})
+        })
+        socket.on('connect', () => {
+          this.setState({socket_error:false})
         })
       })
     })

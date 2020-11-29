@@ -22,9 +22,9 @@ export default class App extends React.Component {
     this.setState({value: ''})
   }
 
-  componentDidMount() {
-    this.props.getComments(this.props.channelId)
-  }
+  // componentDidMount() {
+  //   this.props.getComments(this.props.channelId)
+  // }
 
   addComment = (obj) => {
     axios.post(`/api/comments`, obj)
@@ -33,11 +33,11 @@ export default class App extends React.Component {
     })
   }
 
-  componentDidUpdate(prevProps, prevState){
-    if(prevProps.channelId !== this.props.channelId){
-      this.props.getComments(this.props.channelId)
-    }
-  }
+  // componentDidUpdate(prevProps, prevState){
+  //   if(prevProps.channelId !== this.props.channelId){
+  //     this.props.getComments(this.props.channelId)
+  //   }
+  // }
 
   render() {
     let list = this.props.comments.slice().reverse()
