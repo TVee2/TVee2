@@ -33,6 +33,12 @@ export default class App extends React.Component {
     })
   }
 
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.channelId !== this.props.channelId){
+      this.props.getComments(this.props.channelId)
+    }
+  }
+
   render() {
     let list = this.props.comments.slice().reverse()
     const user = this.props.user
