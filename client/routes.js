@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import {Login, Signup, UserHome} from './components'
 import TV from './components/TV'
 import Scheduler from './components/Scheduler'
+import Entrance from './components/Entrance'
 import {me} from './store'
 import ChannelBrowse from './components/ChannelBrowse'
 import axios from 'axios'
@@ -37,6 +38,7 @@ class Routes extends Component {
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
+        <Route path="/entrance" component={Entrance} />
         <Route path="/tv/:channelId" render={(props) => (
             <TV  {...props} channels={this.state.channels} user={this.props.user}/>
           )}
