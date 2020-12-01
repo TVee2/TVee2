@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import CastButton from './CastButton'
+import Entrance from './Entrance'
+
 export default class VideoPlayer extends Component {
   constructor(props) {
     super(props)
@@ -147,11 +149,12 @@ export default class VideoPlayer extends Component {
     return (
       <div style={{width:"640px", height:"360px", display:"inline-block", position:"absolute"}}>
           <div id="vidcontainer" className="video-container" style={{display:"grid"}}>
+            {!this.state.dirty?<Entrance onClick={this.hideCover}/>:null}
             <img src="/static.gif" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis3}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis4}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis5}}></img>
             <video
-              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1}}
+              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1, margin:0, position:"absolute", top:"50%", transform: "translateY(-50%)"}}
               id="vid"
               src={this.props.src}
               autoPlay

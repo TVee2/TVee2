@@ -1,9 +1,11 @@
 import React, {Component} from 'react'
 import VideoPlayer from './VideoPlayer'
 import Chat from './Chat'
+import Entrance from './Entrance'
 import axios from 'axios'
 import io from 'socket.io-client'
 import history from '../history'
+
 var socket = io()
 
 export default class TV extends Component {
@@ -24,6 +26,7 @@ export default class TV extends Component {
       socket_error:false,
       comments:[],
       emitterChannelId:null,
+      showCover:true
     }
   }
 
@@ -131,7 +134,11 @@ export default class TV extends Component {
     history.push(`/tv/${prevChannel}`)
     socket.off()
     this.getChannel(prevChannel)
-  }  
+  }
+
+  hideCover = () => {
+    this.setState({showCover:false})
+  }
 
   render() {
     return (

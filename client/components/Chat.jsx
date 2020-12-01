@@ -65,7 +65,7 @@ export default class App extends React.Component {
           <input type="text" style={{width:"100%"}} className="comment-input" name="comment" placeholder="Submit a Comment!" value={this.state.value} onChange={this.handleFormChange}/>
           <br/>
         </form>
-        :<h3>User is logged out and unable to post & upvote but can view</h3>
+        :<h3>Login to chat</h3>
         }
       </div>
     )
