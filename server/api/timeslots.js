@@ -46,15 +46,13 @@ router
 })
 
 .post('/:channelId', (req, res, next) => {
-  var {vid_title, date, hr, min, sec, recurring} = req.body
-  var date = new Date(date)
+  var {vid_title, date, recurring} = req.body
+  var date = new Date(date).getTime()
   var now = new Date()
   if(recurring==="dailyrecurring"){
     date = new Date()
   }
 
-  date.setHours(hr, min, sec)
-  var date = date.getTime()
   Program.findOne({where:{title: vid_title}})
   .then((program) => {
     if(!program || !program.duration){

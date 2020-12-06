@@ -49,9 +49,10 @@ export default class Scheduler extends Component {
     var min = document.getElementById("min").value
     var sec = document.getElementById("sec").value
     var vid_title = document.getElementById("vid").value
-    
+    var startdate = this.state.startdate.setHours(hr, min, sec)
+
     this.setState({timeslotuploadloading:true})
-    axios.post(`/api/timeslots/${this.state.selectedChannelId}`, {vid_title, date: this.state.startdate, hr, min, sec, recurring})
+    axios.post(`/api/timeslots/${this.state.selectedChannelId}`, {vid_title, date: this.state.startdate, recurring})
     .then((res) => {
       this.setState({timeslotuploadloading:false}, () => {
         this.getChannelSchedule()
@@ -86,7 +87,6 @@ export default class Scheduler extends Component {
           formData.append(k, v);
         });
         formData.set('key', key)
-        console.log(upload.size)
         formData.append('file', this.state.uploads[0])
         axios
           .post(res.data.path.url, formData, {
