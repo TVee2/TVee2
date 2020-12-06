@@ -1,5 +1,6 @@
 var CronJob = require('cron').CronJob
 const {User, Segment, Schedule, Program, Video, Channel, Timeslot} = require('../db/models')
+const {Op} = require('sequelize')
 
 const AWS = require('aws-sdk');
 const AWS_ID = process.env.AWS_ID
@@ -18,6 +19,8 @@ module.exports = io => {
     new CronJob(
     '0 23 * * * *',
     () => {
+      Segment.destroy({where: {time:{[Op.lt]:new Date().getTime()}}})
+
       Timeslot.findAll({where: {recurring: "dailyrecurring"}, include: {model: Program}})
       .then(async (ts) => {
         for(let i=0;i<Math.ceil((ts.endtime - ts.starttime)/1000);i++){

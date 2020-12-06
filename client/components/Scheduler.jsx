@@ -39,6 +39,13 @@ export default class Scheduler extends Component {
     })
   }
 
+  bombsegments = () => {
+    axios.delete('/api/timeslots/all')
+   .then((ret) => {
+      this.setState({channels:ret.data})
+    })
+  }
+
   timeslotSubmitHandler = (e) => {
     if(!this.state.selectedChannelId){
       return
@@ -134,7 +141,6 @@ export default class Scheduler extends Component {
   }
 
   render() {
-    console.log(!!this.state.isUploading)
     return (
       <div>
         <div>Create a channel</div>
@@ -144,7 +150,8 @@ export default class Scheduler extends Component {
         </form>
         <br />
         <br/><br/>
-
+        <button onClick={this.bombsegments}>segment destroy</button>
+        <br/><br/><br/><br/>
         {!this.state.isUploading?
         (<div>Upload Video
         <form onSubmit={this.videoSubmit}>

@@ -8,6 +8,9 @@ module.exports = db.define('segment', {
     type: Sequelize.STRING,
     allowNull: false
   },
+  time: {
+    type: Sequelize.BIGINT,
+  },
   progress:{
     type: Sequelize.INTEGER,
   },
