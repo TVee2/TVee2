@@ -20,7 +20,7 @@ export default class CastButton extends Component {
   initializeCastPlayer = () => {
     var options = {};
 
-    options.receiverApplicationId = '4C5553E4';
+    options.receiverApplicationId = '3C992430';
     options.autoJoinPolicy = chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED;
     options.androidReceiverCompatible = true;
     cast.framework.CastContext.getInstance().setOptions(options);
@@ -124,7 +124,7 @@ export default class CastButton extends Component {
   render() {
     return (
       <div style={{display:"inline"}}>
-        <google-cast-launcher id="castbutton">Cast</google-cast-launcher>
+        <google-cast-launcher id="castbutton"></google-cast-launcher>
       </div>
     )
   }

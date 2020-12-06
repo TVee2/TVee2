@@ -154,7 +154,7 @@ export default class VideoPlayer extends Component {
     }
 
     return (
-      <div style={{width:"640px", height:"360px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
+      <div style={{width:this.props.vidWidth?this.props.vidWidth:"640px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
           <div id="vidcontainer" className="video-container" style={{display:"grid"}}>
             {!this.state.dirty?<Entrance onClick={this.hideCover}/>:null}
             <img src="/static.gif" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis3}}></img>
@@ -178,7 +178,7 @@ export default class VideoPlayer extends Component {
               loop={true}
               controls={false}
             />
-            <div>
+            <div style={{backgroundColor:"white"}}>
               {this.props.mute?<button className="videobutton unmute" onClick={this.props.toggleMute}></button>:<button className="videobutton mute" onClick={this.props.toggleMute}></button>}
               <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
               <div>
@@ -187,7 +187,7 @@ export default class VideoPlayer extends Component {
               </div>
               <CastButton socketError={this.props.socketError} segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
             </div>
-            <div>Click anywhere for sound</div>
+            <div style={{backgroundColor:"white"}}>Click anywhere for sound</div>
           </div>
       </div>
     )

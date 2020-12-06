@@ -148,21 +148,22 @@ _/|_/|_/|__  _/_/|_/|__~__/_/|_/|_/|_/|_/|_
 
   componentDidMount() {
     let i = 0
+    let interval = 400
     var pre = document.getElementById("pre")
     var post = document.getElementById("post")
     post.innerHTML = "Initializing..."; this.forceUpdate();
     while(i<this.frames.length){
       var func = (x) => {pre.innerHTML = this.frames[x]; this.forceUpdate(); }
-      setTimeout(func.bind(this, i), i*400)
+      setTimeout(func.bind(this, i), i*interval)
       i++
     }
 
-    setTimeout(() => {post.innerHTML = "Click anywhere to continue."; this.forceUpdate();}, this.frames.length*700)
+    setTimeout(() => {post.innerHTML = "Click anywhere to continue."; this.forceUpdate();}, this.frames.length*interval)
   }
 
   render() {
     return (
-      <div style={{width: '100%', gridColumn:"1", gridRow:"1", zIndex:"2", backgroundColor:"white"}}>
+      <div style={{width: '100%', padding:"15px", gridColumn:"1", gridRow:"1", zIndex:"2", backgroundColor:"white"}}>
         <pre id="pre"></pre>
         <pre id="post"></pre>
       </div>

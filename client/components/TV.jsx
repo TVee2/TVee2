@@ -26,12 +26,37 @@ export default class TV extends Component {
       socket_error:false,
       comments:[],
       emitterChannelId:null,
-      showCover:true
+      showCover:true,
+      collapse:false,
+      showChat:false,
+      vidWidth:null
     }
   }
 
   componentDidMount() {
     this.getChannel()
+    if(window.innerWidth>1000){
+        this.setState({collapse:false})
+    }
+    if(window.innerWidth<=1000){
+      this.setState({collapse:true})
+    }
+    if(window.innerWidth<=640){
+      this.setState({vidWidth:window.innerWidth})
+    }
+    window.addEventListener("resize", () => {
+      if(window.innerWidth>=1000){
+        this.setState({collapse:false})
+      }
+      if(window.innerWidth<1000){
+        this.setState({collapse:true})
+      }
+      if(window.innerWidth<=640){
+        this.setState({vidWidth:window.innerWidth})
+      }else{
+        this.setState({vidWidth:null})
+      }
+    });
   }
 
   toggleMute = () => {
@@ -140,32 +165,46 @@ export default class TV extends Component {
   }
 
   render() {
+
+    let width = window.innerWidth;
+    let smallwindow=false
+    if(width<1000){
+      smallwindow=true
+    }
+
     return (
       <div>
-        {this.state.showChannelId?
-          <div style={{position:"absolute", color:"greenyellow", zIndex:"2", fontSize:"64px", margin:"15px"}}>
-            {this.props.match.params.channelId}
-          </div>
-        :null}
-        <VideoPlayer
-          match={this.props.match}
-          src={this.state.src}
-          progress={this.state.progress}
-          toggleMute={this.toggleMute}
-          socketError={this.state.socket_error}
-          mute={this.state.mute}
-          loop={this.state.loop}
-          segment={this.state.segment}
-          emitterChannelId={this.state.emitterChannelId}
-          incrementChannel={this.incrementChannel}
-          decrementChannel={this.decrementChannel}
-        />
-        <Chat
-          {...this.props}
-          getComments={this.getComments}
-          comments={this.state.comments}
-          channelId={this.props.match.params.channelId}
-        />
+        {smallwindow?<button style={{position:"absolute", zIndex:"3", right:"5px", top:"115px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>togglechat</button>:null}
+        <div>
+          {this.state.showChannelId?
+            <div style={{position:"absolute", color:"greenyellow", zIndex:"2", fontSize:"64px", margin:"15px"}}>
+              {this.props.match.params.channelId}
+            </div>
+          :null}
+          <VideoPlayer
+            vidWidth={this.state.vidWidth}
+            match={this.props.match}
+            src={this.state.src}
+            progress={this.state.progress}
+            toggleMute={this.toggleMute}
+            socketError={this.state.socket_error}
+            mute={this.state.mute}
+            loop={this.state.loop}
+            segment={this.state.segment}
+            emitterChannelId={this.state.emitterChannelId}
+            incrementChannel={this.incrementChannel}
+            decrementChannel={this.decrementChannel}
+          />
+          <Chat
+            smallwindow={smallwindow}
+            showChat={this.state.showChat}
+            collapse={this.state.collapse}
+            {...this.props}
+            getComments={this.getComments}
+            comments={this.state.comments}
+            channelId={this.props.match.params.channelId}
+          />
+        </div>
       </div>
     )
   }
