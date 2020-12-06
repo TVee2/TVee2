@@ -11,7 +11,8 @@ export default class VideoPlayer extends Component {
       fill_time: false,
       init_loading:true,
       vid:null,
-      isCasting:false
+      isCasting:false,
+      debounce:false
     }
   }
 
@@ -60,6 +61,9 @@ export default class VideoPlayer extends Component {
       this.setState({playing:true, fill_time:false, init_loading:false})
     }
 
+    vid.oncanplaythrough= () => {console.log("oncanplaythrough - remove debounce"); this.setState({debounce:false})}
+
+
     vid.onended = () => {
       console.log("ended")
       this.setState({fill_time:true, playing:false})
@@ -67,6 +71,8 @@ export default class VideoPlayer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if(this.state.debounce){return}
+
     if(prevProps.socketError && !this.props.socketError){
       this.setState({init_loading:true})
     }
@@ -76,8 +82,9 @@ export default class VideoPlayer extends Component {
       this.setState({fill_time:true, init_loading:false})
     }
 
-    if(this.props.progress!==Math.round(this.state.vid.currentTime) && !!this.props.progress){
-      console.log("unsynced, recorrecting...")
+    if(this.props.src && this.props.src!=="no source" && Math.abs(this.props.progress - Math.round(this.state.vid.currentTime)) > 3 && !!this.props.progress){
+      console.log("unsynced, recorrecting...  adding debounce")
+      this.setState({debounce:true})
       this.state.vid.currentTime=this.props.progress
     }
 
@@ -105,12 +112,12 @@ export default class VideoPlayer extends Component {
 
   upChannel= () => {
     this.props.incrementChannel()
-    this.setState({init_loading:true}, ()=>{console.log(this.state.init_loading)})
+    this.setState({init_loading:true})
   }
 
   downChannel= () => {
     this.props.decrementChannel()
-    this.setState({init_loading:true}, ()=>{console.log(this.state.init_loading)})
+    this.setState({init_loading:true})
   }
 
   render() {
@@ -147,7 +154,7 @@ export default class VideoPlayer extends Component {
     }
 
     return (
-      <div style={{width:"640px", height:"360px", display:"inline-block", position:"absolute"}}>
+      <div style={{width:"640px", height:"360px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
           <div id="vidcontainer" className="video-container" style={{display:"grid"}}>
             {!this.state.dirty?<Entrance onClick={this.hideCover}/>:null}
             <img src="/static.gif" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis3}}></img>
@@ -161,6 +168,7 @@ export default class VideoPlayer extends Component {
               muted={this.props.mute || hide_main || this.state.isCasting || this.state.init_loading}
               loop={!this.props.src}
               controls={false}
+              disableremoteplayback
             />
             <video
               style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis2}}
@@ -176,7 +184,7 @@ export default class VideoPlayer extends Component {
               <div>
                 <button onClick={this.upChannel} >channel up</button>
                 <button onClick={this.downChannel} >channel down</button>   
-              </div>     
+              </div>
               <CastButton socketError={this.props.socketError} segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
             </div>
             <div>Click anywhere for sound</div>

@@ -7,7 +7,7 @@ export default class Scheduler extends Component {
   constructor() {
     super()
 
-    this.state = {channels:[], selectedChannelId:null, timeslotuploadloading:false, frequency:"single", timeslots: { before_ts:[], after_ts:[] }, videos:[], uploads:[]}
+    this.state = {isUploading:false, uploadProgress:0, channels:[], utype:"aws", selectedChannelId:null, timeslotuploadloading:false, frequency:"single", timeslots: { before_ts:[], after_ts:[] }, videos:[], uploads:[]}
   }
 
   componentDidMount(){
@@ -69,21 +69,48 @@ export default class Scheduler extends Component {
   videoSubmit = e => {
     e.preventDefault()
     var title = document.getElementById("title").value
+    var url = ''
+    if(this.state.utype==="aws"){
+      url = '/api/videos/aws'
 
-    const formData = new FormData()
-    formData.append('title', title)
-    formData.append('videofile', this.state.uploads[0])
+      const formData = new FormData()
+      var upload = this.state.uploads[0]
+      var type = upload.type.split('/')[0]
+      var ext = upload.type.split('/')[1]
 
-    axios
-      .post('/api/videos', formData, {
-        headers: {'Content-Type': 'multipart/form-data'}
+      if(type!=="video"){console.log("only for submitting movies"); return}
+      axios.get('/api/videos/awspresignedpost')
+      .then((res) => {
+        var key = Date.now() + "." + ext
+        Object.entries(res.data.path.fields).forEach(([k, v]) => {
+          formData.append(k, v);
+        });
+        formData.set('key', key)
+        console.log(upload.size)
+        formData.append('file', this.state.uploads[0])
+        axios
+          .post(res.data.path.url, formData, {
+            headers: {'Content-Type': 'multipart/form-data'},
+            onUploadProgress: progressEvent => this.setState({isUploading:true, uploadStatement:`uploading... ${Math.round((progressEvent.loaded/upload.size)*100)}%`})
+          })
+          .then(ret => {
+            console.log("uploaded to aws")
+            this.setState({isUploading:true, uploadStatement:'creating metadata'})
+            axios.post('/api/videos/aws/metadata', {key, title})
+            .then(() => {
+              this.setState({isUploading:false})
+              this.getMyVids()
+            })
+          })
+          .catch(err => {
+            console.log(err)
+          })
       })
-      .then(res => {
-        this.getMyVids()
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    }else if(this.state.utype==="local"){
+      console.log("uploading locally currently not implemented")
+      formData.append('title', title)
+      url = '/api/videos'
+    }
   }
 
   channelSubmit = e => {
@@ -101,7 +128,13 @@ export default class Scheduler extends Component {
     })
   }
 
+  setUtype = (e) => {
+    const { name, value } = e.target;
+    this.setState({utype:e.target.value})
+  }
+
   render() {
+    console.log(!!this.state.isUploading)
     return (
       <div>
         <div>Create a channel</div>
@@ -110,6 +143,30 @@ export default class Scheduler extends Component {
           <input type="submit" disabled value="submit" />
         </form>
         <br />
+        <br/><br/>
+
+        {!this.state.isUploading?
+        (<div>Upload Video
+        <form onSubmit={this.videoSubmit}>
+          <input
+            type="file"
+            name="videofile"
+            onChange={this.onVideoChange}
+            alt="image"
+          />
+          <div onChange={this.setUtype} style={{display:"flex", margin:"0"}}>
+            <input type="radio" defaultChecked id="aws" name="utype" value="aws"/>
+            <label htmlFor="aws">AWS</label>
+            <input type="radio" id="local" name="utype" value="local"/>
+            <label htmlFor="local">Local</label>
+          </div>
+          <br/>
+          <label htmlFor="title">Video Title:</label>
+          <input type="text" id="title" name="title"/><br/>
+          <input type="submit" value="Upload!" />
+        </form></div>):(<div>{this.state.uploadStatement}</div>)}
+        <br />
+        <br/><br/>
         <div>Select a channel</div>
         <select id="channel" defaultValue={'DEFAULT'} onChange={this.onChannelChange}>
           <option disabled value='DEFAULT'> -- select an option -- </option>
@@ -123,18 +180,6 @@ export default class Scheduler extends Component {
             <br />
             <br />
             <br />
-            <div>Upload Video</div>
-            <form onSubmit={this.videoSubmit}>
-              <input
-                type="file"
-                name="videofile"
-                onChange={this.onVideoChange}
-                alt="image"
-              />
-              <label htmlFor="title">Video Title:</label><br/>
-              <input type="text" id="title" name="title"/><br/>
-              <input type="submit" value="Upload!" />
-            </form>
 
             <br />
             <br />

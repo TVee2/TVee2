@@ -153,7 +153,7 @@ _/|_/|_/|__  _/_/|_/|__~__/_/|_/|_/|_/|_/|_
     post.innerHTML = "Initializing..."; this.forceUpdate();
     while(i<this.frames.length){
       var func = (x) => {pre.innerHTML = this.frames[x]; this.forceUpdate(); }
-      setTimeout(func.bind(this, i), i*700)
+      setTimeout(func.bind(this, i), i*400)
       i++
     }
 

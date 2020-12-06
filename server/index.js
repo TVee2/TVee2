@@ -11,6 +11,8 @@ const PORT = process.env.PORT || 1337
 const app = express()
 const socketio = require('socket.io')
 
+require('dotenv').config()
+
 module.exports = app
 
 // This is a global Mocha hook, used for resource cleanup.

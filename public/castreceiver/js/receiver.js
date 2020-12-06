@@ -146,32 +146,6 @@ playbackConfig.autoResumeDuration = 5;
 castDebugLogger.info(LOG_RECEIVER_TAG,
   `autoResumeDuration set to: ${playbackConfig.autoResumeDuration}`);
 
-// /**
-//  * Set the control buttons in the UI controls.
-//  */
-// const controls = cast.framework.ui.Controls.getInstance();
-// controls.clearDefaultSlotAssignments();
-
-// /**
-//  * Assign buttons to control slots.
-//  */
-// controls.assignButton(
-//   cast.framework.ui.ControlsSlot.SLOT_1,
-//   cast.framework.ui.ControlsButton.QUEUE_PREV
-// );
-// controls.assignButton(
-//   cast.framework.ui.ControlsSlot.SLOT_2,
-//   cast.framework.ui.ControlsButton.CAPTIONS
-// );
-// controls.assignButton(
-//   cast.framework.ui.ControlsSlot.SLOT_3,
-//   cast.framework.ui.ControlsButton.SEEK_FORWARD_15
-// );
-// controls.assignButton(
-//   cast.framework.ui.ControlsSlot.SLOT_4,
-//   cast.framework.ui.ControlsButton.QUEUE_NEXT
-// );
-
 context.start({
   queue: new CastQueue(),
   playbackConfig: playbackConfig,

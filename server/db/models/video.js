@@ -6,6 +6,9 @@ module.exports = db.define('video', {
     type: Sequelize.STRING,
   },
   path:{
+    type: Sequelize.STRING(1000),
+  },
+  awsKey: {
     type: Sequelize.STRING,
   },
   original:{

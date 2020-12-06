@@ -32,7 +32,6 @@ export default class TV extends Component {
 
   componentDidMount() {
     this.getChannel()
-    // this.getComments()
   }
 
   toggleMute = () => {
