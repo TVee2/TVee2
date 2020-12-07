@@ -2,17 +2,23 @@ import React, {Component} from 'react'
 import axios from 'axios'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import io from 'socket.io-client'
+var socket = io()
 
 export default class Scheduler extends Component {
   constructor() {
     super()
 
-    this.state = {isUploading:false, uploadProgress:0, channels:[], utype:"aws", selectedChannelId:null, timeslotuploadloading:false, frequency:"single", timeslots: { before_ts:[], after_ts:[] }, videos:[], uploads:[]}
+    this.state = {startdate:new Date(), segmentLoadingMessage:null, isUploading:false, uploadProgress:0, channels:[], utype:"aws", selectedChannelId:null, timeslotuploadloading:false, frequency:"single", timeslots: { before_ts:[], after_ts:[] }, videos:[], uploads:[]}
   }
 
   componentDidMount(){
     this.getMyVids()
     this.getChannels()
+  }
+
+  componentWillUnmount(){
+    socket.off()
   }
 
   getMyVids = () => {
@@ -59,10 +65,20 @@ export default class Scheduler extends Component {
     var startdate = this.state.startdate.setHours(hr, min, sec)
 
     this.setState({timeslotuploadloading:true})
-    axios.post(`/api/timeslots/${this.state.selectedChannelId}`, {vid_title, date: this.state.startdate, recurring})
+
+    var upload_time = new Date().getTime()
+    socket.on(upload_time, (e) => {
+      this.setState({segmentLoadingMessage:e})
+    })
+
+    axios.post(`/api/timeslots/${this.state.selectedChannelId}`, {vid_title, upload_time, date: startdate, recurring})
     .then((res) => {
       this.setState({timeslotuploadloading:false}, () => {
-        this.getChannelSchedule()
+        if(res.data && res.data.conflict_timeslot){
+          console.log("timeslot upload conflicts with existing")
+        }else{
+          this.getChannelSchedule()
+        }
       })
     })
     .catch((err) => {console.log(err)})
@@ -79,8 +95,6 @@ export default class Scheduler extends Component {
     var title = document.getElementById("title").value
     var url = ''
     if(this.state.utype==="aws"){
-      url = '/api/videos/aws'
-
       const formData = new FormData()
       var upload = this.state.uploads[0]
       var type = upload.type.split('/')[0]
@@ -114,9 +128,29 @@ export default class Scheduler extends Component {
           })
       })
     }else if(this.state.utype==="local"){
-      console.log("uploading locally currently not implemented")
-      formData.append('title', title)
       url = '/api/videos'
+
+      const formData = new FormData()
+      var upload = this.state.uploads[0]
+      var type = upload.type.split('/')[0]
+      var ext = upload.type.split('/')[1]
+
+      if(type!=="video"){console.log("only for submitting movies"); return}
+      formData.set('title', title)
+      formData.append('videofile', this.state.uploads[0])
+      axios
+        .post(url, formData, {
+          headers: {'Content-Type': 'multipart/form-data'},
+          onUploadProgress: progressEvent => this.setState({isUploading:true, uploadStatement:`uploading... ${Math.round((progressEvent.loaded/upload.size)*100)}%`})
+        })
+        .then(ret => {
+          console.log("uploaded to local storage")
+          this.setState({isUploading:false})
+          this.getMyVids()
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 
@@ -131,6 +165,26 @@ export default class Scheduler extends Component {
 
   onChannelChange = (e) => {
     this.setState({selectedChannelId: e.target.value}, () => {
+      var d = new Date()
+      for(var i = 0 ;i < document.getElementById("hr").options.length; i++){
+        if(document.getElementById("hr").options[i].value == d.getHours()){
+          document.getElementById("hr").options[i].selected = true
+          break
+        }
+      }
+      for(var i = 0 ;i < document.getElementById("min").options.length; i++){
+        if(document.getElementById("min").options[i].value == d.getMinutes()){
+          document.getElementById("min").options[i].selected = true
+          break
+        }
+      }
+      for(var i = 0 ;i < document.getElementById("sec").options.length; i++){
+        if(document.getElementById("sec").options[i].value == d.getSeconds()){
+          document.getElementById("sec").options[i].selected = true
+          break
+        }
+      }
+
       this.getChannelSchedule(this.state.selectedChannelId)
     })
   }
@@ -150,7 +204,7 @@ export default class Scheduler extends Component {
         </form>
         <br />
         <br/><br/>
-        <button onClick={this.bombsegments}>segment destroy</button>
+        <button onClick={this.bombsegments}>segment destroy previous</button>
         <br/><br/><br/><br/>
         {!this.state.isUploading?
         (<div>Upload Video
@@ -203,7 +257,7 @@ export default class Scheduler extends Component {
             <br />
             <div>Add Video to Timeslot</div>
             {this.state.timeslotuploadloading?
-              <div>--- !!!! Creating Timeslot - (This may take a few minutes) !!!! ----</div>:
+              <div>Creating Timeslot - {`${this.state.segmentLoadingMessage}`}</div>:
               <div>
                 <div>
                   Video:

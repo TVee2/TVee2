@@ -41,24 +41,20 @@ router
   .then((ts)=>{
     Segment.findAll()
     .then((all) => {
-      console.log(all.length)
       console.log("destroyed")
-      res.json(all)
+      res.json({prev:"deleted"})
     })
   })
   .catch((err)=>{console.log(err)})
 })
 
 .delete('/all', (req, res, next) => {
-  console.log("in destroy")
   Segment.destroy({where: {}})
-  .then((ts)=>{
-    Segment.findAll()
-    .then((all) => {
-      console.log(all.length)
-      console.log("destroyed")
-      res.json(all)
-    })
+  .then((ret)=>{
+    return Timeslot.destroy({where: {}})
+  })
+  .then((ret)=>{
+    res.json({})
   })
   .catch((err)=>{console.log(err)})
 })
@@ -75,7 +71,9 @@ router
 
 
 .post('/:channelId', (req, res, next) => {
-  var {vid_title, date, recurring} = req.body
+  var io = req.app.locals.io
+
+  var {vid_title, date, upload_time, recurring} = req.body
   var date = new Date(date).getTime()
   var now = new Date()
   if(recurring==="dailyrecurring"){
@@ -114,6 +112,7 @@ router
           })
           .then(async (ts)=>{
             for(let i=0;i<(ts.endtime - ts.starttime)/1000;i++){
+              io.emit(upload_time, `on ${i} out of ${(ts.endtime - ts.starttime)/1000}`)
               var new_time = Math.floor((ts.starttime/1000) + i)
               var segment = await Segment.create({tkey:req.params.channelId + '' + new_time, time: new_time, progress:i, programId:program.id, timeslotId: ts.id, channelId:req.params.channelId})
             }

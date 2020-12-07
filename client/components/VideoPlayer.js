@@ -72,6 +72,7 @@ export default class VideoPlayer extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if(this.state.debounce){return}
+    if(this.state.isCasting){return}
 
     if(prevProps.socketError && !this.props.socketError){
       this.setState({init_loading:true})
@@ -154,21 +155,21 @@ export default class VideoPlayer extends Component {
     }
 
     return (
-      <div style={{width:this.props.vidWidth?this.props.vidWidth:"640px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
+      <div style={{width:this.props.vidWidth?this.props.vidWidth:"640px", display:"inline-block", position:"absolute", backgroundColor:"yellowgreen"}}>
           <div id="vidcontainer" className="video-container" style={{display:"grid"}}>
             {!this.state.dirty?<Entrance onClick={this.hideCover}/>:null}
             <img src="/static.gif" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis3}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis4}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis5}}></img>
             <video
-              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1, margin:0, position:"absolute", top:"50%", transform: "translateY(-50%)"}}
+              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1, margin:0, position:"relative", top:"50%", transform: "translateY(-50%)"}}
               id="vid"
               src={this.props.src}
               autoPlay
               muted={this.props.mute || hide_main || this.state.isCasting || this.state.init_loading}
               loop={!this.props.src}
               controls={false}
-              disableremoteplayback
+              disableremoteplayback="true"
             />
             <video
               style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis2}}
@@ -178,17 +179,17 @@ export default class VideoPlayer extends Component {
               loop={true}
               controls={false}
             />
-            <div style={{backgroundColor:"white"}}>
-              {this.props.mute?<button className="videobutton unmute" onClick={this.props.toggleMute}></button>:<button className="videobutton mute" onClick={this.props.toggleMute}></button>}
-              <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
-              <div>
-                <button onClick={this.upChannel} >channel up</button>
-                <button onClick={this.downChannel} >channel down</button>   
-              </div>
-              <CastButton socketError={this.props.socketError} segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
-            </div>
-            <div style={{backgroundColor:"white"}}>Click anywhere for sound</div>
           </div>
+          <div style={{backgroundColor:"white"}}>
+            {this.props.mute?<button className="videobutton unmute" onClick={this.props.toggleMute}></button>:<button className="videobutton mute" onClick={this.props.toggleMute}></button>}
+            <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
+            <CastButton socketError={this.props.socketError} segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
+            <div>
+              <button onClick={this.upChannel} >channel up</button>
+              <button onClick={this.downChannel} >channel down</button>   
+            </div>
+          </div>
+          <div style={{backgroundColor:"white"}}>Click anywhere for sound</div>
       </div>
     )
   }

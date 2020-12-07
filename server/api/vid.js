@@ -62,9 +62,7 @@ const aws_upload = multer({
 
 router.post('/',
   (req, res) => {
-    console.log(req)
-    // var readStream = fs.createReadStream('videofile');  
-    console.log("received request")
+    console.log("received request to upload local")
     var upload_file = upload.single('videofile')/* name attribute of <file> element in your form */
     console.log("uploaded")
 
@@ -85,10 +83,8 @@ router.post('/',
           path: ffprobeStatic.path
         })
         .then((data)=>{
-
           duration = data.streams[0].duration
           if (mime === 'video') {
-
             Program.create({ad:false, title:req.body.title, duration:duration, userId:req.user.id})
             .then((program)=>{
               Video.create({path:newPath, duration:duration, original:true})

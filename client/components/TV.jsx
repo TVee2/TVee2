@@ -35,24 +35,33 @@ export default class TV extends Component {
 
   componentDidMount() {
     this.getChannel()
-    if(window.innerWidth>1000){
-        this.setState({collapse:false})
-    }
-    if(window.innerWidth<=1000){
+    if(window.innerWidth<=1000 || screen.width<=1000){
       this.setState({collapse:true})
     }
-    if(window.innerWidth<=640){
-      this.setState({vidWidth:window.innerWidth})
+    if(window.innerWidth <= 640 || screen.width <= 640){
+      var width
+      if(window.innerWidth < screen.width){
+        width=window.innerWidth
+      }else{
+        width=screen.width
+      }
+      this.setState({vidWidth:width})
     }
     window.addEventListener("resize", () => {
       if(window.innerWidth>=1000){
         this.setState({collapse:false})
       }
-      if(window.innerWidth<1000){
+      if(window.innerWidth<1000 || screen.width<1000){
         this.setState({collapse:true})
       }
-      if(window.innerWidth<=640){
-        this.setState({vidWidth:window.innerWidth})
+      if(window.innerWidth<=640 || screen.width<=640){
+        var width
+        if(window.innerWidth < screen.width){
+          width=window.innerWidth
+        }else{
+          width=screen.width
+        }
+        this.setState({vidWidth:width})
       }else{
         this.setState({vidWidth:null})
       }
@@ -174,7 +183,7 @@ export default class TV extends Component {
 
     return (
       <div>
-        {smallwindow?<button style={{position:"absolute", zIndex:"3", right:"5px", top:"115px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>togglechat</button>:null}
+        {smallwindow?<button style={{position:"absolute", zIndex:"3", right:"25px", top:"115px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
         <div>
           {this.state.showChannelId?
             <div style={{position:"absolute", color:"greenyellow", zIndex:"2", fontSize:"64px", margin:"15px"}}>
