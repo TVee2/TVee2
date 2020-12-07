@@ -61,8 +61,15 @@ export default class CastButton extends Component {
       return
     }
     let mediaInfo = new chrome.cast.media.MediaInfo(1, 'video/mp4')
-    mediaInfo.contentUrl = window.location.origin+this.props.src
+    var url
+    if(!this.props.src.startsWith("https")){
+      url = window.location.origin+this.props.src
+    }else{
+      url = this.props.src
+    }
+    mediaInfo.contentUrl = url
 
+    console.log("casting", url)
 
     mediaInfo.streamType = chrome.cast.media.StreamType.LIVE;
     mediaInfo.metadata = new chrome.cast.media.TvShowMediaMetadata();
