@@ -98,7 +98,11 @@ export default class Scheduler extends Component {
       const formData = new FormData()
       var upload = this.state.uploads[0]
       var type = upload.type.split('/')[0]
-      var ext = upload.type.split('/')[1]
+      var ext = upload.type.split('.')[1]
+      if(ext!=="mp4"){
+        console.log("only mp4 movies allowed")
+        return
+      }
 
       if(type!=="video"){console.log("only for submitting movies"); return}
       axios.get('/api/videos/awspresignedpost')
@@ -107,6 +111,7 @@ export default class Scheduler extends Component {
         Object.entries(res.data.path.fields).forEach(([k, v]) => {
           formData.append(k, v);
         });
+        console.log(key)
         formData.set('key', key)
         formData.append('file', this.state.uploads[0])
         axios
@@ -134,7 +139,10 @@ export default class Scheduler extends Component {
       var upload = this.state.uploads[0]
       var type = upload.type.split('/')[0]
       var ext = upload.type.split('/')[1]
-
+      if(ext!=="mp4"){
+        console.log("only mp4 movies allowed")
+        return
+      }
       if(type!=="video"){console.log("only for submitting movies"); return}
       formData.set('title', title)
       formData.append('videofile', this.state.uploads[0])

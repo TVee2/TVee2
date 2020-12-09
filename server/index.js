@@ -10,8 +10,28 @@ const sessionStore = new SequelizeStore({db})
 const PORT = process.env.PORT || 1337
 const app = express()
 const socketio = require('socket.io')
-
 require('dotenv').config()
+
+
+// const {google} = require('googleapis');
+// const youtube = google.youtube('v3');
+
+// async function runSample() {
+
+//   const auth = new google.auth.GoogleAuth({
+//     scopes: ['https://www.googleapis.com/auth/youtube'],
+//   });
+
+//   google.options({auth});
+
+//   const res = await youtube.videos.list({
+//     part: 'status, contentDetails',
+//     id: 'P7EB3Zxqj7g'
+//   });
+//   console.log(res.data.items[0]);
+// }
+
+// runSample().catch(console.error);
 
 module.exports = app
 

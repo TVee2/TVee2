@@ -11,6 +11,9 @@ module.exports = db.define('video', {
   awsKey: {
     type: Sequelize.STRING,
   },
+  pathRetrievedAt:{
+    type: Sequelize.BIGINT,
+  },
   original:{
     type: Sequelize.BOOLEAN,
   },

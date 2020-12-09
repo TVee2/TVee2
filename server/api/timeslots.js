@@ -118,15 +118,20 @@ router
             }
           })
           .then(()=>{
-            res.json(ts)
+            io.emit(upload_time, `done`)
+            res.json({})
           })
         }else{
+          io.emit(upload_time, `conflict`)
+
           res.json({conflict_timeslot: ts})
         }
       })
     }
   })
-  .catch((err)=>{console.log(err)})
+  .catch((err)=>{
+    io.emit(upload_time, `theres been an error`)
+    console.log(err)})
 })
 
 // .post('/:channelId/experimental', (req, res, next) => {

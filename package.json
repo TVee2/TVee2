@@ -48,6 +48,7 @@
     "ffprobe": "^1.1.2",
     "ffprobe-static": "^3.0.0",
     "fs": "0.0.1-security",
+    "googleapis": "^66.0.0",
     "history": "^4.9.0",
     "i": "^0.3.6",
     "morgan": "^1.9.1",

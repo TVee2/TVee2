@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import CastButton from './CastButton'
 import Entrance from './Entrance'
-
+var videoplayer
 export default class VideoPlayer extends Component {
   constructor(props) {
     super(props)
@@ -16,7 +16,34 @@ export default class VideoPlayer extends Component {
     }
   }
 
+  onYTPlayerReady = (event) => {
+    console.log("PLAY VIDEO", event.target)
+    event.target.mute()
+    event.target.playVideo();
+  }
+
+  onYTPlayerStateChange = (event) => {
+    console.log("player state changed", event.data)
+  }
+
+  stopYTVideo = () => {
+    videoplayer.stopVideo();
+  }
+
+  playvideo = () => {videoplayer.playVideo()}
+
   componentDidMount() {
+    var ytplayer = new YT.Player('player', {
+        height: '550',
+        width: '640',
+        videoId: '9em32dDnTck',
+        events: {
+          'onReady': this.onYTPlayerReady,
+          'onStateChange': this.onYTPlayerStateChange
+        }
+      });
+    videoplayer = ytplayer
+
     var vid = document.getElementById('vid')
     this.setState({vid})
 
@@ -44,12 +71,16 @@ export default class VideoPlayer extends Component {
     )
 
     var listener = () => {
-      if (!this.state.dirty) {
+      if (!this.state.dirty && videoplayer.unMute) {
         this.setState({muted: false, dirty: true}, () => {
           console.log('unmute')
+          if(videoplayer.unMute){
+            console.log(videoplayer)
+            videoplayer.unMute()
+          }
           this.props.toggleMute()
         })
-      } else {
+      } else if(videoplayer.unMute){
         document.removeEventListener('click', listener)
       }
     }
@@ -156,6 +187,14 @@ export default class VideoPlayer extends Component {
 
     return (
       <div style={{width:this.props.vidWidth?this.props.vidWidth:"640px", display:"inline-block", position:"absolute", backgroundColor:"yellowgreen"}}>
+        <div>
+          <div id="topblinder"n style={{backgroundColor:"black", height:"100px", width:"640px", position:"absolute", zIndex:"3"}}>
+          </div>
+          <div id="botblinder"n style={{backgroundColor:"black", height:"100px", width:"640px", top:"450px", position:"absolute", zIndex:"3"}}>
+          </div>
+          <div id="player" style={{position:"absolute"}}></div>
+
+        </div>
           <div id="vidcontainer" className="video-container" style={{display:"grid"}}>
             {!this.state.dirty?<Entrance onClick={this.hideCover}/>:null}
             <img src="/static.gif" style={{width:"100%", height:"100%", gridColumn:"1", gridRow:"1", visibility:vis3}}></img>
