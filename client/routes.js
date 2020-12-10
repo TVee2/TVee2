@@ -18,7 +18,7 @@ class Routes extends Component {
   constructor() {
     super()
 
-    this.state = {channels:[]}
+    this.state = {channels:[], showCover:true}
   }
 
   componentDidMount() {
@@ -33,6 +33,10 @@ class Routes extends Component {
     })
   }
 
+  removeCover = () => {
+    this.setState({showCover:false})
+  }
+
   render() {
     const {isLoggedIn} = this.props
     return (
@@ -40,7 +44,7 @@ class Routes extends Component {
         {/* Routes placed here are available to all visitors */}
         <Route path="/entrance" component={Entrance} />
         <Route path="/tv/:channelId" render={(props) => (
-            <TV  {...props} channels={this.state.channels} user={this.props.user}/>
+            <TV  {...props} channels={this.state.channels} showCover={this.state.showCover} removeCover={this.removeCover} user={this.props.user}/>
           )}
         />
         <Route path="/tvbrowse" render={(props) => (

@@ -19,7 +19,6 @@ export default class VideoPlayer extends Component {
   }
 
   onYTPlayerReady = (event) => {
-    console.log("PLAY VIDEO", this.props.src)
     event.target.mute()
     if(this.props.src && this.props.isYoutubeId){
       console.log("player ready")
@@ -99,12 +98,10 @@ export default class VideoPlayer extends Component {
 
     var listener = () => {
       if (!this.state.dirty && this.videoplayer.unMute) {
+        this.props.removeCover()
         this.setState({muted: false, dirty: true}, () => {
           console.log('unmute')
-          // if(this.videoplayer.unMute){
-          //   console.log(this.videoplayer)
-          //   this.videoplayer.unMute()
-          // }
+
           this.toggleMute()
         })
       } else if(this.videoplayer.unMute){
@@ -129,7 +126,6 @@ export default class VideoPlayer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(this.state.debounce, this.state.isCasting)
     if(this.state.debounce){return}
     if(this.state.isCasting){return}
 
@@ -160,7 +156,6 @@ export default class VideoPlayer extends Component {
     }
 
     if(this.props.src !== prevProps.src) {
-        console.log(this.videoplayer, this.props.src, this.props.isYoutubeId)
       if(this.props.isYoutubeId){
         if(this.videoplayer&&this.videoplayer.loadVideoById){
           console.log("trying to play", this.props.src)
@@ -170,13 +165,6 @@ export default class VideoPlayer extends Component {
         this.state.vid.src = this.props.src
       }
     }
-    // console.log(this.props.emitterChannelId)
-    // if(this.props.emitterChannelId!==prevProps.emitterChannelId){
-    //   if(this.videoplayer&&this.videoplayer.loadVideoById){
-    //     console.log("trying to load after channel switch")
-    //     this.videoplayer.loadVideoById(this.props.src, this.props.progress)
-    //   }
-    // }
   }
 
   fullscreen=()=>{
@@ -257,15 +245,15 @@ export default class VideoPlayer extends Component {
     }
     var ytheight="700px"
     return (
-      <div style={{width:this.props.vidWidth?this.props.vidWidth:"640px", height:"700px", display:"inline-block", position:"absolute", backgroundColor:"yellowgreen"}}>
+      <div style={{top:"-22px", width:this.props.vidWidth?this.props.vidWidth:"640px", height:"700px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
           <div id="vidcontainer" className="video-container" style={{display:"grid", height:"100%", width:"100%"}}>
-            {!this.state.dirty?<Entrance onClick={this.hideCover}/>:null}
+            {this.props.showCover?<Entrance/>:null}
             <div style={{visibility:vis6, position:"absolute"}}>
               <div id="topblinder" style={{backgroundColor:"black", height:"90px", width:"640px", position:"absolute", zIndex:"3"}}></div>
-              <div id="noclickscreen"n style={{height:"700px", width:"640px", position:"absolute", zIndex:"3"}}></div>
-              <div id="botblinder" style={{backgroundColor:"black", height:"200px", width:"640px", top:"530px", position:"absolute", zIndex:"3"}}></div>
+              <div id="noclickscreen" style={{height:"700px", width:"640px", position:"absolute", zIndex:"3"}}></div>
               <div id="player" style={{position:"absolute"}}></div>
             </div>
+            <div id="botblinder" style={{backgroundColor:"white", height:"200px", width:"640px", top:"600px", position:"absolute", zIndex:"3"}}></div>
             <img src="/static.gif" style={{width:"100%", height:"360px", gridColumn:"1", gridRow:"1", visibility:vis3, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
@@ -288,7 +276,7 @@ export default class VideoPlayer extends Component {
               controls={false}
             />
           </div>
-          <div style={{backgroundColor:"black", position:"absolute", display:"flex", width:"100%", zIndex:"5", top:"530px"}}>
+          <div style={{backgroundColor:"black", position:"absolute", display:"flex", width:"100%", zIndex:"5", top:"530px", height:"70px"}}>
             <div style={{display:"flex"}}>
               {this.state.mute?<button className="videobutton unmute" onClick={this.toggleMute}></button>:<button className="videobutton mute" onClick={this.toggleMute}></button>}
               <button className="videobutton fullscreen" onClick={this.fullscreen}></button>

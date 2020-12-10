@@ -7,6 +7,7 @@ const App = () => {
   return (
     <div>
       <Navbar />
+      <div style={{height:"150px"}}></div>
       <Routes />
     </div>
   )

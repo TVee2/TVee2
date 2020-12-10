@@ -188,7 +188,7 @@ export default class TV extends Component {
 
     return (
       <div>
-        {smallwindow?<button style={{position:"absolute", zIndex:"3", right:"25px", top:"115px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
+        {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"115px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
         <div>
           {this.state.showChannelId?
             <div style={{position:"absolute", color:"greenyellow", zIndex:"2", fontSize:"64px", margin:"15px"}}>
@@ -196,6 +196,8 @@ export default class TV extends Component {
             </div>
           :null}
           <VideoPlayer
+            showCover={this.props.showCover}
+            removeCover={this.props.removeCover}
             vidWidth={this.state.vidWidth}
             match={this.props.match}
             src={this.state.src}
