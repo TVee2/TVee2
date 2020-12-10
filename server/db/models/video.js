@@ -17,6 +17,9 @@ module.exports = db.define('video', {
   youtubeId: {
     type: Sequelize.STRING,
   },
+  thumbnailUrl:{
+    type: Sequelize.STRING,
+  },
   duration:{
     type: Sequelize.STRING,
   },

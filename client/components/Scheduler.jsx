@@ -259,7 +259,7 @@ export default class Scheduler extends Component {
         My Videos:
         <div>Name Duration</div>
         {this.state.videos.map((v) => {
-          return <div>{v.title} - {v.duration}</div>
+          return <div><img src={v.thumbnailUrl}></img>{v.title} - {v.duration}</div>
         })}
 
         <br />

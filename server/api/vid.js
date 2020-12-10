@@ -116,7 +116,7 @@ router.post('/youtubelink', async (req, res) => {
   if(embeddable){
     Program.create({ad:false, title, duration, thumbnailUrl, userId:req.user.id})
     .then((program)=>{
-      return Video.create({youtubeId:yid, duration:duration})
+      return Video.create({youtubeId:yid, duration, thumbnailUrl})
       .then((video)=>{
         return program.addVideo(video)
       })
