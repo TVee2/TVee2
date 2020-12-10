@@ -5,6 +5,9 @@ module.exports = db.define('program', {
   title:{
     type: Sequelize.STRING,
   },
+  thumbnailUrl: {
+    type: Sequelize.STRING,
+  },
   duration:{
     type: Sequelize.STRING,
   },

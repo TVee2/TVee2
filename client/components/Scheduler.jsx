@@ -90,77 +90,77 @@ export default class Scheduler extends Component {
     })
   }
 
-  videoSubmit = e => {
-    e.preventDefault()
-    var title = document.getElementById("title").value
-    var url = ''
-    if(this.state.utype==="aws"){
-      const formData = new FormData()
-      var upload = this.state.uploads[0]
-      var type = upload.type.split('/')[0]
-      var ext = upload.type.split('.')[1]
-      if(ext!=="mp4"){
-        console.log("only mp4 movies allowed")
-        return
-      }
+  // videoSubmit = e => {
+  //   e.preventDefault()
+  //   var title = document.getElementById("title").value
+  //   var url = ''
+  //   if(this.state.utype==="aws"){
+  //     const formData = new FormData()
+  //     var upload = this.state.uploads[0]
+  //     var type = upload.type.split('/')[0]
+  //     var ext = upload.type.split('.')[1]
+  //     if(ext!=="mp4"){
+  //       console.log("only mp4 movies allowed")
+  //       return
+  //     }
 
-      if(type!=="video"){console.log("only for submitting movies"); return}
-      axios.get('/api/videos/awspresignedpost')
-      .then((res) => {
-        var key = Date.now() + "." + ext
-        Object.entries(res.data.path.fields).forEach(([k, v]) => {
-          formData.append(k, v);
-        });
-        console.log(key)
-        formData.set('key', key)
-        formData.append('file', this.state.uploads[0])
-        axios
-          .post(res.data.path.url, formData, {
-            headers: {'Content-Type': 'multipart/form-data'},
-            onUploadProgress: progressEvent => this.setState({isUploading:true, uploadStatement:`uploading... ${Math.round((progressEvent.loaded/upload.size)*100)}%`})
-          })
-          .then(ret => {
-            console.log("uploaded to aws")
-            this.setState({isUploading:true, uploadStatement:'creating metadata'})
-            axios.post('/api/videos/aws/metadata', {key, title})
-            .then(() => {
-              this.setState({isUploading:false})
-              this.getMyVids()
-            })
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      })
-    }else if(this.state.utype==="local"){
-      url = '/api/videos'
+  //     if(type!=="video"){console.log("only for submitting movies"); return}
+  //     axios.get('/api/videos/awspresignedpost')
+  //     .then((res) => {
+  //       var key = Date.now() + "." + ext
+  //       Object.entries(res.data.path.fields).forEach(([k, v]) => {
+  //         formData.append(k, v);
+  //       });
+  //       console.log(key)
+  //       formData.set('key', key)
+  //       formData.append('file', this.state.uploads[0])
+  //       axios
+  //         .post(res.data.path.url, formData, {
+  //           headers: {'Content-Type': 'multipart/form-data'},
+  //           onUploadProgress: progressEvent => this.setState({isUploading:true, uploadStatement:`uploading... ${Math.round((progressEvent.loaded/upload.size)*100)}%`})
+  //         })
+  //         .then(ret => {
+  //           console.log("uploaded to aws")
+  //           this.setState({isUploading:true, uploadStatement:'creating metadata'})
+  //           axios.post('/api/videos/aws/metadata', {key, title})
+  //           .then(() => {
+  //             this.setState({isUploading:false})
+  //             this.getMyVids()
+  //           })
+  //         })
+  //         .catch(err => {
+  //           console.log(err)
+  //         })
+  //     })
+  //   }else if(this.state.utype==="local"){
+  //     url = '/api/videos'
 
-      const formData = new FormData()
-      var upload = this.state.uploads[0]
-      var type = upload.type.split('/')[0]
-      var ext = upload.type.split('/')[1]
-      if(ext!=="mp4"){
-        console.log("only mp4 movies allowed")
-        return
-      }
-      if(type!=="video"){console.log("only for submitting movies"); return}
-      formData.set('title', title)
-      formData.append('videofile', this.state.uploads[0])
-      axios
-        .post(url, formData, {
-          headers: {'Content-Type': 'multipart/form-data'},
-          onUploadProgress: progressEvent => this.setState({isUploading:true, uploadStatement:`uploading... ${Math.round((progressEvent.loaded/upload.size)*100)}%`})
-        })
-        .then(ret => {
-          console.log("uploaded to local storage")
-          this.setState({isUploading:false})
-          this.getMyVids()
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
-  }
+  //     const formData = new FormData()
+  //     var upload = this.state.uploads[0]
+  //     var type = upload.type.split('/')[0]
+  //     var ext = upload.type.split('/')[1]
+  //     if(ext!=="mp4"){
+  //       console.log("only mp4 movies allowed")
+  //       return
+  //     }
+  //     if(type!=="video"){console.log("only for submitting movies"); return}
+  //     formData.set('title', title)
+  //     formData.append('videofile', this.state.uploads[0])
+  //     axios
+  //       .post(url, formData, {
+  //         headers: {'Content-Type': 'multipart/form-data'},
+  //         onUploadProgress: progressEvent => this.setState({isUploading:true, uploadStatement:`uploading... ${Math.round((progressEvent.loaded/upload.size)*100)}%`})
+  //       })
+  //       .then(ret => {
+  //         console.log("uploaded to local storage")
+  //         this.setState({isUploading:false})
+  //         this.getMyVids()
+  //       })
+  //       .catch(err => {
+  //         console.log(err)
+  //       })
+  //   }
+  // }
 
   channelSubmit = e => {
     e.preventDefault()
@@ -202,19 +202,7 @@ export default class Scheduler extends Component {
     this.setState({utype:e.target.value})
   }
 
-  render() {
-    return (
-      <div>
-        <div>Create a channel</div>
-        <form onSubmit={this.channelSubmit}>
-          <input type="text" disabled id="channelname" name="channelname"/><br/>
-          <input type="submit" disabled value="submit" />
-        </form>
-        <br />
-        <br/><br/>
-        <button onClick={this.bombsegments}>segment destroy previous</button>
-        <br/><br/><br/><br/>
-        {!this.state.isUploading?
+/*        {!this.state.isUploading?
         (<div>Upload Video
         <form onSubmit={this.videoSubmit}>
           <input
@@ -233,7 +221,47 @@ export default class Scheduler extends Component {
           <label htmlFor="title">Video Title:</label>
           <input type="text" id="title" name="title"/><br/>
           <input type="submit" value="Upload!" />
-        </form></div>):(<div>{this.state.uploadStatement}</div>)}
+        </form></div>):(<div>{this.state.uploadStatement}</div>)}*/
+
+  youtubeIdSubmit = (e) => {
+    e.preventDefault()
+    var yid = document.getElementById("yid").value
+    axios.post('/api/videos/youtubelink', {yid})
+    .then((res) => {
+      this.getMyVids()
+    })
+    .catch((err) => {})
+  }
+
+  render() {
+    return (
+      <div>
+        <div>Create a channel</div>
+        <form onSubmit={this.channelSubmit}>
+          <input type="text" disabled id="channelname" name="channelname"/><br/>
+          <input type="submit" disabled value="submit" />
+        </form>
+        <br />
+        <br/><br/>
+        <button onClick={this.bombsegments}>segment destroy previous</button>
+        <br/><br/><br/><br/>
+
+        <div>Add a youtube video to collection</div>
+        <form onSubmit={this.youtubeIdSubmit}>
+          <label htmlFor="yid">Youtube ID:</label>
+          <input type="text" id="yid" name="yid"/><br/>
+          <input type="submit" value="Add Video" />
+        </form>
+        <br />
+        <br />
+        <br />
+        <br />
+        My Videos:
+        <div>Name Duration</div>
+        {this.state.videos.map((v) => {
+          return <div>{v.title} - {v.duration}</div>
+        })}
+
         <br />
         <br/><br/>
         <div>Select a channel</div>
@@ -250,15 +278,6 @@ export default class Scheduler extends Component {
             <br />
             <br />
 
-            <br />
-            <br />
-            <br />
-            <br />
-            My Videos:
-            <div>Name Duration</div>
-            {this.state.videos.map((v) => {
-              return <div>{v.title} - {v.duration}</div>
-            })}
             <br />
             <br />
             <br />

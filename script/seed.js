@@ -23,25 +23,25 @@ async function seed() {
   const video2 =  await Video.create({quality: "420p", path: '/videos/test2.mp4', duration: 30, original:true})
 
   const program1 = await Program.create({title: 'city', duration: 35, ad:false})
-  program1.addVideo(video1)
+  await program1.addVideo(video1)
   const program2 = await Program.create({title: 'wave', duration: 30, ad:false, videoId:video2.id})
-  program2.addVideo(video2)
+  await program2.addVideo(video2)
 
 
   var counter = 0
   var vidswitch = true
   var now = Math.floor(new Date().valueOf()/1000)
-  for(let i=0;i<2*60*60;i++){
-    var new_time = now + i
-    var program = vidswitch?program1:program2
-    await Segment.create({tkey:channel.id+""+new_time, progress:counter, programId:program.id, channelId:channel.id})
-    counter ++
-    if(program.duration < counter){
-      vidswitch = !vidswitch
-      counter = 0
-      i = i + 4
-    }
-  }
+  // for(let i=0;i<2*60*60;i++){
+  //   var new_time = now + i
+  //   var program = vidswitch?program1:program2
+  //   await Segment.create({tkey:channel.id+""+new_time, progress:counter, programId:program.id, channelId:channel.id})
+  //   counter ++
+  //   if(program.duration < counter){
+  //     vidswitch = !vidswitch
+  //     counter = 0
+  //     i = i + 4
+  //   }
+  // }
 
 
   console.log(`seeded ${users.length} users`)

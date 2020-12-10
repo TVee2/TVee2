@@ -29,7 +29,8 @@ export default class TV extends Component {
       showCover:true,
       collapse:false,
       showChat:false,
-      vidWidth:null
+      vidWidth:null,
+      isYoutubeId:false
     }
   }
 
@@ -68,10 +69,6 @@ export default class TV extends Component {
     });
   }
 
-  toggleMute = () => {
-    this.setState({mute: !this.state.mute})
-  }
-
   componentWillUnmount() {
     socket.off()
   }
@@ -88,12 +85,20 @@ export default class TV extends Component {
           this.setState({showChannelId:false})
         }, 1500)
         socket.on(this.state.channel.id, segment => {
-          if(!segment||!segment.program||!segment.program.videos.length===0||!segment.program.videos[0].path){
+          if(!segment||!segment.program||!segment.program.videos.length===0||(!segment.program.videos[0].path&&!segment.program.videos[0].youtubeId)){
             this.setState({src:"no source", emitterChannelId:this.state.channel.id,})
           }else{
-            var src = segment.program.videos[0].path
+            var video = segment.program.videos[0]
+            var src
+            var isYoutubeId = false
+            if(video.path){
+              src = video.path
+            }else if(video.youtubeId){
+              src = video.youtubeId
+              isYoutubeId = true
+            }
             var {progress} = segment
-            this.setState({src, progress, emitterChannelId:this.state.channel.id, segment})
+            this.setState({src, isYoutubeId, progress, emitterChannelId:this.state.channel.id, segment})
           }
         })
         socket.on(`c${this.state.channel.id}`, comment => {
@@ -194,8 +199,8 @@ export default class TV extends Component {
             vidWidth={this.state.vidWidth}
             match={this.props.match}
             src={this.state.src}
+            isYoutubeId={this.state.isYoutubeId}
             progress={this.state.progress}
-            toggleMute={this.toggleMute}
             socketError={this.state.socket_error}
             mute={this.state.mute}
             loop={this.state.loop}

@@ -11,6 +11,9 @@ const AWS_ID = process.env.AWS_ID
 const AWS_SECRET = process.env.AWS_SECRET
 const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME
 
+const {google} = require('googleapis');
+const youtube = google.youtube('v3');
+
 const s3 = new AWS.S3({
     accessKeyId: AWS_ID,
     secretAccessKey: AWS_SECRET,
@@ -59,6 +62,74 @@ const aws_upload = multer({
         }
     })
 });
+
+router.post('/youtubelink', async (req, res) => {
+  var yid = req.body.yid
+  const auth = new google.auth.GoogleAuth({
+    scopes: ['https://www.googleapis.com/auth/youtube'],
+  });
+
+  google.options({auth});
+
+  const yvid = await youtube.videos.list({
+    part: 'status, contentDetails, snippet',
+    id: yid
+  });
+  var item = yvid.data.items[0]
+
+  var obj = {}
+  var i = 1
+  var arr = []
+  var str = item.contentDetails.duration
+
+  let n = str.length;
+  let duration = 0;
+  let curr = 0;
+  for(i=0; i<n; i++){
+    if(str[i] == 'P' || str[i] == 'T')
+    {}
+    else if(str[i] == 'H')
+    {
+      duration = duration + 3600*curr;
+      curr = 0;
+    }
+    else if(str[i] == 'M')
+    {
+
+      duration = duration + 60*curr;
+      curr = 0;
+    }
+    else if(str[i] == 'S')
+    {
+      duration = duration + curr;
+      curr = 0;
+    }
+    else
+    {
+      curr = 10*curr + parseInt(str[i]);
+    }
+  }
+
+  var embeddable = item.status.embeddable
+  var title = item.snippet.title
+  var thumbnailUrl = item.snippet.thumbnails.default.url
+  if(embeddable){
+    Program.create({ad:false, title, duration, thumbnailUrl, userId:req.user.id})
+    .then((program)=>{
+      return Video.create({youtubeId:yid, duration:duration})
+      .then((video)=>{
+        return program.addVideo(video)
+      })
+      .then((ret)=>{
+         res.send("Uploaded!");
+      })
+    })
+    .catch((err)=>{res.json({error:err})})
+  }else{
+    res.send("Not embeddable!");
+  }
+
+})
 
 router.post('/',
   (req, res) => {
@@ -113,9 +184,6 @@ router.post('/',
 
   }
 )
-
-
-
 
 router.get('/awspresignedpost', (req, res) => {
   const awsPath = s3.createPresignedPost({

@@ -115,6 +115,11 @@ router
               io.emit(upload_time, `on ${i} out of ${(ts.endtime - ts.starttime)/1000}`)
               var new_time = Math.floor((ts.starttime/1000) + i)
               var segment = await Segment.create({tkey:req.params.channelId + '' + new_time, time: new_time, progress:i, programId:program.id, timeslotId: ts.id, channelId:req.params.channelId})
+                        console.log(segment.tkey)
+
+              if(!segment){
+                console.log("failed to create", i)
+              }
             }
           })
           .then(()=>{
