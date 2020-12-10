@@ -24,6 +24,9 @@ export default class VideoPlayer extends Component {
       console.log("player ready")
       this.videoplayer.loadVideoById(this.props.src, this.props.progress)
     }
+    if(!this.props.showCover){
+      this.ytSound(true)
+    }
     event.target.playVideo();
   }
 
@@ -282,8 +285,9 @@ export default class VideoPlayer extends Component {
               <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
               <CastButton socketError={this.props.socketError} segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
               <div style={{display:"flex", backgroundColor:"black"}}>
-                <button style={{width:"40px", height:"40px", margin:"14px 0 14px 7px"}} onClick={this.upChannel} >c-up</button>
-                <button style={{width:"40px", height:"40px", margin:"14px 7px 14px 0"}} onClick={this.downChannel} >c-dn</button>   
+                <button className = "upchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 0 14px 7px"}} onClick={this.upChannel} ></button>
+                <button className = "downchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 0"}} onClick={this.downChannel} ></button>   
+                <button className = "keypad" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 7px"}} onClick={()=>{}} ></button>   
               </div>
             </div>
             <div style={{width:"100%", backgroundColor:"black"}}></div>

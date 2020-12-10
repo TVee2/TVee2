@@ -45,6 +45,7 @@ form div {
   display:inline-block;
   margin: 14px 7px;
   border-radius:5px;
+  image-rendering: pixelated;
 }
 
 .cast{
@@ -60,5 +61,25 @@ form div {
 }
 
 .fullscreen{
-  background-image: url('./icons/fullscreen.png')
+  background-image: url('./icons/fullscreen2.png')
+}
+
+.upchannel{
+  background-image: url('./icons/uparrow.png')
+}
+
+.downchannel{
+  background-image: url('./icons/downarrow.png')
+}
+
+.keypad{
+  background-image: url('./icons/keypad.png')
+}
+
+.plippi{
+  background-image: url('./icons/plippi.png')
+}
+
+.chatsubmit{
+  background-image: url('./icons/chatsubmit.png')
 }

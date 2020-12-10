@@ -63,11 +63,13 @@ export default class App extends React.Component {
           }
         </div>
         {this.props.user.id
-          ?<form className="center" style={{padding:"15px", display:"flex"}} onSubmit={this.handleSubmit}>
-          <input className="comment-btn" type="submit" value="Submit" disabled={this.state.submitDisabled}/>
-          <input type="text" style={{width:"100%"}} className="comment-input" name="comment" placeholder="Submit a Comment!" value={this.state.value} onChange={this.handleFormChange}/>
-          <br/>
-        </form>
+          ?<div>
+          <form className="center" style={{padding:"5px", display:"flex"}}>
+            <input type="text" style={{width:"100%"}} className="comment-input" name="comment" placeholder="Submit a Comment!" value={this.state.value} onChange={this.handleFormChange}/>
+          </form>
+          <button className="videobutton plippi" onClick={() => {console.log("test")}}/>
+          <button className="videobutton chatsubmit" onSubmit={this.handleSubmit} disabled={this.state.submitDisabled}/>
+        </div>
         :<h3>Login to chat</h3>
         }
       </div>
