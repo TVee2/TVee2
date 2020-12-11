@@ -8,6 +8,12 @@ import Scheduler from './components/Scheduler'
 import Entrance from './components/Entrance'
 import {me} from './store'
 import ChannelBrowse from './components/ChannelBrowse'
+import ManageVideos from './components/ManageVideos'
+import ManageLists from './components/ManageLists'
+import ManageChannels from './components/ManageChannels'
+import ManageMe from './components/ManageMe'
+import Devtools from './components/Devtools'
+
 import axios from 'axios'
 
 /**
@@ -42,6 +48,7 @@ class Routes extends Component {
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
+        <Route path="/home" component={UserHome} />
         <Route path="/entrance" component={Entrance} />
         <Route path="/tv/:channelId" render={(props) => (
             <TV  {...props} channels={this.state.channels} showCover={this.state.showCover} removeCover={this.removeCover} user={this.props.user}/>
@@ -56,8 +63,10 @@ class Routes extends Component {
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
-            <Route path="/home" component={UserHome} />
-            <Route path="/manage" component={Scheduler} />
+            <Route path="/manage" render={(props) => (
+                <Scheduler  {...props} user={this.props.user}/>
+              )}
+            />
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}
@@ -67,6 +76,11 @@ class Routes extends Component {
   }
 }
 
+            // <Route path="/manage/videos" component={ManageVideos} />
+            // <Route path="/manage/lists" component={ManageLists} />
+            // <Route path="/manage/channels" component={ManageChannels} />
+            // <Route path="/manage/me" component={ManageMe} />
+            // <Route path="/manage/devtools" component={Devtools} />
 /**
  * CONTAINER
  */

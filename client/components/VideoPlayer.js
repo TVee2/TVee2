@@ -47,6 +47,8 @@ export default class VideoPlayer extends Component {
       //has ended
       console.log("yt ended")
       this.setState({fill_time:true, playing:false})
+    }else if(event.data==-1){
+      this.setState({playing:false, fill_time:true, init_loading:false})
     }
     console.log("player state changed", event.data)
   }
@@ -205,6 +207,12 @@ export default class VideoPlayer extends Component {
   }
 
   render() {
+    var isFullscreen
+    if(document.fullscreenElement|| document.webkitFullscreenElement || document.mozFullScreenElement){
+      isFullscreen=true
+    }else{
+      isFullscreen=false
+    }
     var hide_main = this.state.fill_time || !this.props.src
     var vis1
     var vis2
@@ -247,19 +255,19 @@ export default class VideoPlayer extends Component {
       }
     }
     var ytheight="700px"
+              // <div id="topblinder" style={{backgroundColor:"black", height:"90px", width:"100%", position:"absolute", zIndex:"3"}}></div>
     return (
       <div style={{top:"-22px", width:this.props.vidWidth?this.props.vidWidth:"640px", height:"700px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
           <div id="vidcontainer" className="video-container" style={{display:"grid", height:"100%", width:"100%"}}>
             {this.props.showCover?<Entrance/>:null}
-            <div style={{visibility:vis6, position:"absolute"}}>
-              <div id="topblinder" style={{backgroundColor:"black", height:"90px", width:"640px", position:"absolute", zIndex:"3"}}></div>
-              <div id="noclickscreen" style={{height:"700px", width:"640px", position:"absolute", zIndex:"3"}}></div>
-              <div id="player" style={{position:"absolute"}}></div>
+            <div style={{visibility:vis6, position:"absolute", height:"100%", width:"100%"}}>
+              <div id="noclickscreen" style={{height:"100%", width:"100%", position:"absolute", zIndex:"3"}}></div>
+              <div id="player" style={{position:"absolute", width:"100%", height:"160%", top:"-30%"}}></div>
             </div>
-            <div id="botblinder" style={{backgroundColor:"white", height:"200px", width:"640px", top:"600px", position:"absolute", zIndex:"3"}}></div>
-            <img src="/static.gif" style={{width:"100%", height:"360px", gridColumn:"1", gridRow:"1", visibility:vis3, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
-            <img src="/no_signal.png" style={{width:"100%", height:"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
-            <img src="/no_signal.png" style={{width:"100%", height:"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
+            <div id="botblinder" style={{backgroundColor:isFullscreen?"":"white", height:"320px", width:"100%", top:"600px", position:"absolute", zIndex:"3"}}></div>
+            <img src="/static.gif" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis3, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
             <video
               style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1, margin:0, position:"relative", top:"50%", transform: "translateY(-50%)"}}
               id="vid"

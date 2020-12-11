@@ -3,6 +3,15 @@ import axios from 'axios'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import io from 'socket.io-client'
+import {Link} from 'react-router-dom'
+import ManageHeader from './ManageHeader'
+import {withRouter, Route, Switch} from 'react-router-dom'
+import ManageVideos from './ManageVideos'
+import ManageLists from './ManageLists'
+import ManageChannels from './ManageChannels'
+import ManageMe from './ManageMe'
+import Devtools from './Devtools'
+
 var socket = io()
 
 export default class Scheduler extends Component {
@@ -236,31 +245,30 @@ export default class Scheduler extends Component {
   render() {
     return (
       <div>
-        <div>Create a channel</div>
-        <form onSubmit={this.channelSubmit}>
-          <input type="text" disabled id="channelname" name="channelname"/><br/>
-          <input type="submit" disabled value="submit" />
-        </form>
-        <br />
-        <br/><br/>
-        <button onClick={this.bombsegments}>segment destroy previous</button>
-        <br/><br/><br/><br/>
+        <ManageHeader/>
 
-        <div>Add a youtube video to collection</div>
-        <form onSubmit={this.youtubeIdSubmit}>
-          <label htmlFor="yid">Youtube ID:</label>
-          <input type="text" id="yid" name="yid"/><br/>
-          <input type="submit" value="Add Video" />
-        </form>
-        <br />
-        <br />
-        <br />
-        <br />
-        My Videos:
-        <div>Name Duration</div>
-        {this.state.videos.map((v) => {
-          return <div><img src={v.thumbnailUrl}></img>{v.title} - {v.duration}</div>
-        })}
+
+        <Route path={this.props.match.url + "/videos"} render={(props) => (
+            <ManageVideos videos={this.state.videos} getMyVids={this.getMyVids}/>
+          )}
+        />
+        <Route path={this.props.match.url + "/lists"} render={(props) => (
+            <ManageLists/>
+          )}
+        />
+        <Route path={this.props.match.url + "/channels"} render={(props) => (
+            <ManageChannels channelSubmit={this.channelSubmit}/>
+          )}
+        />
+        <Route path={this.props.match.url + "/me"} render={(props) => (
+            <ManageMe/>
+          )}
+        />
+        <Route path={this.props.match.url + "/devtools"} render={(props) => (
+            <Devtools bombsegments={this.bombsegments}/>
+          )}
+        />
+
 
         <br />
         <br/><br/>

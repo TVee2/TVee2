@@ -80,6 +80,7 @@ router.post('/youtubelink', async (req, res) => {
   var obj = {}
   var i = 1
   var arr = []
+  console.log(item)
   var str = item.contentDetails.duration
 
   let n = str.length;
