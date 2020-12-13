@@ -10,5 +10,9 @@ module.exports = db.define('timeslot', {
   },
   recurring:{
     type: Sequelize.STRING
+  },
+  seeded:{
+    type: Sequelize.BOOLEAN,
+    defaultValue:false
   }
 })

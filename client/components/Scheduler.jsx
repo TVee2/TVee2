@@ -18,11 +18,26 @@ export default class Scheduler extends Component {
   constructor() {
     super()
 
-    this.state = {startdate:new Date(), segmentLoadingMessage:null, isUploading:false, uploadProgress:0, channels:[], utype:"aws", selectedChannelId:null, timeslotuploadloading:false, frequency:"single", timeslots: { before_ts:[], after_ts:[] }, videos:[], uploads:[]}
+    this.state = {
+      playlistItems:[],
+      startdate:new Date(),
+      segmentLoadingMessage:null,
+      isUploading:false,
+      uploadProgress:0,
+      channels:[],
+      utype:"aws",
+      selectedChannelId:null,
+      timeslotuploadloading:false,
+      frequency:"single",
+      timeslots: { before_ts:[], after_ts:[] },
+      videos:[],
+      uploads:[]
+    }
   }
 
   componentDidMount(){
     this.getMyVids()
+    this.getMyPlaylistItems()
     this.getChannels()
   }
 
@@ -32,6 +47,13 @@ export default class Scheduler extends Component {
 
   getMyVids = () => {
     axios.get('/api/videos')
+    .then((ret) => {
+      this.setState({videos:ret.data})
+    })
+  }
+
+  getMyPlaylistItems = () => {
+    axios.get('/api/playlist/items')
     .then((ret) => {
       this.setState({videos:ret.data})
     })
@@ -271,6 +293,10 @@ export default class Scheduler extends Component {
 
 
         <br />
+        <br/><br/>
+        <br/><br/>
+        <br/><br/>
+        <br/><br/>
         <br/><br/>
         <div>Select a channel</div>
         <select id="channel" defaultValue={'DEFAULT'} onChange={this.onChannelChange}>

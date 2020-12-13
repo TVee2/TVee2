@@ -13,6 +13,11 @@ const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME
 
 const {google} = require('googleapis');
 const youtube = google.youtube('v3');
+const auth = new google.auth.GoogleAuth({
+  scopes: ['https://www.googleapis.com/auth/youtube'],
+});
+
+google.options({auth});
 
 const s3 = new AWS.S3({
     accessKeyId: AWS_ID,
@@ -65,11 +70,6 @@ const aws_upload = multer({
 
 router.post('/youtubelink', async (req, res) => {
   var yid = req.body.yid
-  const auth = new google.auth.GoogleAuth({
-    scopes: ['https://www.googleapis.com/auth/youtube'],
-  });
-
-  google.options({auth});
 
   const yvid = await youtube.videos.list({
     part: 'status, contentDetails, snippet',
@@ -78,15 +78,13 @@ router.post('/youtubelink', async (req, res) => {
   var item = yvid.data.items[0]
 
   var obj = {}
-  var i = 1
   var arr = []
-  console.log(item)
   var str = item.contentDetails.duration
 
   let n = str.length;
   let duration = 0;
   let curr = 0;
-  for(i=0; i<n; i++){
+  for(let i=0; i<n; i++){
     if(str[i] == 'P' || str[i] == 'T')
     {}
     else if(str[i] == 'H')
@@ -225,62 +223,59 @@ router.post('/aws/metadata', (req, res)=>{
   })
 })
 
-
-router.post('/aws', (req, res) => {
-
-
-  // var upload_file = aws_upload.array('videofile', 1)
-  // upload_file(req, res, (err) => {
-  //       var file = req.files[0]
-  //       var mime = file.mimetype.split('/')[0] 
-
-  //       const newPath = file.location
-
-        // const awsPath = s3.createPresignedPost('putObject', {
-        //     Bucket: AWS_BUCKET_NAME,
-        //     Fields: {key:'videofile'},
-        //     Expires: 60 * 5,
-        //     Conditions: [
-        //       ["starts-with", "$Content-Type", "video/"],
-        //     ],
-        // })
-        // res.json({path:awsPath})
-        // const awsPath = s3.getSignedUrl('getObject', {
-        //     Bucket: AWS_BUCKET_NAME,
-        //     Key: file.key,
-        //     Expires: 60 * 5
-        // })
-
-
-  //       console.log(awsPath)
-  //       ffprobe(awsPath, {
-  //         path: ffprobeStatic.path
-  //       })
-  //       .then((data)=>{
-  //         var duration = data.streams[0].duration
-
-  //         if(err || mime!=="video"){
-  //           console.log("Error uploading to aws - ", err)
-  //           res.json(err)
-  //         }
-  //         Program.create({ad:false, title:req.body.title, duration:duration, userId:req.user.id})
-  //         .then((program)=>{
-  //           Video.create({path:newPath, duration:duration, original:true})
-  //           .then((video)=>{
-  //             return program.addVideo(video)
-  //           })
-  //           .then((ret)=>{
-  //              res.send("Uploaded!");
-  //           })
-  //         .catch((err)=>{res.json({error:err})})
-  //       })
-  //   })
-  // })
-})
-
 router.get('/', (req, res) => {
   Program.findAll({where:{userId: req.user.id}})
-  .then((videos)=>{
-    res.json(videos)
+  .then((programs)=>{
+    res.json(programs)
   })
 })
+
+// router.post('/aws', (req, res) => {
+//   // var upload_file = aws_upload.array('videofile', 1)
+//   // upload_file(req, res, (err) => {
+//   //       var file = req.files[0]
+//   //       var mime = file.mimetype.split('/')[0] 
+
+//   //       const newPath = file.location
+
+//         // const awsPath = s3.createPresignedPost('putObject', {
+//         //     Bucket: AWS_BUCKET_NAME,
+//         //     Fields: {key:'videofile'},
+//         //     Expires: 60 * 5,
+//         //     Conditions: [
+//         //       ["starts-with", "$Content-Type", "video/"],
+//         //     ],
+//         // })
+//         // res.json({path:awsPath})
+//         // const awsPath = s3.getSignedUrl('getObject', {
+//         //     Bucket: AWS_BUCKET_NAME,
+//         //     Key: file.key,
+//         //     Expires: 60 * 5
+//         // })
+
+
+//   //       console.log(awsPath)
+//   //       ffprobe(awsPath, {
+//   //         path: ffprobeStatic.path
+//   //       })
+//   //       .then((data)=>{
+//   //         var duration = data.streams[0].duration
+
+//   //         if(err || mime!=="video"){
+//   //           console.log("Error uploading to aws - ", err)
+//   //           res.json(err)
+//   //         }
+//   //         Program.create({ad:false, title:req.body.title, duration:duration, userId:req.user.id})
+//   //         .then((program)=>{
+//   //           Video.create({path:newPath, duration:duration, original:true})
+//   //           .then((video)=>{
+//   //             return program.addVideo(video)
+//   //           })
+//   //           .then((ret)=>{
+//   //              res.send("Uploaded!");
+//   //           })
+//   //         .catch((err)=>{res.json({error:err})})
+//   //       })
+//   //   })
+//   // })
+// })

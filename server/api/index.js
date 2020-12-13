@@ -6,7 +6,7 @@ router.use('/comments', require('./comments'))
 router.use('/videos', require('./vid'))
 router.use('/timeslots', require('./timeslots'))
 router.use('/channels', require('./channels'))
-
+router.use('/playlist', require('./playlist'))
 
 router.use((req, res, next) => {
   const error = new Error('Not Found')

@@ -5,6 +5,8 @@ const Channel = require('./channel')
 const Comment = require('./comment')
 const Video = require('./video')
 const Timeslot = require('./timeslot')
+const Playlist = require('./playlist')
+const PlaylistItem = require('./playlistItem')
 
 /**
  * If we had any associations to make, this would be a great place to put them!
@@ -29,6 +31,9 @@ Channel.belongsTo(User)
 Program.belongsTo(User)
 Program.belongsToMany(Video, {through: "videosrc"})
 
+Playlist.hasMany(PlaylistItem)
+Playlist.belongsTo(User)
+
 /**
  * We'll export all of our models here, so that any time a module needs a model,
  * we can just require it from 'db/models'
@@ -44,4 +49,6 @@ module.exports = {
   Comment,
   Video,
   Timeslot,
+  Playlist,
+  PlaylistItem,
 }

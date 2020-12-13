@@ -32,13 +32,13 @@ export default class ManageVideos extends Component {
         </form>
         <br />
         <br />
-        <br />
-        <br />
+        <br /><br />
         My Videos:
         <div>Name Duration</div>
         {this.props.videos.map((v) => {
-          return <div><img src={v.thumbnailUrl}></img>{v.title} - {v.duration}</div>
+          return <div><img src={v.thumbnailUrl}></img>{v.title} - {v.duration} <button>Remove Video</button></div>
         })}
+        <br /><br />
       </div>
     )
   }
