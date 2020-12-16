@@ -100,7 +100,7 @@ router
       for(var j = 0;j<duration;j++){
         arr.push({tkey:channelId+(timecounter+j), time:(timecounter+j)*1000, progress:j, programId:program.id, timeslotId:ts.id, channelId})
       }
-      await Segment.bulkCreate(arr)
+      await Segment.bulkCreate(arr, { ignoreDuplicates: true })
       ts.seeded=true
       await ts.save()
     }

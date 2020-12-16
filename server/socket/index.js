@@ -29,13 +29,13 @@ module.exports = async io => {
         timeslot = timeslots[j]
         for(let i=0;i<Math.ceil((timeslot.endtime - timeslot.starttime)/1000);i++){
           var new_time = Math.floor((timeslot.starttime/1000) + i)
-          arr.push({tkey:timeslot.channelId + '' + new_time, progress:i, programId:timeslot.programId, timeslotId: timeslot.id, channelId:timeslot.channelId})
+          var tkey = timeslot.channelId + '' + new_time
+          arr.push({tkey, progress:i, programId:timeslot.programId, timeslotId: timeslot.id, channelId:timeslot.channelId})
           // var segment = await Segment.create({tkey:ts.channelId + '' + new_time, progress:i, programId:ts.programId, timeslotId: ts.id, channelId:ts.channelId})
-          await Segment.bulkCreate(arr)
-          console.log(arr.length, "segments created")
         }
-        ts.seeded = true
-        ts.save()
+        await Segment.bulkCreate(arr, { ignoreDuplicates: true })
+        timeslot.seeded = true
+        timeslot.save()
       }
     })
   }
@@ -95,7 +95,6 @@ module.exports = async io => {
             var arr = []
             var duration = parseInt(current_item.duration)
             var ts = await Timeslot.create({starttime:timecounter, endtime:timecounter+duration*1000, programId:current_program.id})
-            console.log(ts.id, "timeslot created")
             timecounter = timecounter + duration
             if(timecounter<end_seed_time){
               break

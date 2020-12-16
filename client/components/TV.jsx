@@ -32,6 +32,7 @@ export default class TV extends Component {
       vidWidth:null,
       isYoutubeId:false
     }
+    this.interval=null
   }
 
   componentDidMount() {
@@ -83,8 +84,12 @@ export default class TV extends Component {
       var channel = res.data
       if(channel){
         this.setState({channel, showChannelId:true}, () => {
-          setTimeout(() => {
+          if(this.interval){
+            clearTimeout(this.interval)
+          }
+          this.interval = setTimeout(() => {
             this.setState({showChannelId:false})
+            this.interval=null
           }, 1500)
           socket.on(this.state.channel.id, segment => {
             var src
