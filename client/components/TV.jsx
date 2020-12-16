@@ -80,46 +80,51 @@ export default class TV extends Component {
     this.getComments(channelId)
     axios.get(`/api/channels/${channelId}`)
     .then((res) => {
-      this.setState({channel:res.data, showChannelId:true}, () => {
-        setTimeout(() => {
-          this.setState({showChannelId:false})
-        }, 1500)
-        socket.on(this.state.channel.id, segment => {
-          var src
-          var isYoutubeId = false
-          if(segment&&segment.program&&segment.program.ytVideoId){
-            isYoutubeId = true
-            src = segment.program.ytVideoId
-            var {progress} = segment
-            this.setState({src, isYoutubeId, progress, emitterChannelId:this.state.channel.id, segment})
-
-          }else if(!segment||!segment.program||!segment.program.videos.length===0||(!segment.program.videos[0].path&&!segment.program.videos[0].youtubeId)){
-            this.setState({src:"no source", emitterChannelId:this.state.channel.id,})
-          }else{
-            var video = segment.program.videos[0]
-            if(video.path){
-              src = video.path
-            }else if(video.youtubeId){
-              src = video.youtubeId
+      var channel = res.data
+      if(channel){
+        this.setState({channel, showChannelId:true}, () => {
+          setTimeout(() => {
+            this.setState({showChannelId:false})
+          }, 1500)
+          socket.on(this.state.channel.id, segment => {
+            var src
+            var isYoutubeId = false
+            if(segment&&segment.program&&segment.program.ytVideoId){
               isYoutubeId = true
+              src = segment.program.ytVideoId
+              var {progress} = segment
+              this.setState({src, isYoutubeId, progress, emitterChannelId:this.state.channel.id, segment})
+
+            }else if(!segment||!segment.program||!segment.program.videos.length===0||(!segment.program.videos[0].path&&!segment.program.videos[0].youtubeId)){
+              this.setState({src:"no source", emitterChannelId:this.state.channel.id,})
+            }else{
+              var video = segment.program.videos[0]
+              if(video.path){
+                src = video.path
+              }else if(video.youtubeId){
+                src = video.youtubeId
+                isYoutubeId = true
+              }
+              var {progress} = segment
+              this.setState({src, isYoutubeId, progress, emitterChannelId:this.state.channel.id, segment})
             }
-            var {progress} = segment
-            this.setState({src, isYoutubeId, progress, emitterChannelId:this.state.channel.id, segment})
-          }
-        })
-        socket.on(`c${this.state.channel.id}`, comment => {
-          this.setState({comments: [comment, ...this.state.comments]}, () => {
-            var div = document.getElementById("commentcontainer");
-            div.scrollTop = div.scrollHeight - div.clientHeight;
+          })
+          socket.on(`c${this.state.channel.id}`, comment => {
+            this.setState({comments: [comment, ...this.state.comments]}, () => {
+              var div = document.getElementById("commentcontainer");
+              div.scrollTop = div.scrollHeight - div.clientHeight;
+            })
+          })
+          socket.on('connect_error', () => {
+            this.setState({socket_error:true, src:'', progress:0})
+          })
+          socket.on('connect', () => {
+            this.setState({socket_error:false})
           })
         })
-        socket.on('connect_error', () => {
-          this.setState({socket_error:true, src:'', progress:0})
-        })
-        socket.on('connect', () => {
-          this.setState({socket_error:false})
-        })
-      })
+      }else{
+
+      }
     })
     .catch((err) => {
       console.log(err)
@@ -180,6 +185,12 @@ export default class TV extends Component {
     this.getChannel(prevChannel)
   }
 
+  changeChannel = (id) => {
+    history.push(`/tv/${id}`)
+    socket.off()
+    this.getChannel(id) 
+  }
+
   hideCover = () => {
     this.setState({showCover:false})
   }
@@ -216,6 +227,7 @@ export default class TV extends Component {
             emitterChannelId={this.state.emitterChannelId}
             incrementChannel={this.incrementChannel}
             decrementChannel={this.decrementChannel}
+            changeChannel={this.changeChannel}
           />
           <Chat
             smallwindow={smallwindow}

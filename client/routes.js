@@ -70,17 +70,14 @@ class Routes extends Component {
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}
-        <Route component={Login} />
+        {isLoggedIn? (
+           <Route component={UserHome} />
+        ):<Route component={Login} />}
       </Switch>
     )
   }
 }
 
-            // <Route path="/manage/videos" component={ManageVideos} />
-            // <Route path="/manage/lists" component={ManageLists} />
-            // <Route path="/manage/channels" component={ManageChannels} />
-            // <Route path="/manage/me" component={ManageMe} />
-            // <Route path="/manage/devtools" component={Devtools} />
 /**
  * CONTAINER
  */

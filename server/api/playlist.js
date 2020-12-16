@@ -66,7 +66,7 @@ router.get('/', async (req, res, next) => {
       var yid = items[j].snippet.resourceId.videoId
       var position = parseInt(items[j].snippet.position)
       const yvid = await youtube.videos.list({
-        part: 'status, contentDetails, snippet',
+        part: 'status, contentDetails, snippet, player',
         id: yid
       });
       if(yvid.data.items.length==0){
@@ -74,7 +74,13 @@ router.get('/', async (req, res, next) => {
         continue
       }
       var item = yvid.data.items[0]
-      console.log(yvid.data.items)
+      var embedHtml = item.player.embedHtml
+      var matchwidth = "width=\""
+      var matchlength = "height=\""
+      var widthindex = embedHtml.indexOf(matchwidth)+matchwidth.length
+      var heightindex = embedHtml.indexOf(matchlength)+matchlength.length
+      var width = embedHtml.slice(widthindex, widthindex+3)
+      var height = embedHtml.slice(heightindex, heightindex+3)
 
       var obj = {}
       var arr = []
@@ -122,6 +128,8 @@ router.get('/', async (req, res, next) => {
           embeddable,
           title,
           playableVideo:true,
+          width,
+          height,
         })
       }else{
         playlistItem = await PlaylistItem.create({
@@ -132,6 +140,8 @@ router.get('/', async (req, res, next) => {
           thumbnailUrl,
           embeddable,
           title,
+          width,
+          height,
           playableVideo:false,
         })
       }

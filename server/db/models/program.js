@@ -13,5 +13,11 @@ module.exports = db.define('program', {
   },
   ytVideoId: {
     type: Sequelize.STRING,
-  }
+  },
+  width:{
+    type: Sequelize.STRING,
+  },
+  height:{
+    type: Sequelize.STRING,
+  },
 })

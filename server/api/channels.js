@@ -70,17 +70,17 @@ router
   var channel = await Channel.findByPk(channelId)
   var playlist = await Playlist.findByPk(playlistId)
   channel.setPlaylist(playlist)
-  var items = await PlaylistItem.findAll({where:{playlistId:playlist.id}})
+  var items = await PlaylistItem.findAll({where:{playlistId:playlist.id}, order:[['position','ASC']]})
 
-  var now = new Date().getTime()
-  var timecounter = Math.floor(now/1000)
+  var now = Math.floor(new Date().getTime()/1000)
+  var timecounter = now
 
   var item_arr = []
 
   for(var i=0;i<items.length;i++){
     let item = items[i]
-    let {title, thumbnailUrl, duration, ytVideoId} = item
-    var program = await Program.findOrCreate({where: {title, thumbnailUrl, duration, ytVideoId}})
+    let {title, thumbnailUrl, duration, width, height, ytVideoId} = item
+    var program = await Program.findOrCreate({where: {title, thumbnailUrl, width, height, duration, ytVideoId}})
     if(Array.isArray(program)){
       program = program[0]
     }
@@ -90,16 +90,17 @@ router
   var i = 0
   while(timecounter < (now+(60*60*24))) {
     var {title, thumbnailUrl, duration, ytVideoId} = item_arr[i].item
+    duration = parseInt(duration)
     var program = item_arr[i].program
 
-    var ts = await Timeslot.create({programId:program.id, channelId, starttime:timecounter, endtime:timecounter+(duration*1000), recurring:false}).catch((e)=>{console.log(e)})
+    var ts = await Timeslot.create({programId:program.id, channelId, starttime:timecounter*1000, endtime:(timecounter+duration)*1000, recurring:false})
 
     if(timecounter < (now+(60*60*2))){
       var arr = []
       for(var j = 0;j<duration;j++){
-        arr.push({tkey:channelId+(timecounter+j), time:(timecounter+j), progress:j, programId:program.id, timeslotId:ts.id, channelId})
+        arr.push({tkey:channelId+(timecounter+j), time:(timecounter+j)*1000, progress:j, programId:program.id, timeslotId:ts.id, channelId})
       }
-      await Segment.bulkCreate(arr).catch((e)=>{console.log(e)})
+      await Segment.bulkCreate(arr)
       ts.seeded=true
       await ts.save()
     }
