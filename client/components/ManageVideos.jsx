@@ -24,6 +24,9 @@ export default class ManageVideos extends Component {
     return (
       <div>
         <h1>Manage Videos</h1>
+
+        <div>DELETING THIS TAB</div>
+
         <div>Add a youtube video to collection</div>
         <form onSubmit={this.youtubeIdSubmit}>
           <label htmlFor="yid">Youtube ID:</label>

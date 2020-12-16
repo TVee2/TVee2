@@ -20,13 +20,15 @@ Timeslot.belongsTo(Channel)
 
 Segment.belongsTo(Program)
 Segment.belongsTo(Timeslot)
+Segment.belongsTo(Channel)
 
 Comment.belongsTo(User)
 Comment.belongsTo(Channel)
 
 Channel.hasMany(Segment)
-Segment.belongsTo(Channel)
 Channel.belongsTo(User)
+Channel.belongsTo(Playlist)
+Channel.hasOne(PlaylistItem, {as: "lastSeededPlaylistItem"})
 
 Program.belongsTo(User)
 Program.belongsToMany(Video, {through: "videosrc"})

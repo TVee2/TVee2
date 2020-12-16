@@ -48,7 +48,7 @@ export default class VideoPlayer extends Component {
       console.log("yt ended")
       this.setState({fill_time:true, playing:false})
     }else if(event.data==-1){
-      this.setState({playing:false, fill_time:true, init_loading:false})
+      this.setState({playing:false, fill_time:true})
     }
     console.log("player state changed", event.data)
   }

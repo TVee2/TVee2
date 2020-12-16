@@ -85,12 +85,18 @@ export default class TV extends Component {
           this.setState({showChannelId:false})
         }, 1500)
         socket.on(this.state.channel.id, segment => {
-          if(!segment||!segment.program||!segment.program.videos.length===0||(!segment.program.videos[0].path&&!segment.program.videos[0].youtubeId)){
+          var src
+          var isYoutubeId = false
+          if(segment&&segment.program&&segment.program.ytVideoId){
+            isYoutubeId = true
+            src = segment.program.ytVideoId
+            var {progress} = segment
+            this.setState({src, isYoutubeId, progress, emitterChannelId:this.state.channel.id, segment})
+
+          }else if(!segment||!segment.program||!segment.program.videos.length===0||(!segment.program.videos[0].path&&!segment.program.videos[0].youtubeId)){
             this.setState({src:"no source", emitterChannelId:this.state.channel.id,})
           }else{
             var video = segment.program.videos[0]
-            var src
-            var isYoutubeId = false
             if(video.path){
               src = video.path
             }else if(video.youtubeId){

@@ -37,7 +37,7 @@ export default class Scheduler extends Component {
 
   componentDidMount(){
     this.getMyVids()
-    this.getMyPlaylistItems()
+    // this.getMyPlaylistItems()
     this.getChannels()
   }
 

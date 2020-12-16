@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const {Playlist, PlaylistItem} = require('../db/models')
 module.exports = router
+
 const {google} = require('googleapis');
 const youtube = google.youtube('v3');
 const auth = new google.auth.GoogleAuth({
@@ -68,7 +69,12 @@ router.get('/', async (req, res, next) => {
         part: 'status, contentDetails, snippet',
         id: yid
       });
+      if(yvid.data.items.length==0){
+        console.log("unable to obtain item, private or restricted")
+        continue
+      }
       var item = yvid.data.items[0]
+      console.log(yvid.data.items)
 
       var obj = {}
       var arr = []

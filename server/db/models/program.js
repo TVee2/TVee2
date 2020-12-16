@@ -11,8 +11,7 @@ module.exports = db.define('program', {
   duration:{
     type: Sequelize.STRING,
   },
-  ad:{
-    type: Sequelize.BOOLEAN,
-    allowNull:false
+  ytVideoId: {
+    type: Sequelize.STRING,
   }
 })
