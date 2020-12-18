@@ -28,13 +28,15 @@ Comment.belongsTo(Channel)
 Channel.hasMany(Segment)
 Channel.belongsTo(User)
 Channel.belongsTo(Playlist)
-Channel.hasOne(PlaylistItem, {as: "lastSeededPlaylistItem"})
 
 Program.belongsTo(User)
 Program.belongsToMany(Video, {through: "videosrc"})
 
 Playlist.hasMany(PlaylistItem)
 Playlist.belongsTo(User)
+
+Program.belongsTo(PlaylistItem)
+PlaylistItem.belongsTo(Playlist)
 
 /**
  * We'll export all of our models here, so that any time a module needs a model,
