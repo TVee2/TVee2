@@ -6,37 +6,8 @@ import PixDownload from './PixDownload'
 import PixelLoader from './PixelLoader'
 import {fetchOwnPost, deletePost, saveDraft, setPalette} from '../store'
 import axios from 'axios'
-import history from "../history"
+import history from '../../../history'
 import {defaultProfilePix} from '../defaultPix'
-
-var tabData3 = [
-  { name: 'My Pix', isActive: false },
-  { name: 'Profile', isActive: true },
-];
-
-class Tabs extends React.Component {
-  render() {
-    return (
-      <ul className="nav nav-tabs">
-        {tabData3.map((tab) => {
-          return (
-            <Tab key={tab.name} data={tab} isActive={this.props.activeTab === tab} handleClick={this.props.changeTab.bind(this,tab)} />
-          );
-        })}
-      </ul>
-    );
-  }
-}
-
-class Tab extends React.Component {
-  render() {
-    return (
-      <li onClick={this.props.handleClick} className={this.props.isActive ? "active" : null}>
-        <a>{this.props.data.name}</a>
-      </li>
-    );
-  }
-}
 
 class OwnProfile extends React.Component {
   constructor(props) {
@@ -44,12 +15,7 @@ class OwnProfile extends React.Component {
     this.state={
       me:{},
       page: 1,
-      activeTab: tabData3[0]
     }
-  }
-
-  handleClick = (tab) => {
-    this.setState({activeTab: tab});
   }
 
   componentDidUpdate(prevProps){
@@ -158,7 +124,8 @@ class OwnProfile extends React.Component {
     )
   }
 
-  retOwnPix = () => {
+  render(){
+
     var posts=this.props.ownList.result.rows;
     var isLoading = this.props.ownPosts?this.props.ownPosts.isLoading:null;
     var page = this.props.ownPosts.list.page
@@ -171,7 +138,9 @@ class OwnProfile extends React.Component {
     if(page>1){
       isPrev=true
     }
-
+    if(posts && posts.length==0){
+      return (<div>there dont appear to be any submitted pix</div>)
+    }
     return (
       <div>
         {isLoading?<PixelLoader/>:(posts&&posts.length===0?<p>Create some Pixs!</p>:null)}
@@ -230,20 +199,6 @@ class OwnProfile extends React.Component {
           {isNext?<button onClick={this.handleNext} className="nextArrow"></button>:<div className="hiddenSpacer">spacer</div>}
         </div>
       </div>)
-  }
-
-
-  render(){
-    return (
-      <div>
-        {this.props.self?
-        <div>
-            <Tabs activeTab={this.state.activeTab} changeTab={this.handleClick} />
-            {this.state.activeTab.name==="My Pix"?this.retOwnPix():null}        
-            {this.state.activeTab.name==="Profile"?this.retProfile():null}
-      </div>:null}
-      </div>
-    )
   }
 }
 

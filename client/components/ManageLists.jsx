@@ -60,7 +60,8 @@ export default class ManageLists extends Component {
             return
           }else{
             return <ul>Playlist {i+1} - {playlist.title}{playlist.playlistItems.map((v) => {
-              return <div><img src={v.thumbnailUrl}></img>{v.title} - {new Date(v.duration * 1000).toISOString().substr(11, 8)}</div>
+              console.log(v)
+              return <div><img src={v.thumbnailUrl}></img>embeddable - {v.embeddable?"true":"false"} - {v.title} - {new Date(v.duration * 1000).toISOString().substr(11, 8)}</div>
             })}</ul>
           }
         })}

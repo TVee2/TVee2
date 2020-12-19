@@ -83,3 +83,263 @@ form div {
 .chatsubmit{
   background-image: url('./icons/chatsubmit.png')
 }
+
+.chat{
+  background-image: url('./icons/chat.png')
+}
+
+.listpix{
+  background-image: url('./icons/listpix.png')
+}
+
+.createpix{
+  background-image: url('./icons/pencil.png')
+}
+
+.eight{
+  background-image: url('./icons/eight.png')
+}
+
+.sixteen{
+  background-image: url('./icons/sixteen.png')
+}
+
+
+.like{
+  background-image: url('./icons/unlike.png');
+  background-size: cover;
+  height:40px;
+  width:40px;
+}
+
+.unlike{
+  background-image: url('./icons/like.png');
+  background-size: cover;  
+  height:40px;
+  width:40px;
+}
+
+.cancel{
+  background-image: url('./icons/cancel.png');
+  background-size: cover;  
+  height:40px;
+  width:40px;
+  margin: 0 4px; 
+  margin-left:auto; 
+}
+
+.logoutico{
+  background-image: url('./icons/logoutico.png')
+}
+
+.editico{
+  height: 40px;
+  width: 40px;
+  background-size: cover;
+  background-image: url('./icons/editpix.png')
+}
+
+.userico{
+  background-image: url('./icons/userico.png')
+}
+
+.loginico{
+  background-image: url('./icons/loginico.png')
+}
+
+.board{
+  background-image: url('./icons/colors.png')
+}
+
+.codeEntrance{
+  background-image: url('./icons/kidicon.png') 
+}
+
+.rooms{
+  background-image: url('./icons/mgroom.png')
+}
+
+.studentLogin{
+  background-image: url('./icons/kidicon.png')
+}
+
+.createPix{
+  background-image: url('./icons/pencil.png')
+}
+
+.myPix{
+  background-image: url('./icons/face.png')
+
+}
+
+.loginSignup{
+  background-image: url('./icons/teach.png')
+}
+
+.discover{
+  background-image: url('./icons/roomselect.png')
+}
+
+.gify{
+    background-image: url('./icons/reel.png')
+}
+
+.earthleave{
+    background-image: url('./icons/roomleave.png')
+}
+
+.question{
+  height: 20px;
+  width: 20px;
+  position:absolute;
+  background-color:white;
+  right:0px;
+  border-radius: 2px;
+  background-image: url('./icons/question.png');
+  background-size: cover;
+  margin:10px;
+}
+
+.extendPage{
+  height: 40px;
+  width: 40px;
+  background-size: cover;
+  margin: 10px auto;
+  background-image: url('./icons/downArrow.png');
+  display: block;
+}
+
+.emptyroom{
+  top:-10px;
+  left:-15px;
+  height: 60px;
+  width: 60px;
+  vertical-align: bottom;
+  background-color: white;
+  background-size: cover;
+  background-image: url('./icons/emptyroom.png');
+  border-radius:3px;
+  border-style:solid;
+  border-color:black;
+  border-width:1px;
+  position:absolute;
+}
+
+.studentcard{
+  top:-5px;
+  left:-10px;
+  height: 60px;
+  width: 60px;
+  vertical-align: bottom;
+  background-color: white;
+  background-size: cover;
+  background-image: url('./icons/hollowperson.png');
+  border-radius:3px;
+  border-style:solid;
+  border-color:black;
+  border-width:1px;
+  position:absolute;
+}
+
+.selectedDefaultRoom{
+  height: 130px;
+  width: 130px;
+  background-size: cover;
+  display:block;
+  margin:auto;
+  background-image: url('./icons/home.png');
+  border-radius:20px;
+  border-style:solid;
+  border-color:black;
+  border-width:4px;
+}
+
+
+#pli{
+  height: 40px;
+  width: 40px;
+  background-image: url('./icons/pli.png');
+  background-size: cover;
+  margin:0;
+  display:inline-block;
+}
+
+#ppi{
+  height: 40px;
+  width: 40px;
+  background-image: url('./icons/ppi.png');
+  background-size: cover;
+  margin:0;
+  display:inline-block;
+}
+
+#pix{
+  height: 40px;
+  width: 40px;  
+  background-image: url('./icons/pix.png');
+  background-size: cover;
+  margin:0;
+  display:inline-block;
+}
+
+#mainlogo{
+  height: 40px;
+  width: 40px;  
+  background-image: url('./icons/mainlogo.png');
+  background-size: cover;
+  margin:0 2px;
+  display:inline-block;
+  background-color:white;
+  border-radius:2px;
+}
+
+.zcancel{
+  background-image: url('./icons/cancel.png');
+  background-size: cover;  
+  height:40px;
+  width:40px;
+  margin: 0 4px; 
+}
+
+.nextArrow{
+  margin: 10px;
+  height: 40px;
+  width: 40px;
+  background-size: cover;
+  background-image: url('./icons/nextArrow.png');
+}
+
+.prevArrow{
+  margin: 10px;  
+  height: 40px;
+  width: 40px;
+  background-size: cover;
+  background-image: url('./icons/prevArrow.png');
+}
+
+.deleteBtn{
+  height: 40px;
+  width: 40px;
+  background-size: cover;
+  background-image: url('./icons/delete.png');  
+}
+
+.downloadBtn{
+  height: 40px;
+  width: 40px;
+  background-size: cover;
+  background-image: url('./icons/download.png');  
+}
+
+.fa-facebook {
+  background-image: url('./icons/facebook.png');
+}
+
+.fa-twitter {
+  background-image: url('./icons/twitter.png');  
+  background-color:white;
+}
+
+.canvascreate > td{
+  cursor: url('./icons/pencil.cur'), auto;
+}

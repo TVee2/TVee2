@@ -14,6 +14,7 @@ async function seedNext2hrSegments(channelId){
   var arr = []
   let timeslot
   for(var j = 0;j<timeslots.length;j++){
+    arr = []
     timeslot = timeslots[j]
     let segment
     let tkey
@@ -28,6 +29,8 @@ async function seedNext2hrSegments(channelId){
     timeslot.seeded = true
     await timeslot.save()
   }
+
+
 }
 
 function indexOfMatch(array, fn) {
@@ -68,12 +71,14 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
   var item_arr = []
   for(i;i<items.length;i++){
     let item = items[i]
-    let {id, title, thumbnailUrl, duration, width, height, ytVideoId} = item
-    var program = await Program.findOrCreate({where: {title, thumbnailUrl, width, height, duration, ytVideoId, playlistItemId:id}})
-    if(Array.isArray(program)){
-      program = program[0]
+    if(item.embeddable){    
+      let {id, title, thumbnailUrl, duration, width, height, ytVideoId} = item
+      var program = await Program.findOrCreate({where: {title, thumbnailUrl, width, height, duration, ytVideoId, playlistItemId:id}})
+      if(Array.isArray(program)){
+        program = program[0]
+      }
+      item_arr.push({item, program})
     }
-    item_arr.push({item, program})
   }
 
   //while loop, start on last item and move up position, incremenet time each loop iteration

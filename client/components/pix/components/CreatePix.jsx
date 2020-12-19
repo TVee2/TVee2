@@ -11,9 +11,9 @@ var tabData = [
   { name: '16X16 Pix', dim:16, symbol:"a", isActive: false },
 ];
 
-if(window_width>500){
-  tabData.push(  { name: '32X32 Pix', dim:32, symbol:"b", isActive: false })
-}
+// if(window_width>500){
+//   tabData.push(  { name: '32X32 Pix', dim:32, symbol:"b", isActive: false })
+// }
 
 class Tabs extends React.Component {
   render() {
@@ -31,10 +31,9 @@ class Tabs extends React.Component {
 
 class Tab extends React.Component {
   render() {
+    console.log(this.props.isActive, this.props.data.name)
     return (
-      <li onClick={this.props.handleClick} className={this.props.isActive ? "active" : null}>
-        <a>{this.props.data.name}</a>
-      </li>
+        <button style={{margin:"0 2px", backgroundColor:`${this.props.isActive?"papayawhip":"white"}`}} onClick={this.props.handleClick} className={`videobutton ${this.props.data.dim==8?"eight":"sixteen"}`}></button>
     );
   }
 }

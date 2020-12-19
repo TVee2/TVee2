@@ -115,6 +115,12 @@ router.get('/', async (req, res, next) => {
       }
 
       var embeddable = item.status.embeddable
+      var countryCode = 'US'
+
+      if(item && item.contentDetails && item.contentDetails.regionRestriction && item.contentDetails.regionRestriction.blocked){
+        embeddable = !item.contentDetails.regionRestriction.blocked.includes(countryCode) && embeddable
+      }
+
       var title = item.snippet.title
       var thumbnailUrl = item.snippet.thumbnails.default.url
       var playlistItem

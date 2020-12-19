@@ -53,7 +53,7 @@ export default class CastButton extends Component {
       }.bind(this)
     );
     this.setState({playerState:this.remotePlayer.playerState})
-    this.castSrc()
+    // this.castSrc()
   }
 
   castSrc = () => {
