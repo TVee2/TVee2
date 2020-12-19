@@ -31,7 +31,6 @@ class Tabs extends React.Component {
 
 class Tab extends React.Component {
   render() {
-    console.log(this.props.isActive, this.props.data.name)
     return (
         <button style={{margin:"0 2px", backgroundColor:`${this.props.isActive?"papayawhip":"white"}`}} onClick={this.props.handleClick} className={`videobutton ${this.props.data.dim==8?"eight":"sixteen"}`}></button>
     );

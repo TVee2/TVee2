@@ -1,5 +1,7 @@
 const router = require('express').Router()
 const User = require('../db/models/user')
+const Pix = require('../db/models/pix')
+
 module.exports = router
 
 router.post('/login', async (req, res, next) => {
@@ -50,6 +52,19 @@ router.post('/logout', (req, res) => {
 
 router.get('/me', (req, res) => {
   res.json(req.user)
+})
+
+router.get('/me/detailed', (req, res) => {
+  var user = req.user
+  if(req.user){
+    User.findByPk(user.id, {include: [{model:Pix, as:"profilePicture"}]})
+    .then((user)=>{
+      return res.json(user)
+    })
+    .catch((err)=>{console.log(err)})
+  }else{
+    return res.json(user)
+  }
 })
 
 router.use('/google', require('./google'))

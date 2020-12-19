@@ -51,47 +51,25 @@ export const addPost = (post) => {
     axios.post('/api/posts', post)
     .then(res=>res.data)
     .then((posts)=>{
-      socket.emit('post', post);
-      //if room does not match, switch room
-      dispatch(updateSelectedRoom(post.roomId))
-    })
-    .then(()=>{
-        history.push('/post')
+
     })
   };
 };
 
 export const addPostPix = (pix) => {
   return dispatch => {
-    axios.post('/api/posts/pix', pix)
+    axios.post('/api/pix', pix)
     .then(res=>res.data)
     .then((post)=>{
-      history.push(`/room/${post.roomId}`)
     })
   };
 };
 
 export const editPostPix = (pix) => {
   return dispatch => {
-    axios.put(`/api/posts/pix/${pix.id}`, pix)
+    axios.put(`/api/pix/${pix.id}`, pix)
     .then(res=>res.data)
     .then((posts)=>{
-      history.push('/mypix')
-    })
-  };
-};
-
-export const saveReel = (arr) => {
-  return dispatch => {
-    axios.post('/api/reel', arr)
-    .then(res=>res.data)
-    .then((data)=>{
-      // socket.emit('post', post);
-      //if room does not match, switch room
-      // dispatch(updateSelectedRoom(post.roomId))
-    })
-    .then(()=>{
-        history.push('/post')
     })
   };
 };
@@ -99,7 +77,6 @@ export const saveReel = (arr) => {
 
 export const fetchPostList = (roomId) => {
   return dispatch => {
-    // dispatch(fetchPosts({list:[], isLoading:true}))    
     axios.get('/api/posts', roomId)
     .then(res => res.data)
     .then(posts =>{
@@ -122,30 +99,6 @@ export const fetchRoomPostList = (roomId) => {
       dispatch(startLoading(false))      
       console.log(err)
     })
-  }
-}
-
-export const likePost = (like) => {
-  return dispatch => {
-    axios.post('/api/posts/likes/'+like.postId, like)
-    .then(res => res.data)
-    .then(post =>{
-      dispatch(fetchRoomPostList(like.roomId))
-      dispatch(switchPost(post))
-    })
-    .catch((err)=>{console.log(err)})
-  }
-}
-
-export const unlikePost = (like) => {
-  return dispatch => {
-    axios.post('/api/posts/unlike/'+like.postId, like)
-    .then(res => res.data)
-    .then(post =>{
-      dispatch(fetchRoomPostList(like.roomId))
-      dispatch(switchPost(post))
-    })
-    .catch((err)=>{console.log(err)})
   }
 }
 

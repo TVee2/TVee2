@@ -15,6 +15,7 @@ class OwnProfile extends React.Component {
     this.state={
       me:{},
       page: 1,
+      pixList:[]
     }
   }
 
@@ -32,19 +33,18 @@ class OwnProfile extends React.Component {
   }
 
   getOwnProfile = () => {
-    if(this.props.self.id){
-      axios.get('/auth/me/detailed')
-      .then((res)=>{
-        var me = res.data
-        this.setState({me})
-      })
-    } 
+    axios.get('/auth/me/detailed')
+    .then((res)=>{
+      var me = res.data
+      this.setState({me})
+    })
   }
 
   getPix = () => {
-    if(this.props.self.id){
-      this.props.fetchOwnPost({id:this.props.self.id, page:this.state.page});
-    } 
+    axios.get(`/api/pix/${this.state.page}`)
+    .then((ret) => {
+      this.setState({pixList:ret.data})
+    })
   }
 
   deletePost = (evt) => {
@@ -125,9 +125,8 @@ class OwnProfile extends React.Component {
   }
 
   render(){
-
-    var posts=this.props.ownList.result.rows;
-    var isLoading = this.props.ownPosts?this.props.ownPosts.isLoading:null;
+    var posts=this.state.pixList.result
+    var isLoading = this.props.ownPosts?this.props.ownPosts.isLoading:null
     var page = this.props.ownPosts.list.page
     var pages = this.props.ownPosts.list.pages
     var isPrev = false;
@@ -145,7 +144,7 @@ class OwnProfile extends React.Component {
       <div>
         {isLoading?<PixelLoader/>:(posts&&posts.length===0?<p>Create some Pixs!</p>:null)}
         {posts&&posts.length?posts.map((post, i) =>{
-          var pix=post.pix
+          var pix=post
           var d=new Date(pix.createdAt);
           var created_at=d.toDateString()
           var pix_size=pix.size;
@@ -176,7 +175,6 @@ class OwnProfile extends React.Component {
                 <h4>Size: {size}</h4>
                 <p>Created: {created_at}</p>
                 <p>Palette #: {pix.palette}</p>
-                <p>Likes: {post.lovers.length}</p>
               </div>
             </div>
             <div className="personButtonContainer">

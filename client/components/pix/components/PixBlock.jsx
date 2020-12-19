@@ -2,7 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import {colors} from '../colors'
 import { connect } from 'react-redux'
-
 class PixBlock extends React.Component {
   constructor(props) {
     super(props)
