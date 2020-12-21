@@ -15,7 +15,7 @@ class OwnProfile extends React.Component {
     this.state={
       me:{},
       page: 1,
-      pixList:[]
+      pixList:{list:{result: [], count: 0, limit: 0, page: 1, pages: 0}, isLoading:false},
     }
   }
 
@@ -50,9 +50,10 @@ class OwnProfile extends React.Component {
   deletePost = (evt) => {
     var r = confirm("Are you sure you want to delete pix?")
     if(r){
-      const post = this.props.ownPosts.list.result.rows.find((post) => (post.pix && evt.target.value==post.pix.id) || (post.reel && evt.target.value==post.reel.id));
+      const post = this.state.pixList.result.find((pix) => (pix && evt.target.value==pix.id));
+      console.log(post.id)
 
-      axios.delete('/api/posts/'+post.id)
+      axios.delete('/api/pix/'+post.id)
       .then(()=>{
         this.getPix();
       })
@@ -63,7 +64,7 @@ class OwnProfile extends React.Component {
   goToEdit = (pix) => {
     this.props.saveDraft({img: pix.img, palette:pix.palette})
     this.props.setPalette(pix.palette)
-    history.push(`/edit/${pix.id}`)
+    this.props.handleCreateClick()
   }
 
   goToProfPicEdit = ()=>{
@@ -126,9 +127,9 @@ class OwnProfile extends React.Component {
 
   render(){
     var posts=this.state.pixList.result
-    var isLoading = this.props.ownPosts?this.props.ownPosts.isLoading:null
-    var page = this.props.ownPosts.list.page
-    var pages = this.props.ownPosts.list.pages
+    var isLoading = this.state.pixList?this.state.pixList.isLoading:null
+    var page = this.state.pixList.page
+    var pages = this.state.pixList.pages
     var isPrev = false;
     var isNext = false;
     if(page<pages){
@@ -166,16 +167,11 @@ class OwnProfile extends React.Component {
             <div className="row">
               <div className="col-xs-4 no-padding">
                 <div key={pix.id} onClick={() =>{console.log(pix.img.toString())}}>     
-                  <PixBlock id={pix.id} grab={grab} pix={pix} palette={pix.palette} data={pix.img}/>
+                  <PixBlock id={pix.id} dim={56} grab={grab} pix={pix} palette={pix.palette}/>
                 </div>
               </div>
               <div className="col-xs-1">
               </div>                      
-              <div className="col-xs-7">
-                <h4>Size: {size}</h4>
-                <p>Created: {created_at}</p>
-                <p>Palette #: {pix.palette}</p>
-              </div>
             </div>
             <div className="personButtonContainer">
               <button className = 'hiddenSpacer' ></button>

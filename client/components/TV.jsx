@@ -144,7 +144,9 @@ export default class TV extends Component {
     .then((res) => {
       this.setState({comments:res.data}, () => {
         var div = document.getElementById("commentcontainer");
-        div.scrollTop = div.scrollHeight - div.clientHeight;
+        if(div){
+          div.scrollTop = div.scrollHeight - div.clientHeight;
+        }
       })
     })
     .catch((err) => {

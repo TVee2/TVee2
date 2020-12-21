@@ -11,7 +11,11 @@ class PixBlock extends React.Component {
 
   componentWillMount(){
     var dim
+
     if(this.props.dim){
+      if(this.props.dim%8){
+        console.log("dim should be divisible by 8 for crisp pix rendering")
+      }
       dim = this.props.dim
     }else{
       dim = window.innerWidth>464?128:96
@@ -57,8 +61,9 @@ class PixBlock extends React.Component {
     var edge = Math.sqrt(data.length)
     var size = this.props.drawing_size
     var cell_width
-    if(size){
-      cell_width=size
+
+    if(this.props.dim){
+      cell_width=2*this.props.dim/edge
     }else{
       cell_width = window.innerWidth>464?128/edge:96/edge
       cell_width = 2*cell_width
@@ -80,7 +85,7 @@ class PixBlock extends React.Component {
     var id = pix.id;
     var conv = this.dataToClasses;
     return (
-      <div onClick={this.props.onClick} className="bunga" style={{cursor:this.props.pointer?"pointer":null, marginLeft:this.props.lmarg, display:"inlineBlock", height:"100%", fontSize:"0px", padding:`${this.props.tbpad||0}px 0` }}>
+      <div onClick={this.props.onClick?this.props.onClick.bind(this, pix):null} className="bunga" style={{cursor:this.props.pointer?"pointer":null, marginLeft:this.props.lmarg, display:"inlineBlock", height:"100%", fontSize:"0px", padding:`${this.props.tbpad||0}px 0` }}>
         {data&&data.length?<canvas value={this.props.num} style={{height:this.state.dim+"px", width:this.state.dim+"px",}} id={"myCanvas"+this.state.grab+id} width={2*this.state.dim} height={2*this.state.dim}></canvas>:null}
       </div>
     )

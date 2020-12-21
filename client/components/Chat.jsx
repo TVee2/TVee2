@@ -4,10 +4,10 @@ import axios from 'axios'
 import {Provider} from 'react-redux'
 import store from './pix/store'
 import CreatePix from './pix/components/CreatePix'
+import PixBlock from './pix/components/PixBlock'
 import ListPix from './pix/components/ListPix'
-// import "./pix/bootstrap.css";
 import "./pix/styles.css";
-
+import PixBar from './PixBar'
 
 export default class App extends React.Component {
   constructor() {
@@ -16,7 +16,9 @@ export default class App extends React.Component {
       value: '',
       isCreateSelected:false,
       isListSelected:false,
-      isChatSelected:true
+      isChatSelected:true,
+      showPlippiBar:false,
+      selectedPix:null
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleFormChange = this.handleFormChange.bind(this)
@@ -61,6 +63,10 @@ export default class App extends React.Component {
     this.setState({isCreateSelected:false, isListSelected:true, isChatSelected:false})
   }
 
+  selectPixHandler = (pix) => {
+    this.setState({selectedPix:pix})
+  }
+
   render() {
     let list = this.props.comments.slice().reverse()
     const user = this.props.user
@@ -78,7 +84,7 @@ export default class App extends React.Component {
             <button className="videobutton listpix" onClick={this.handleListClick}></button>
           </div>
           {this.state.isChatSelected?<div>
-            <div className="comment-container" id="commentcontainer" style={{height:"600px", overflow:"overlay", padding:"10px", backgroundColor:"ivory"}}>
+            <div className="comment-container" id="commentcontainer" style={{height:"500px", overflow:"overlay", padding:"10px", backgroundColor:"ivory"}}>
               {
                 list && list.length
                 ?list.map(comment => {
@@ -93,17 +99,27 @@ export default class App extends React.Component {
             </div>
             {this.props.user.id
               ?<div>
-              <form className="center" style={{padding:"5px", display:"flex"}}>
-                <input type="text" style={{width:"100%"}} className="comment-input" name="comment" placeholder="Submit a Comment!" value={this.state.value} onChange={this.handleFormChange}/>
-              </form>
-              <button className="videobutton plippi" onClick={() => {console.log("test")}}/>
-              <button className="videobutton chatsubmit" onSubmit={this.handleSubmit} disabled={this.state.submitDisabled}/>
-            </div>
+                {this.props.user.email}:
+                {!this.state.showPlippiBar?<div>
+                  <form onSubmit={this.handleSubmit}  disabled={this.state.submitDisabled} className="center" style={{padding:"5px", display:"flex"}}>
+                    <input type="text" style={{ margin:"10px", padding:'5px', width:"100%"}} className="comment-input" name="comment" placeholder="Submit a Comment!" value={this.state.value} onChange={this.handleFormChange}/>
+                  </form>
+                </div>:
+                <div>
+                  <div style={{height:'74px', margin:"10px", padding:'5px', display:'flex', border:"1px solid black"}}>
+                    {this.state.selectedPix?<PixBlock pix={this.state.selectedPix} adgrab={"input"} dim={64}/>:null}
+                    <button style={{position:"absolute", right:"15px"}}>Submit</button>
+                  </div>
+                  <PixBar selectPixHandler={this.selectPixHandler}/>
+                </div>}
+                <button className="videobutton plippi" onClick={() => {this.setState({showPlippiBar:!this.state.showPlippiBar})}}/>
+              </div>
             :<h3>Login to chat</h3>
             }
           </div>:null}
-          {this.state.isCreateSelected?<CreatePix/>:null}
-          {this.state.isListSelected?<ListPix/>:null}
+
+          {this.state.isCreateSelected?<CreatePix handleChatClick={this.handleChatClick}/>:null}
+          {this.state.isListSelected?<ListPix handleCreateClick={this.handleCreateClick}/>:null}
         </div>
       </Provider>
     )

@@ -109,7 +109,13 @@ class CreatePix extends React.Component {
                <div className="ok col-xs-12" id="pallcont2">
                  <Palette />
                </div>
-               <Canvas match={this.props.match} editMode={this.props.editMode} profPicMode={this.props.profPicMode} getDrawStateAndSaveDraft = {this.getDrawStateAndSaveDraft} dim={this.state.activeTab.dim} symbol={this.state.activeTab.symbol}/> 
+               <Canvas match={this.props.match}
+                       editMode={this.props.editMode}
+                       profPicMode={this.props.profPicMode}
+                       getDrawStateAndSaveDraft = {this.getDrawStateAndSaveDraft}
+                       handleChatClick={this.props.handleChatClick}
+                       dim={this.state.activeTab.dim}
+                       symbol={this.state.activeTab.symbol}/> 
             </div>)
           :(<div className='col-sm-7'>
                <h3>Begin by logging in</h3>

@@ -8,6 +8,26 @@ module.exports = require('express')
     res.status(200).json(colors)
   })
 
+  .get('/icons', (req, res, next) => {
+    let limit = 18
+    Pix.findAll({
+      order: [['id', 'DESC']],
+      limit: limit,
+      where: {userId: req.user.id},
+    })
+    .then(pixs => {
+      res
+        .status(200)
+        .json({
+          result: pixs,
+        })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).send('Internal Server Error')
+    })
+  })
+
   .get('/:page', (req, res, next) => {
     let limit = 7
     let offset = 0
@@ -100,7 +120,7 @@ module.exports = require('express')
 
   .delete('/:id', (req, res, next) => {
     Pix.findOne({
-      where: {id: req.user.id},
+      where: {id: req.params.id},
     })
       .then(pix => {
         return pix.destroy()
