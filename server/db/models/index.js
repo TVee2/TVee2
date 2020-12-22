@@ -8,6 +8,8 @@ const Timeslot = require('./timeslot')
 const Playlist = require('./playlist')
 const PlaylistItem = require('./playlistItem')
 const Pix = require('./pix')
+const Post = require('./post')
+
 /**
  * If we had any associations to make, this would be a great place to put them!
  * ex. if we had another model called BlogPost, we might say:
@@ -38,11 +40,14 @@ Playlist.belongsTo(User)
 Program.belongsTo(PlaylistItem)
 PlaylistItem.belongsTo(Playlist)
 
-Pix.belongsTo(User, {as: "creator", onDelete: 'cascade'})
+Pix.belongsTo(User)
 User.hasMany(Pix)
 User.belongsTo(Pix, {as: 'profilePicture', constraints:false})
 
-
+Post.belongsTo(Pix)
+Post.belongsTo(Comment)
+Post.belongsTo(User)
+Post.belongsTo(Channel)
 /**
  * We'll export all of our models here, so that any time a module needs a model,
  * we can just require it from 'db/models'
@@ -60,5 +65,6 @@ module.exports = {
   Timeslot,
   Playlist,
   PlaylistItem,
-  Pix
+  Pix,
+  Post
 }

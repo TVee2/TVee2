@@ -34,9 +34,9 @@ export default class App extends React.Component {
     this.setState({value: ''})
   }
 
-  // componentDidMount() {
-  //   this.props.getComments(this.props.channelId)
-  // }
+  componentDidMount() {
+    this.props.getComments(this.props.channelId)
+  }
 
   addComment = (obj) => {
     axios.post(`/api/comments`, obj)
@@ -67,6 +67,10 @@ export default class App extends React.Component {
     this.setState({selectedPix:pix})
   }
 
+  submitPixToChat = () => {
+    axios.post('/api/comments/pix', {pix:this.state.selectedPix, channelId:this.props.channelId})
+  }
+
   render() {
     let list = this.props.comments.slice().reverse()
     const user = this.props.user
@@ -87,12 +91,20 @@ export default class App extends React.Component {
             <div className="comment-container" id="commentcontainer" style={{height:"500px", overflow:"overlay", padding:"10px", backgroundColor:"ivory"}}>
               {
                 list && list.length
-                ?list.map(comment => {
-                  var date = new Date(comment.createdAt)
-                  return (<div className="comment-bar" style={{backgroundColor: comment.user.color}} key={comment.id} id={comment.id}>
-                    <p>{comment.user.email}</p>
-                    <p><span>{date.getHours()+":"+date.getMinutes()}</span> - <span>{comment.content}</span></p>
-                  </div>)
+                ?list.map(post => {
+                  var date = new Date(post.createdAt)
+                  if(post.commentId){
+                    var tag = post.user.email.split("@")[0]
+
+                    return (<div className="comment-bar" style={{backgroundColor: post.user.color}} key={post.id} id={post.id}>
+                      <p><span>{tag}</span>: <span>{post.comment.content}</span></p>
+                    </div>)
+                  }else if(post.pixId){
+                    var tag = post.user.email.split("@")[0]
+                    return (<div className="comment-bar" style={{backgroundColor: post.user.color}} key={post.id} id={post.id}>
+                      <p><span>{tag}</span>: <div style={{border:"1px solid black", display:"inline-flex"}}><PixBlock pix={post.pix} dim={64} adgrab={"comment"}/></div></p>
+                    </div>)                   
+                  }
                 })
                 :null
               }
@@ -108,7 +120,7 @@ export default class App extends React.Component {
                 <div>
                   <div style={{height:'74px', margin:"10px", padding:'5px', display:'flex', border:"1px solid black"}}>
                     {this.state.selectedPix?<PixBlock pix={this.state.selectedPix} adgrab={"input"} dim={64}/>:null}
-                    <button style={{position:"absolute", right:"15px"}}>Submit</button>
+                    <button onClick={this.submitPixToChat} style={{position:"absolute", right:"15px"}}>Submit</button>
                   </div>
                   <PixBar selectPixHandler={this.selectPixHandler}/>
                 </div>}
