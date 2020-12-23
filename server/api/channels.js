@@ -31,7 +31,7 @@ router
   Channel.findAll({
     include: [
       {model: User},
-      {model:Timeslot, include:{model:Program}, where:{endtime: {[Op.gt]: now}, starttime: {[Op.lt]: now+(1000*60*60*3)}}
+      {model:Timeslot, include:{model:Program}, order:[['starttime', 'ASC']], where:{endtime: {[Op.gt]: now}, starttime: {[Op.lt]: now+(1000*60*60*3)}}
       }
     ],
     order: [['createdAt', 'ASC']],

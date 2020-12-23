@@ -45,19 +45,37 @@ export default class ChannelBrowse extends Component {
                 var time = new Date(item.time)
                 var hours = time.getHours()
                 var minutes = time.getMinutes()
-                return (<div style={{position:'absolute', top:"0px", left:`${winwidth*(item.time-now)/(3*60*60*1000)}px`}}>{`${hours}:${minutes}`}</div>)
+                return (<span style={{position:'absolute', left:`${winwidth*(item.time-now)/(3*60*60*1000)}px`}}>{`${hours}:${minutes}`}</span>)
               })}
 
               {channel.timeslots.map((timeslot, i) => {
-                return (<div className="timeslotitem" style={{border:"1px solid black", 
-                  position:"absolute",
-                  overflow:"hidden",
-                  height:"100px",
-                  left:`${winwidth * (timeslot.starttime - now) / (3*60*60*1000)}px`, 
-                  width:`${winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000)}px`, 
-                  backgroundColor:"white"}}>
-                  {timeslot.program.id}
-                  <img style={{height:"100px", width:"100px"}} src={timeslot.program.thumbnailUrl}></img>
+                if(i==0){
+                  var left = winwidth * (timeslot.starttime - now) / (3*60*60*1000)
+                  var width = (winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000)) + left
+                  left = 0
+                }else{
+                  var left = winwidth * (timeslot.starttime - now) / (3*60*60*1000)
+                  var width = (winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000))
+                }
+                return (<div
+                  id={`za${timeslot.id}`}
+                  onMouseLeave={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
+                  onMouseEnter={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
+                  className="timeslotitem overflowhidden"
+                  style={{border:"1px solid black", 
+                    position:"absolute",
+                    height:"100px",
+                    left:`${left}px`, 
+                    width:`${width}px`, 
+                    backgroundColor:"white"}}
+                  >
+                  <div id={`zz${timeslot.id}`} style={{width:"200px", position:"absolute", backgroundColor:"white"}} className=''>
+                    {timeslot.program.title}
+                    <div>Youtube video: {timeslot.program.ytVideoId}</div>
+                    <div>{`Starttime: ${new Date(parseInt(timeslot.starttime)).toLocaleTimeString()}`}</div>
+                    <div>{`Endtime: ${new Date(parseInt(timeslot.endtime)).toLocaleTimeString()}`}</div>
+                    <img style={{height:"100px", width:"100px"}} src={timeslot.program.thumbnailUrl}></img>
+                  </div>
                 </div>)
               })}
             </div>

@@ -21,6 +21,18 @@ form div {
   display: inline-block;
 }
 
+.hidden{
+  visibility: hidden;
+}
+
+.overflowhidden{
+  overflow:hidden;
+}
+
+.zout{
+  z-index:12;
+}
+
 #castbutton {
   float: right;
   margin: 14px 7px 14px 7px;
