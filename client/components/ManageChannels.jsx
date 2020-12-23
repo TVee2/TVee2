@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import ManageHeader from './ManageHeader'
 import axios from 'axios'
 
 export default class ManageChannels extends Component {
@@ -105,6 +104,7 @@ export default class ManageChannels extends Component {
         </form>
 
         <br /><br />
+        <div>Channel Schedule</div>
         <div>Current Datetime - {new Date().toLocaleString()}</div>
         <div>Scheduled for Before Now</div>
         {this.state.timeslots.before_ts.map((ts) => {
@@ -113,7 +113,7 @@ export default class ManageChannels extends Component {
         <div>Scheduled for After Now</div>
         {this.state.timeslots.after_ts.map((ts) => {
           return <div>Title - {ts.program.title}   &&    Timeslot - {new Date(parseInt(ts.starttime)).toLocaleString()} - {new Date(parseInt(ts.endtime)).toLocaleString()}</div>
-        })}        <h2>upload a video as default filler piece and link to channel</h2>
+        })}
         <br /><br />
 
         <div>Create a channel</div>

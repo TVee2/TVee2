@@ -102,7 +102,7 @@ export default class App extends React.Component {
                   }else if(post.pixId){
                     var tag = post.user.email.split("@")[0]
                     return (<div className="comment-bar" style={{backgroundColor: post.user.color}} key={post.id} id={post.id}>
-                      <p><span>{tag}</span>: <div style={{border:"1px solid black", display:"inline-flex"}}><PixBlock pix={post.pix} dim={64} adgrab={"comment"}/></div></p>
+                      <p><span>{tag}</span>: <div style={{border:"1px solid black", display:"inline-flex"}}><PixBlock pix={post.pix} dim={64} adgrab={`comment${post.id}`}/></div></p>
                     </div>)                   
                   }
                 })

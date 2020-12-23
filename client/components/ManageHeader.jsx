@@ -13,7 +13,7 @@ export default class Generic extends Component {
   render() {
             {/*<Link to="/manage/videos">Videos</Link>*/}
     return (
-      <div>
+      <div style={{width:"100px", display:"inline-block", position:"absolute", backgroundColor:"whitesmoke"}}>
         <nav>
           <div>
             {/* The navbar will show these links after you log in */}
@@ -23,7 +23,6 @@ export default class Generic extends Component {
             <Link to="/manage/devtools">Devtools</Link>
           </div>
         </nav>
-        <hr />
       </div>
     )
   }

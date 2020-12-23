@@ -270,133 +270,134 @@ export default class Scheduler extends Component {
         <ManageHeader/>
 
 
-        <Route path={this.props.match.url + "/videos"} render={(props) => (
-            <ManageVideos videos={this.state.videos} getMyVids={this.getMyVids}/>
-          )}
-        />
-        <Route path={this.props.match.url + "/lists"} render={(props) => (
-            <ManageLists/>
-          )}
-        />
-        <Route path={this.props.match.url + "/channels"} render={(props) => (
-            <ManageChannels channelSubmit={this.channelSubmit}/>
-          )}
-        />
-        <Route path={this.props.match.url + "/me"} render={(props) => (
-            <ManageMe/>
-          )}
-        />
-        <Route path={this.props.match.url + "/devtools"} render={(props) => (
-            <Devtools bombsegments={this.bombsegments}/>
-          )}
-        />
-
-
-        <br />
-        <br/><br/>
-        <br/><br/>
-        <br/><br/>
-        <br/><br/>
-        <br/><br/>
-        <div>Select a channel</div>
-        <select id="channel" defaultValue={'DEFAULT'} onChange={this.onChannelChange}>
-          <option disabled value='DEFAULT'> -- select an option -- </option>
-          {this.state.channels.map(ch => {
-            return <option value={`${ch.id}`}>{ch.id} - {ch.name}</option>
-          })}
-        </select>
-        {this.state.selectedChannelId?
-          <div>
-            <br />
-            <br />
-            <br />
-            <br />
-
-            <br />
-            <br />
-            <br />
-            <br />
-            <div>Add Video to Timeslot</div>
-            {this.state.timeslotuploadloading?
-              <div>Creating Timeslot - {`${this.state.segmentLoadingMessage}`}</div>:
-              <div>
-                <div>
-                  Video:
-                  <select id="vid">
-                    {this.state.videos.map(vid => {
-                      return <option value={`${vid.title}`}>{vid.title}</option>
-                    })}
-                  </select>
-                </div>
-                <div>
-                  Singleton or Daily Recurring:
-                  <select id="frequency" defaultValue='single' onChange={ (e) => {this.setState({frequency: e.target.value})} }>
-                    <option value='single'>Single</option>
-                    <option value='dailyrecurring'>Daily Recurring</option>
-                  </select>
-                </div>
-                <div>
-                  Startdate
-                  <DatePicker selected={this.state.startdate} onSelect={ date => { this.setState( { startdate: date } ) } } />
-                  Starttime: Hour:{' '}
-                  <select id="hr">
-                    <option value="6">6am</option>
-                    <option value="7">7am</option>
-                    <option value="8">8am</option>
-                    <option value="9">9am</option>
-                    <option value="10">10am</option>
-                    <option value="11">11am</option>
-                    <option value="12">12pm</option>
-                    <option value="13">1pm</option>
-                    <option value="14">2pm</option>
-                    <option value="15">3pm</option>
-                    <option value="16">4pm</option>
-                    <option value="17">5pm</option>
-                    <option value="18">6pm</option>
-                    <option value="19">7pm</option>
-                    <option value="20">8pm</option>
-                    <option value="21">9pm</option>
-                    <option value="22">10pm</option>
-                    <option value="23">11pm</option>
-                    <option value="0">12am</option>
-                    <option value="1">1am</option>
-                    <option value="2">2am</option>
-                    <option value="3">3am</option>
-                    <option value="4">4am</option>
-                    <option value="5">5am</option>
-                  </select>{' '}
-                  Min:<select id="min">
-                  {Array(60).fill(null).map((item, i) => {
-                    return <option value={i}>{i}</option>
-                  })}
-                  </select>
-                  Sec:<select id="sec">
-                  {Array(60).fill(null).map((item, i) => {
-                    return <option value={i}>{i}</option>
-                  })}
-                  </select>
-                </div>
-                <button onClick={this.timeslotSubmitHandler}>submit</button>
-              </div>
-            }
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <div>Current Datetime - {new Date().toLocaleString()}</div>
-            <div>Scheduled for Before Now</div>
-            {this.state.timeslots.before_ts.map((ts) => {
-              return <div>Title - {ts.program.title}   &&    Timeslot - {new Date(parseInt(ts.starttime)).toLocaleString()} - {new Date(parseInt(ts.endtime)).toLocaleString()}</div>
-            })}
-            <div>Scheduled for After Now</div>
-            {this.state.timeslots.after_ts.map((ts) => {
-              return <div>Title - {ts.program.title}   &&    Timeslot - {new Date(parseInt(ts.starttime)).toLocaleString()} - {new Date(parseInt(ts.endtime)).toLocaleString()}</div>
-            })}
-          </div>
-
-          :null}
+        <div style={{position:"absolute", left:"135px"}}>
+          <Route path={this.props.match.url + "/videos"} render={(props) => (
+              <ManageVideos videos={this.state.videos} getMyVids={this.getMyVids}/>
+            )}
+          />
+          <Route path={this.props.match.url + "/lists"} render={(props) => (
+              <ManageLists/>
+            )}
+          />
+          <Route path={this.props.match.url + "/channels"} render={(props) => (
+              <ManageChannels channelSubmit={this.channelSubmit}/>
+            )}
+          />
+          <Route path={this.props.match.url + "/me"} render={(props) => (
+              <ManageMe/>
+            )}
+          />
+          <Route path={this.props.match.url + "/devtools"} render={(props) => (
+              <Devtools bombsegments={this.bombsegments}/>
+            )}
+          />
+        </div>
       </div>
     )
   }
 }
+
+        // <br />
+        // <br/><br/>
+        // <br/><br/>
+        // <br/><br/>
+        // <br/><br/>
+        // <br/><br/>
+        // <div>Select a channel</div>
+        // <select id="channel" defaultValue={'DEFAULT'} onChange={this.onChannelChange}>
+        //   <option disabled value='DEFAULT'> -- select an option -- </option>
+        //   {this.state.channels.map(ch => {
+        //     return <option value={`${ch.id}`}>{ch.id} - {ch.name}</option>
+        //   })}
+        // </select>
+        // {this.state.selectedChannelId?
+        //   <div>
+        //     <br />
+        //     <br />
+        //     <br />
+        //     <br />
+
+        //     <br />
+        //     <br />
+        //     <br />
+        //     <br />
+        //     <div>Add Video to Timeslot</div>
+        //     {this.state.timeslotuploadloading?
+        //       <div>Creating Timeslot - {`${this.state.segmentLoadingMessage}`}</div>:
+        //       <div>
+        //         <div>
+        //           Video:
+        //           <select id="vid">
+        //             {this.state.videos.map(vid => {
+        //               return <option value={`${vid.title}`}>{vid.title}</option>
+        //             })}
+        //           </select>
+        //         </div>
+        //         <div>
+        //           Singleton or Daily Recurring:
+        //           <select id="frequency" defaultValue='single' onChange={ (e) => {this.setState({frequency: e.target.value})} }>
+        //             <option value='single'>Single</option>
+        //             <option value='dailyrecurring'>Daily Recurring</option>
+        //           </select>
+        //         </div>
+        //         <div>
+        //           Startdate
+        //           <DatePicker selected={this.state.startdate} onSelect={ date => { this.setState( { startdate: date } ) } } />
+        //           Starttime: Hour:{' '}
+        //           <select id="hr">
+        //             <option value="6">6am</option>
+        //             <option value="7">7am</option>
+        //             <option value="8">8am</option>
+        //             <option value="9">9am</option>
+        //             <option value="10">10am</option>
+        //             <option value="11">11am</option>
+        //             <option value="12">12pm</option>
+        //             <option value="13">1pm</option>
+        //             <option value="14">2pm</option>
+        //             <option value="15">3pm</option>
+        //             <option value="16">4pm</option>
+        //             <option value="17">5pm</option>
+        //             <option value="18">6pm</option>
+        //             <option value="19">7pm</option>
+        //             <option value="20">8pm</option>
+        //             <option value="21">9pm</option>
+        //             <option value="22">10pm</option>
+        //             <option value="23">11pm</option>
+        //             <option value="0">12am</option>
+        //             <option value="1">1am</option>
+        //             <option value="2">2am</option>
+        //             <option value="3">3am</option>
+        //             <option value="4">4am</option>
+        //             <option value="5">5am</option>
+        //           </select>{' '}
+        //           Min:<select id="min">
+        //           {Array(60).fill(null).map((item, i) => {
+        //             return <option value={i}>{i}</option>
+        //           })}
+        //           </select>
+        //           Sec:<select id="sec">
+        //           {Array(60).fill(null).map((item, i) => {
+        //             return <option value={i}>{i}</option>
+        //           })}
+        //           </select>
+        //         </div>
+        //         <button onClick={this.timeslotSubmitHandler}>submit</button>
+        //       </div>
+        //     }
+        //     <br />
+        //     <br />
+        //     <br />
+        //     <br />
+        //     <br />
+        //     <div>Current Datetime - {new Date().toLocaleString()}</div>
+        //     <div>Scheduled for Before Now</div>
+        //     {this.state.timeslots.before_ts.map((ts) => {
+        //       return <div>Title - {ts.program.title}   &&    Timeslot - {new Date(parseInt(ts.starttime)).toLocaleString()} - {new Date(parseInt(ts.endtime)).toLocaleString()}</div>
+        //     })}
+        //     <div>Scheduled for After Now</div>
+        //     {this.state.timeslots.after_ts.map((ts) => {
+        //       return <div>Title - {ts.program.title}   &&    Timeslot - {new Date(parseInt(ts.starttime)).toLocaleString()} - {new Date(parseInt(ts.endtime)).toLocaleString()}</div>
+        //     })}
+        //   </div>
+
+        //   :null}

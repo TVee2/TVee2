@@ -2,13 +2,38 @@ const router = require('express').Router()
 const {User, Channel, Playlist, Timeslot, Segment, PlaylistItem, Program} = require('../db/models')
 const turnOnChannelEmitter = require('../channelEmitter')
 const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders')
+const { Op } = require("sequelize");
 
 module.exports = router
 
 router
 .get('/', (req, res, next) => {
+  //time is greater than current
+  var now = new Date().getTime()
   Channel.findAll({
-    include: {model: User},
+    include: [
+      {model: User}
+    ],
+    order: [['createdAt', 'ASC']],
+    limit: 50
+  })
+  .then((channels) => {
+    res.status(200).json(channels)
+  })
+  .catch((err) => {
+    res.status(400).json({error: err.message})
+  })
+})
+
+.get('/timeslots', (req, res, next) => {
+  //time is greater than current
+  var now = new Date().getTime()
+  Channel.findAll({
+    include: [
+      {model: User},
+      {model:Timeslot, include:{model:Program}, where:{endtime: {[Op.gt]: now}, starttime: {[Op.lt]: now+(1000*60*60*3)}}
+      }
+    ],
     order: [['createdAt', 'ASC']],
     limit: 50
   })

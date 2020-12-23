@@ -24,18 +24,26 @@ class Routes extends Component {
   constructor() {
     super()
 
-    this.state = {channels:[], showCover:true}
+    this.state = {channels:[], showCover:true, chtimeslots:[]}
   }
 
   componentDidMount() {
     this.props.loadInitialData()
     this.getChannels()
+    this.getChannelsWTimeslots()
   }
 
   getChannels = () => {
     axios.get('/api/channels')
    .then((ret) => {
       this.setState({channels:ret.data})
+    })
+  }
+
+  getChannelsWTimeslots = () => {
+    axios.get('/api/channels/timeslots')
+   .then((ret) => {
+      this.setState({chtimeslots:ret.data})
     })
   }
 
@@ -55,7 +63,7 @@ class Routes extends Component {
           )}
         />
         <Route path="/tvbrowse" render={(props) => (
-            <ChannelBrowse channels={this.state.channels}/>
+            <ChannelBrowse channels={this.state.chtimeslots}/>
           )}
         />
         <Route path="/login" component={Login} />

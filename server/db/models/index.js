@@ -28,6 +28,7 @@ Comment.belongsTo(User)
 Comment.belongsTo(Channel)
 
 Channel.hasMany(Segment)
+Channel.hasMany(Timeslot)
 Channel.belongsTo(User)
 Channel.belongsTo(Playlist)
 
@@ -48,6 +49,7 @@ Post.belongsTo(Pix)
 Post.belongsTo(Comment)
 Post.belongsTo(User)
 Post.belongsTo(Channel)
+
 /**
  * We'll export all of our models here, so that any time a module needs a model,
  * we can just require it from 'db/models'
