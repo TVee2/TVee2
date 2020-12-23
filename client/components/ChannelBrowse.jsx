@@ -67,9 +67,9 @@ export default class ChannelBrowse extends Component {
                     height:"100px",
                     left:`${left}px`, 
                     width:`${width}px`, 
-                    backgroundColor:"white"}}
+                    backgroundColor:`${timeslot.program.color}`}}
                   >
-                  <div id={`zz${timeslot.id}`} style={{width:"200px", position:"absolute", backgroundColor:"white"}} className=''>
+                  <div id={`zz${timeslot.id}`} style={{width:"200px", position:"absolute",  backgroundColor:`${timeslot.program.color}`}} className=''>
                     {timeslot.program.title}
                     <div>Youtube video: {timeslot.program.ytVideoId}</div>
                     <div>{`Starttime: ${new Date(parseInt(timeslot.starttime)).toLocaleTimeString()}`}</div>

@@ -70,6 +70,10 @@ export default class ManageChannels extends Component {
     })
   }
 
+  submitDefaultVid = () => {
+    
+  }
+
   render() {
     //snYu2JUqSWs for loop maybe?
     return (

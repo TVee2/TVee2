@@ -20,4 +20,15 @@ module.exports = db.define('program', {
   height:{
     type: Sequelize.STRING,
   },
+  color:{
+    type:Sequelize.STRING,
+    defaultValue: ()=>{
+      const d = 185
+      const a = Math.ceil(Math.random() * 80 + d)
+      const b = Math.ceil(Math.random() * 80 + d)
+      const c = Math.ceil(Math.random() * 80 + d)
+      const color = `rgb(${a},${b},${c})`
+      return color
+    }
+  }
 })
