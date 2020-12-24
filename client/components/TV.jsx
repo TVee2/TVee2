@@ -245,8 +245,8 @@ export default class TV extends Component {
             comments={this.state.comments}
             channelId={this.props.match.params.channelId}
           />
-          <div style={{position:"absolute", zIndex:"5", backgroundColor:"yellowgreen", top:"600px", height:"300px", width:"315px"}}>Potential Ad Space</div>
-          <div style={{position:"absolute", zIndex:"5", backgroundColor:"magenta", top:"600px", left:"320px", height:"300px", width:"315px"}}>Potential Ad Space</div>
+          <div style={{position:"absolute", zIndex:"5", backgroundColor:"yellowgreen", top:"600px", height:"300px", width:"315px"}}></div>
+          <div style={{position:"absolute", zIndex:"5", backgroundColor:"magenta", top:"600px", left:"320px", height:"300px", width:"315px"}}></div>
 
         </div>
       </div>
