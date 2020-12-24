@@ -105,5 +105,6 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
   if(seedSegments){   
     seedNext2hrSegments(channelId)
   }
+  return "seeded timeslots"
 }
 

@@ -6,14 +6,14 @@ export default class ManageLists extends Component {
   constructor() {
     super()
 
-    this.state = {playlists:[], selectedPlaylistId:null,}
+    this.state = {playlists:[], selectedPlaylistId:null, loading:false}
   }
 
   componentDidMount() {
     this.getPlaylists()
   }
 
-  getPlaylists = () => {
+  getPlaylists = (setplId) => {
     axios.get(`/api/playlist`)
     .then((ret) => {
       var playlists = ret.data
@@ -28,10 +28,11 @@ export default class ManageLists extends Component {
   playlistIdSubmit = (e) => {
     e.preventDefault()
     var playlistId = document.getElementById("playlistId").value
+    this.setState({loading:true})
     axios.post(`/api/playlist/ytplaylist/${playlistId}`)
     .then((ret) => {
-      this.setState({selectedPlaylistId: playlistId})
-      this.getPlaylists()
+      this.getPlaylists(playlistId)
+      this.setState({loading:false})
     })
     .catch((e) => {
       console.log(e)
@@ -60,19 +61,20 @@ export default class ManageLists extends Component {
             return
           }else{
             return <ul>Playlist {i+1} - {playlist.title}{playlist.playlistItems.map((v) => {
-              console.log(v)
-              return <div><img src={v.thumbnailUrl}></img>embeddable - {v.embeddable?"true":"false"} - {v.title} - {new Date(v.duration * 1000).toISOString().substr(11, 8)}</div>
+              return <div><img src={v.thumbnailUrl}></img>{v.title} - {new Date(v.duration * 1000).toISOString().substr(11, 8)}</div>
             })}</ul>
           }
         })}
         <br/><br/><br/>
         <h3>Import a youtube playlist (this will add all videos in playlist to your collection, make sure all items in playlist are videos and are set to public.  non embeddable videos can not be played)</h3>
         <br/><br/>
-        <form onSubmit={this.playlistIdSubmit}>
+        {this.state.loading?<div>Loading playlist please wait</div>:null}
+        <form disabled={this.state.loading} onSubmit={this.playlistIdSubmit}>
           <label htmlFor="title">Youtube playlist id:</label>
           <input type="text" id="playlistId" name="playlistid"/><br/>
           <input type="submit" value="Import playlist" />
         </form>
+
         <br/><br/>
 
         <div>Add video to playlist by youtube id</div>

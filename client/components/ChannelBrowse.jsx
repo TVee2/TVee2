@@ -21,6 +21,7 @@ export default class ChannelBrowse extends Component {
     next5.push({time:first_round+60*60*1000})
     next5.push({time:first_round+90*60*1000})
     next5.push({time:first_round+120*60*1000})
+    next5.push({time:first_round+150*60*1000})
 
     return next5
   }
@@ -33,21 +34,19 @@ export default class ChannelBrowse extends Component {
     //show 3 hours in inner width
     //get next 6 30 minute adjacent to current time    
 
-
     return (
       <div>
         {this.props.channels.map((channel, i) => {
           return (
-            <div id={`scheduleitem${i}`} style={{backgroundColor:"lightblue", margin:"40px 0", height:"100px", width:"100%"}}>
-              <Link to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link>
-
+            <div>
+              <div><Link to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link></div>
               {this.getNext30().map((item) => {
                 var time = new Date(item.time)
                 var hours = time.getHours()
                 var minutes = time.getMinutes()
                 return (<span style={{position:'absolute', left:`${winwidth*(item.time-now)/(3*60*60*1000)}px`}}>{`${hours}:${minutes}`}</span>)
               })}
-
+            <div id={`scheduleitem${i}`} style={{backgroundColor:"lightblue", margin:"20px 0", height:"100px", width:"100%"}}>
               {channel.timeslots.map((timeslot, i) => {
                 if(i==0){
                   var left = winwidth * (timeslot.starttime - now) / (3*60*60*1000)
@@ -79,6 +78,7 @@ export default class ChannelBrowse extends Component {
                 </div>)
               })}
             </div>
+          </div>
           )
         })}
       </div>

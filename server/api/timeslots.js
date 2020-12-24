@@ -7,32 +7,71 @@ router
 .get('/:channelId', (req, res, next) => {
   var channelId = req.params.channelId
 
-  const where_after = {
+  // const where_after = {
+  //   [Op.and]: [
+  //     {channelId: req.params.channelId},
+  //     {starttime: {
+  //       [Op.gt]: new Date().getTime()
+  //     }}
+  //   ]
+  // }
+
+  // const where_before = {
+  //   [Op.and]: [
+  //     {channelId: req.params.channelId},
+  //     {starttime: {
+  //       [Op.lt]: new Date().getTime()
+  //     }}
+  //   ]
+  // }
+
+  // Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:where_before})
+  // .then((before_ts)=>{
+  //   return Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:where_after})
+  //   .then((after_ts)=>{
+  //     res.json({before_ts, after_ts})
+  //   })
+  // })
+  var today = new Date()
+  var tomorrow = new Date()
+  var dayaftertommorrow = new Date()
+  today.setHours(0,0,0,0)
+  tomorrow.setDate(today.getDate()+1)
+  tomorrow.setHours(0,0,0,0)
+  dayaftertommorrow.setDate(today.getDate()+2)
+  dayaftertommorrow.setHours(0,0,0,0)
+
+  const today_where = {
     [Op.and]: [
-      {channelId: req.params.channelId},
+      {channelId},
       {starttime: {
-        [Op.gt]: new Date().getTime()
+        [Op.lt]: tomorrow.getTime()
+      }},
+      {endtime: {
+        [Op.gt]: today.getTime()
       }}
     ]
   }
 
-  const where_before = {
+  const tomorrow_where = {
     [Op.and]: [
-      {channelId: req.params.channelId},
+      {channelId},
       {starttime: {
-        [Op.lt]: new Date().getTime()
+        [Op.lt]: dayaftertommorrow.getTime()
+      }},
+      {endtime: {
+        [Op.gt]: tomorrow.getTime()
       }}
     ]
   }
 
-  Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:where_before})
-  .then((before_ts)=>{
-    return Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:where_after})
-    .then((after_ts)=>{
-      res.json({before_ts, after_ts})
+  Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:today_where})
+  .then((today_ts)=>{
+    Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:tomorrow_where})
+    .then((tomorrow_ts) => {
+      res.json({today:today_ts, tomorrow:tomorrow_ts})
     })
   })
-
 })
 
 .delete('/previous', (req, res, next) => {

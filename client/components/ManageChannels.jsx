@@ -5,7 +5,8 @@ export default class ManageChannels extends Component {
   constructor() {
     super()
 
-    this.state = {channels:[], playlists:[], selectedChannelId:null, selectedPlaylistId:null, timeslots:{before_ts:[], after_ts:[]}}
+    this.state = {channels:[], playlists:[], selectedChannelId:null, selectedPlaylistId:null, timeslots:{today:[], tomorrow:[]}}
+    this.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   }
 
   componentDidMount() {
@@ -31,7 +32,7 @@ export default class ManageChannels extends Component {
   }
 
   onChannelChange = (e) => {
-    this.setState({selectedChannelId: e.target.value}, () => {
+    this.setState({selectedChannelId: e.target.value, timeslots:{today:[], tomorrow:[]}}, () => {
       this.getChannelSchedule(this.state.selectedChannelId)
     })
   }
@@ -71,16 +72,27 @@ export default class ManageChannels extends Component {
   }
 
   submitDefaultVid = () => {
-    
+    console.log("not yet implemented")
   }
 
   render() {
-    //snYu2JUqSWs for loop maybe?
+    var today = new Date()
+    var tomorrow = new Date()
+
+    tomorrow.setDate(today.getDate()+1)
+    tomorrow.setHours(0,0,0,0)
+    today.setHours(0,0,0,0)
+
     return (
       <div>
         <h1>Manage Channels - list channels</h1>
-
-        <div>Program channel as looping playlist</div>
+        <div>Create a channel</div>
+        <form onSubmit={this.channelSubmit}>
+          <input type="text" id="channelname" name="channelname"/><br/>
+          <input type="submit" value="submit" />
+        </form>
+        <br />
+        <br/><br/>
 
         <div>Select a channel</div>
         <select id="channel" defaultValue={'DEFAULT'} onChange={this.onChannelChange}>
@@ -90,6 +102,7 @@ export default class ManageChannels extends Component {
           })}
         </select>
         <br/><br/>
+        <div>Program channel as looping playlist</div>
         <div>Select a playlist</div>
         <select id="playlist" defaultValue={'DEFAULT'} value={this.state.selectedPlaylistId} onChange={this.onPlaylistChange}>
           <option disabled value='DEFAULT'> -- select an option -- </option>
@@ -108,25 +121,62 @@ export default class ManageChannels extends Component {
         </form>
 
         <br /><br />
-        <div>Channel Schedule</div>
-        <div>Current Datetime - {new Date().toLocaleString()}</div>
-        <div>Scheduled for Before Now</div>
-        {this.state.timeslots.before_ts.map((ts) => {
-          return <div>Title - {ts.program.title}   &&    Timeslot - {new Date(parseInt(ts.starttime)).toLocaleString()} - {new Date(parseInt(ts.endtime)).toLocaleString()}</div>
-        })}
-        <div>Scheduled for After Now</div>
-        {this.state.timeslots.after_ts.map((ts) => {
-          return <div>Title - {ts.program.title}   &&    Timeslot - {new Date(parseInt(ts.starttime)).toLocaleString()} - {new Date(parseInt(ts.endtime)).toLocaleString()}</div>
-        })}
+
+
+        <div style={{height:"1440px", width:"600px"}}>
+          <div style={{width:"60px", display:"inline-block"}}>
+            <div style={{position:"absolute"}}>
+              {Array.from(new Array(48)).map((x, i) => {
+                return <div style={{position:"absolute", top:`${i*30}px`}}>{`${Math.floor(i/2)}:${(i%2)*30}`}</div>
+              })}
+            </div>
+          </div>
+          <div style={{width:"200px", height:"100%", display:"inline-block"}}>{`${this.days[new Date().getDay()]}`}
+            <div style={{position:"absolute"}}>
+            {this.state.timeslots.today.map((timeslot) => {
+              return (<div
+                style={{position:"absolute", height:`${(timeslot.endtime-timeslot.starttime)/60000}px`, top:`${(timeslot.starttime - today.getTime())/60000}px`, width:"200px", backgroundColor:timeslot.program.color}}
+                id={`za${timeslot.id}`}
+                onMouseLeave={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
+                onMouseEnter={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
+                className="timeslotitem overflowhidden"
+                >
+                  <div id={`zz${timeslot.id}`} style={{width:"200px", position:"absolute",  backgroundColor:`${timeslot.program.color}`}} className=''>
+                    {timeslot.program.title}
+                    <div>Youtube video: {timeslot.program.ytVideoId}</div>
+                    <div>{`Starttime: ${new Date(parseInt(timeslot.starttime)).toLocaleTimeString()}`}</div>
+                    <div>{`Endtime: ${new Date(parseInt(timeslot.endtime)).toLocaleTimeString()}`}</div>
+                    <img style={{height:"100px", width:"100px"}} src={timeslot.program.thumbnailUrl}></img>
+                  </div>
+                </div>)
+            })}
+            </div>
+          </div>
+          <div style={{width:"200px", height:"100%", display:"inline-block"}}>{`${this.days[new Date().getDay()+1]}`}
+            <div style={{position:"absolute"}}>
+            {this.state.timeslots.tomorrow.map((timeslot) => {
+              return (<div
+                  style={{position:"absolute", height:`${(timeslot.endtime-timeslot.starttime)/60000}px`, top:`${(timeslot.starttime - tomorrow.getTime())/60000}px`, width:"200px", backgroundColor:timeslot.program.color}}
+                  id={`za${timeslot.id}`}
+                  onMouseLeave={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
+                  onMouseEnter={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
+                  className="timeslotitem overflowhidden"
+                  >
+                  <div id={`zz${timeslot.id}`} style={{width:"200px", position:"absolute",  backgroundColor:`${timeslot.program.color}`}} className=''>
+                    {timeslot.program.title}
+                    <div>Youtube video: {timeslot.program.ytVideoId}</div>
+                    <div>{`Starttime: ${new Date(parseInt(timeslot.starttime)).toLocaleTimeString()}`}</div>
+                    <div>{`Endtime: ${new Date(parseInt(timeslot.endtime)).toLocaleTimeString()}`}</div>
+                    <img style={{height:"100px", width:"100px"}} src={timeslot.program.thumbnailUrl}></img>
+                  </div>
+                </div>)
+            })}
+            </div>
+          </div>
+        </div>
+
         <br /><br />
 
-        <div>Create a channel</div>
-        <form onSubmit={this.channelSubmit}>
-          <input type="text" id="channelname" name="channelname"/><br/>
-          <input type="submit" value="submit" />
-        </form>
-        <br />
-        <br/><br/>
       </div>
     )
   }

@@ -14,6 +14,7 @@ router.get('/', async (req, res, next) => {
   try {
     const playlists = await Playlist.findAll({
       where:{userId},
+      order:[['createdAt', 'DESC']],
       include:{model: PlaylistItem}
     })
     res.json(playlists)

@@ -31,10 +31,10 @@ router
   Channel.findAll({
     include: [
       {model: User},
-      {model:Timeslot, include:{model:Program}, order:[['starttime', 'ASC']], where:{endtime: {[Op.gt]: now}, starttime: {[Op.lt]: now+(1000*60*60*3)}}
+      {model:Timeslot, include:{model:Program}, where:{endtime: {[Op.gt]: now}, starttime: {[Op.lt]: now+(1000*60*60*3)}}
       }
     ],
-    order: [['createdAt', 'ASC']],
+    order: [['createdAt', 'ASC'], [Timeslot, 'starttime', 'ASC']],
     limit: 50
   })
   .then((channels) => {
@@ -95,7 +95,7 @@ router
   var channel = await Channel.findByPk(channelId)
   var playlist = await Playlist.findByPk(playlistId)
   await channel.setPlaylist(playlist)
-  seedNext24HrTimeslots(channelId, true)
+  await seedNext24HrTimeslots(channelId, true)
 
   res.json({message: "initialized channel"})
 })
