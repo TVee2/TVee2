@@ -81,7 +81,7 @@ export default class App extends React.Component {
     var visibility = !this.props.collapse || (this.props.collapse && this.props.showChat)//show if no collapse, // show if collapse and showchat is true
     return (
       <Provider store={store}>
-        <div style={{zIndex:"10", border: "1px solid black", visibility:visibility?"":"hidden", width:smallwindow?"95%":"300px", position:"absolute", left:smallwindow?"0px":"640px", display:smallwindow?"block":"inline-block", margin:smallwindow?"0px":"0 30px"}}>
+        <div style={{backgroundColor:"white", zIndex:"10", border: "1px solid black", visibility:visibility?"":"hidden", width:smallwindow?"95%":"300px", position:"absolute", left:smallwindow?"0px":"640px", display:smallwindow?"block":"inline-block", margin:smallwindow?"0px":"0 30px"}}>
           <div className="chat-navbar">
             <button className="videobutton chat" onClick={this.handleChatClick}></button>
             <button className="videobutton createpix" onClick={this.handleCreateClick}></button>

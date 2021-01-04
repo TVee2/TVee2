@@ -10,7 +10,7 @@ router
     include: [{model:User}, {model:Pix}, {model: Comment}],
     where:{channelId},
     order: [['createdAt', 'DESC']],
-    limit: 50
+    limit: 20
   })
 
   // Comment.findAll({
