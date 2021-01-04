@@ -25,11 +25,13 @@ router.get('/', async (req, res, next) => {
 
 .post('/ytplaylist/:plid', async (req, res, next) => {
   try {
-
     var playlist_meta = await youtube.playlists.list({
       part: 'status, contentDetails, snippet',
       id: req.params.plid
     })
+    if(!playlist_meta.data.items[0]){
+      return res.json({message:"playlist may be set to private"})
+    }
     var playlist = playlist_meta.data.items[0].snippet
     var playlist_title = playlist.title
     var playlist_description = playlist.description

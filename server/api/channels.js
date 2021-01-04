@@ -25,6 +25,14 @@ router
   })
 })
 
+.post('/setdefsrc/:channelId', async (req, res, next) => {
+  var channelId = req.params.channelId
+  var channel = await Channel.findByPk(channelId)
+  channel.defaultSrc = req.body.defaultSrc
+  await channel.save()
+  res.json({message: "default saved to channel"})
+})
+
 .get('/timeslots', (req, res, next) => {
   //time is greater than current
   var now = new Date().getTime()

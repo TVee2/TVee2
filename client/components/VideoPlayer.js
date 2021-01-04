@@ -17,6 +17,7 @@ export default class VideoPlayer extends Component {
       showKeypad:false
     }
     this.videoplayer=null
+    this.defaultVideoPlayer=null
   }
 
   onYTPlayerReady = (event) => {
@@ -54,6 +55,24 @@ export default class VideoPlayer extends Component {
     console.log("player state changed", event.data)
   }
 
+  onDefaultPlayerReady = (event) => {
+    event.target.mute()
+
+    if(this.props.defaultSrc){
+      console.log("default player ready")
+      event.target.loadVideoById(this.props.defaultSrc)
+    }
+    console.log(this.props.defaultSrc)
+    event.target.playVideo();
+  }
+
+  onDefaultPlayerStateChange = (e) => {
+    console.log("INVOKED", e.data)
+    if (e.data == 0) {
+      this.defaultVideoPlayer.playVideo(); 
+    }
+  }
+
   ytSound = (tf) => {
     tf?this.videoplayer.unMute():this.videoplayer.mute()
   }
@@ -74,33 +93,45 @@ export default class VideoPlayer extends Component {
           'onStateChange': this.onYTPlayerStateChange
         }
       });
-    this.videoplayer = ytplayer
 
-    var vid = document.getElementById('vid')
-    this.setState({vid})
-
-    vid.addEventListener(
-      'loadedmetadata',
-      metadata => {
-        console.log(
-          'current progress',
-          this.props.progress,
-          'vid duration',
-          metadata.target.duration,
-          'is playing',
-          this.props.progress < metadata.target.duration
-            ? 'true'
-            : 'false filling time'
-        )
-
-        if (this.props.progress > metadata.target.duration) {
-          this.props.fillTime()
-        } else {
-          vid.currentTime = this.props.progress
+    var defaultPlayer = new YT.Player('timefiller', {
+        height: '700',
+        width: '640',
+        videoId: '',
+        events: {
+          'onReady': this.onDefaultPlayerReady,
+          'onStateChange': this.onDefaultPlayerStateChange
         }
-      },
-      false
-    )
+      });
+
+    this.videoplayer = ytplayer
+    this.defaultVideoPlayer = defaultPlayer
+
+    // var vid = document.getElementById('vid')
+    // this.setState({vid})
+
+    // vid.addEventListener(
+    //   'loadedmetadata',
+    //   metadata => {
+    //     console.log(
+    //       'current progress',
+    //       this.props.progress,
+    //       'vid duration',
+    //       metadata.target.duration,
+    //       'is playing',
+    //       this.props.progress < metadata.target.duration
+    //         ? 'true'
+    //         : 'false filling time'
+    //     )
+
+    //     if (this.props.progress > metadata.target.duration) {
+    //       this.props.fillTime()
+    //     } else {
+    //       vid.currentTime = this.props.progress
+    //     }
+    //   },
+    //   false
+    // )
 
     var listener = () => {
       if (!this.state.dirty && this.videoplayer.unMute) {
@@ -161,6 +192,13 @@ export default class VideoPlayer extends Component {
       }
     }
 
+    if(this.props.defaultSrc !== prevProps.defaultSrc) {
+      if(this.defaultVideoPlayer&& this.defaultVideoPlayer.loadVideoById){
+      console.log("default src is here", this.props.defaultSrc)
+        this.defaultVideoPlayer.loadVideoById(this.props.defaultSrc)
+      }
+    }
+
     if(this.props.src !== prevProps.src) {
       if(this.props.isYoutubeId){
         if(this.videoplayer&&this.videoplayer.loadVideoById){
@@ -168,7 +206,7 @@ export default class VideoPlayer extends Component {
           this.videoplayer.loadVideoById(this.props.src, this.props.progress)
         }
       }else{
-        this.state.vid.src = this.props.src
+        // this.state.vid.src = this.props.src
       }
     }
   }
@@ -226,47 +264,32 @@ export default class VideoPlayer extends Component {
       isFullscreen=false
     }
     var hide_main = this.state.fill_time || !this.props.src
-    var vis1
-    var vis2
-    var vis3
-    var vis4
-    var vis5
-    var vis6
+
+    var vis1 = "hidden"
+    var vis2 = "hidden"
+    var vis3 = "hidden"
+    var vis4 = "hidden"
+    var vis5 = "hidden"
+    var vis6 = "hidden"
+    var vis7 = "hidden"
     if(this.state.isCasting){
-      vis1="hidden"
-      vis2="hidden"
-      vis3="hidden"
-      vis4="hidden"
-      vis6="hidden"
+      vis5=""
     }else if(this.props.socketError){
-      vis1="hidden"
-      vis2="hidden"
-      vis3="hidden"
-      vis5="hidden"
-      vis6="hidden"
-    }else{
-       vis5="hidden"
-       vis4="hidden"
-      if(this.state.init_loading){
-        vis1="hidden"
-        vis2="hidden"
-        vis6="hidden"
+      vis4=""
+    }else if(this.state.init_loading){
+      vis3=""
+    }else if(hide_main){
+      if(this.props.defaultSrc){
+        vis2=""
       }else{
-        if(hide_main){
-          vis1="hidden"
-          vis6="hidden"
-        }else{
-          vis2="hidden"
-        }
-        if(this.props.isYoutubeId){
-          vis1="hidden"
-        }else{
-          vis6="hidden"
-        }
-        vis3="hidden"
+        vis7=""
       }
+    }else if(this.props.isYoutubeId){
+      vis6=""
+    }else{
+      vis1=""
     }
-    var ytheight="700px"
+    console.log(1, vis1, 2, vis2, 3, vis3, 4, vis4, 5, vis5, 6, vis6, 7, vis7)
               // <div id="topblinder" style={{backgroundColor:"black", height:"90px", width:"100%", position:"absolute", zIndex:"3"}}></div>
     return (
       <div style={{top:"-22px", width:this.props.vidWidth?this.props.vidWidth:"640px", height:"700px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
@@ -290,8 +313,11 @@ export default class VideoPlayer extends Component {
               controls={false}
               disableremoteplayback="true"
             />
+            <div style={{visibility:vis2, position:"absolute", height:"100%", width:"100%"}}>
+              <div id="timefiller"></div>
+            </div>
             <video
-              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis2, position:"relative", top:"50%", transform: "translateY(-50%)"}}
+              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis7, position:"relative", top:"50%", transform: "translateY(-50%)"}}
               src="/videos/test3.mp4"
               autoPlay
               muted={true}

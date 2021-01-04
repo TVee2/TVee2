@@ -18,6 +18,7 @@ export default class TV extends Component {
       prevChannelId:null,
       showChannelId:false,
       src: '',
+      defaultSrc:null,
       channel:null,
       progress: null,
       init_loading:true,
@@ -83,7 +84,7 @@ export default class TV extends Component {
     .then((res) => {
       var channel = res.data
       if(channel){
-        this.setState({channel, showChannelId:true}, () => {
+        this.setState({channel, defaultSrc:channel.defaultSrc, showChannelId:true}, () => {
           if(this.interval){
             clearTimeout(this.interval)
           }
@@ -225,6 +226,7 @@ export default class TV extends Component {
             vidWidth={this.state.vidWidth}
             match={this.props.match}
             src={this.state.src}
+            defaultSrc={this.state.defaultSrc}
             isYoutubeId={this.state.isYoutubeId}
             progress={this.state.progress}
             socketError={this.state.socket_error}

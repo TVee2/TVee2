@@ -6,40 +6,16 @@ const {Op} = require('sequelize')
 router
 .get('/:channelId', (req, res, next) => {
   var channelId = req.params.channelId
+  var timezone_diff = parseInt(req.query.offset) - new Date().getTimezoneOffset()
 
-  // const where_after = {
-  //   [Op.and]: [
-  //     {channelId: req.params.channelId},
-  //     {starttime: {
-  //       [Op.gt]: new Date().getTime()
-  //     }}
-  //   ]
-  // }
-
-  // const where_before = {
-  //   [Op.and]: [
-  //     {channelId: req.params.channelId},
-  //     {starttime: {
-  //       [Op.lt]: new Date().getTime()
-  //     }}
-  //   ]
-  // }
-
-  // Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:where_before})
-  // .then((before_ts)=>{
-  //   return Timeslot.findAll({order: [['starttime', 'ASC']], include: {model: Program}, where:where_after})
-  //   .then((after_ts)=>{
-  //     res.json({before_ts, after_ts})
-  //   })
-  // })
   var today = new Date()
   var tomorrow = new Date()
   var dayaftertommorrow = new Date()
-  today.setHours(0,0,0,0)
+  today.setHours(0,timezone_diff,0,0)
   tomorrow.setDate(today.getDate()+1)
-  tomorrow.setHours(0,0,0,0)
+  tomorrow.setHours(0,timezone_diff,0,0)
   dayaftertommorrow.setDate(today.getDate()+2)
-  dayaftertommorrow.setHours(0,0,0,0)
+  dayaftertommorrow.setHours(0,timezone_diff,0,0)
 
   const today_where = {
     [Op.and]: [

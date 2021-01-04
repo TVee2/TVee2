@@ -5,4 +5,7 @@ module.exports = db.define('channel', {
   name:{
     type: Sequelize.STRING,
   },
+  defaultSrc:{
+    type: Sequelize.STRING,
+  }
 })
