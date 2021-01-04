@@ -289,7 +289,7 @@ export default class VideoPlayer extends Component {
     }else{
       vis1=""
     }
-    console.log(1, vis1, 2, vis2, 3, vis3, 4, vis4, 5, vis5, 6, vis6, 7, vis7)
+    console.log("video src", this.props.src, "channel default vid src", this.props.defaultSrc)
               // <div id="topblinder" style={{backgroundColor:"black", height:"90px", width:"100%", position:"absolute", zIndex:"3"}}></div>
     return (
       <div style={{top:"-22px", width:this.props.vidWidth?this.props.vidWidth:"640px", height:"700px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
