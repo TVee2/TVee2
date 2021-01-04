@@ -24,11 +24,9 @@ var seedAllChannels = async ()=>{
   })
 }
 
-
 module.exports = io => {
   //any time we re initialize, seed segments
   seedAllChannels()
-
   new CronJob(
   '0 0 * * * *',
   seedNext2hrSegments,
@@ -49,8 +47,7 @@ module.exports = io => {
   '0 23 * * * *',
   () => {
     console.log("daily destroy previous segments")
-    Segment.destroy({where: {time:{[Op.lt]:new Date().getTime()}}})
-
+    Segment.destroy({where: {time:{[Op.lt]:Math.floor((new Date().getTime())/1000)}}})
   },
   null,
   true,
