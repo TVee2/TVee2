@@ -11,6 +11,11 @@ router
   var today = new Date()
   var tomorrow = new Date()
   var dayaftertommorrow = new Date()
+
+  today = new Date(today.getTime() + timezone_diff*60000)
+  tomorrow = new Date(tomorrow.getTime() + timezone_diff*60000)
+  dayaftertommorrow = new Date(dayaftertommorrow.getTime() + timezone_diff*60000)
+
   today.setHours(0,timezone_diff,0,0)
   tomorrow.setDate(today.getDate()+1)
   tomorrow.setHours(0,timezone_diff,0,0)
