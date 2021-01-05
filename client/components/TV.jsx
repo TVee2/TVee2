@@ -31,7 +31,8 @@ export default class TV extends Component {
       collapse:false,
       showChat:false,
       vidWidth:null,
-      isYoutubeId:false
+      isYoutubeId:false,
+      noChannel:false,
     }
     this.interval=null
   }
@@ -84,7 +85,7 @@ export default class TV extends Component {
     .then((res) => {
       var channel = res.data
       if(channel){
-        this.setState({channel, defaultSrc:channel.defaultSrc, showChannelId:true}, () => {
+        this.setState({channel, noChannel:false, defaultSrc:channel.defaultSrc, showChannelId:true}, () => {
           if(this.interval){
             clearTimeout(this.interval)
           }
@@ -129,7 +130,7 @@ export default class TV extends Component {
           })
         })
       }else{
-
+        this.setState({noChannel:true})
       }
     })
     .catch((err) => {
@@ -221,6 +222,7 @@ export default class TV extends Component {
             </div>
           :null}
           <VideoPlayer
+            noChannel={this.state.noChannel}
             showCover={this.props.showCover}
             removeCover={this.props.removeCover}
             vidWidth={this.state.vidWidth}

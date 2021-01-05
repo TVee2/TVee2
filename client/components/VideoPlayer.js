@@ -14,7 +14,8 @@ export default class VideoPlayer extends Component {
       debounce:false,
       mute:true,
       channelJustChanged:false,
-      showKeypad:false
+      showKeypad:false,
+      controlChannelOnChange:"",
     }
     this.videoplayer=null
     this.defaultVideoPlayer=null
@@ -245,15 +246,20 @@ export default class VideoPlayer extends Component {
       this.videoplayer.mute()
     }
     var new_channel = document.getElementById("channelchange").value
-    console.log(new_channel)
     this.props.changeChannel(new_channel)
-    this.setState({channelJustChanged:true, init_loading:true})
-    document.getElementById("channelchange").value = ""
+    this.setState({channelJustChanged:true, controlChannelOnChange:"", init_loading:true})
   }
 
   toggleMute = () => {
     this.state.mute?this.videoplayer.unMute():this.videoplayer.mute()
     this.setState({mute: !this.state.mute})
+  }
+
+  channelInputOnChange = (e) => {
+    const re = /^[0-9\b]+$/
+    if ((e.target.value === '' || re.test(e.target.value)) && e.target.value.length<6) {
+      this.setState({controlChannelOnChange:e.target.value})
+    }
   }
 
   render() {
@@ -272,7 +278,11 @@ export default class VideoPlayer extends Component {
     var vis5 = "hidden"
     var vis6 = "hidden"
     var vis7 = "hidden"
-    if(this.state.isCasting){
+    var vis8 = "hidden"
+
+    if(this.props.noChannel){
+      vis8=""
+    }else if(this.state.isCasting){
       vis5=""
     }else if(this.props.socketError){
       vis4=""
@@ -303,6 +313,7 @@ export default class VideoPlayer extends Component {
             <img src="/static.gif" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis3, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_channel.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis8, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
             <video
               style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1, margin:0, position:"relative", top:"50%", transform: "translateY(-50%)"}}
               id="vid"
@@ -334,7 +345,7 @@ export default class VideoPlayer extends Component {
                 <button className = "upchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 0 14px 7px"}} onClick={this.upChannel} ></button>
                 <button className = "downchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 0"}} onClick={this.downChannel} ></button>   
                 <button className = "keypad" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 7px"}} onClick={()=>{this.setState({showKeypad:!this.state.showKeypad})}} ></button>   
-                <div style={{visibility:this.state.showKeypad?"":"hidden", width:"180px"}}><input id="channelchange" style={{fontSize:"30px", display:"inline-block", height:"33px", width:"100px", margin:"14px 2px 14px 7px"}}></input><button onClick={this.switchChannel} style={{display:"inline-block", height:"40px", margin:"14px 7px 14px 0", verticalAlign:"super"}}>Go</button></div>
+                <div style={{visibility:this.state.showKeypad?"":"hidden", width:"180px"}}><input value={this.state.controlChannelOnChange} id="channelchange" onChange={this.channelInputOnChange} style={{fontSize:"30px", display:"inline-block", height:"33px", width:"100px", margin:"14px 2px 14px 7px"}}></input><button onClick={this.switchChannel} style={{display:"inline-block", height:"40px", margin:"14px 7px 14px 0", verticalAlign:"super"}}>Go</button></div>
               </div>
             </div>
             <div style={{width:"100%", backgroundColor:"black"}}></div>

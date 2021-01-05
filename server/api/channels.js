@@ -58,8 +58,8 @@ router
     where: {id: req.params.id},
     include: {model: User},
   })
-  .then((channels) => {
-    res.status(200).json(channels)
+  .then((channel) => {
+    res.status(200).json(channel)
   })
   .catch((err) => {
     res.status(400).json({error: err.message})
