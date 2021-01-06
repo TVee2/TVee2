@@ -17,7 +17,7 @@ export default class Generic extends Component {
         <nav>
           <div>
             {/* The navbar will show these links after you log in */}
-            <Link to="/manage/lists">Lists</Link>
+            <Link to="/manage/lists">Playlists</Link>
             <Link to="/manage/channels">Channels</Link>
             <Link to="/manage/me">Me</Link>
             <Link to="/manage/devtools">Devtools</Link>

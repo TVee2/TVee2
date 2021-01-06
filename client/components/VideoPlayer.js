@@ -338,7 +338,7 @@ export default class VideoPlayer extends Component {
           </div>
           <div style={{backgroundColor:"black", position:"absolute", display:"flex", width:"100%", zIndex:"5", top:"530px", height:"70px"}}>
             <div style={{display:"flex"}}>
-              {this.state.mute?<button className="videobutton unmute" onClick={this.toggleMute}></button>:<button className="videobutton mute" onClick={this.toggleMute}></button>}
+              {this.state.mute?<button className="videobutton mute" onClick={this.toggleMute}></button>:<button className="videobutton unmute" onClick={this.toggleMute}></button>}
               <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
               <CastButton socketError={this.props.socketError} segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
               <div style={{display:"flex", backgroundColor:"black"}}>

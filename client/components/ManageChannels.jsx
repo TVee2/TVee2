@@ -1,17 +1,59 @@
 import React, {Component} from 'react'
 import axios from 'axios'
 
+var channelTabData = [
+  { name: 'Create Channel', key:"create", isActive: true },
+  { name: 'View/Edit Channel', key:"vedit", isActive: false },
+];
+
+class Tabs extends React.Component {
+  render() {
+    return (
+      <ul className="nav nav-tabs">
+        {channelTabData.map((tab) => {
+          return (
+            <Tab key={tab.name} data={tab} isActive={this.props.activeTab === tab} handleClick={this.props.changeTab.bind(this, tab)} />
+          )
+        })}
+      </ul>
+    );
+  }
+}
+
+class Tab extends React.Component {
+  render() {
+    return (
+      <li onClick={this.props.handleClick} className={this.props.isActive ? "active" : null}>
+        <a>{this.props.data.name}</a>
+      </li>
+    );
+  }
+}
+
 export default class ManageChannels extends Component {
   constructor() {
     super()
 
-    this.state = {channels:[], playlists:[], selectedChannelId:null, selectedPlaylistId:null, timeslots:{today:[], tomorrow:[], defaultSrc:""}}
+    this.state = {
+      channels:[],
+      channelSubmitMessage:"",
+      playlists:[],
+      selectedChannelId:null,
+      selectedPlaylistId:null,
+      timeslots:{today:[], tomorrow:[], defaultSrc:""},
+      activeTab: channelTabData[0],
+    }
+
     this.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   }
 
   componentDidMount() {
     this.getChannels()
     this.getPlaylists()
+  }
+
+  handleTabClick = (tab) => {
+    this.setState({activeTab: tab})
   }
 
   getChannels = () => {
@@ -65,10 +107,31 @@ export default class ManageChannels extends Component {
 
   channelSubmit = (e) => {
     var name = document.getElementById("channelname").value
-    axios.post('/api/channels', {name})
-    .then(() => {
-      this.getChannels()
-    })
+    var description = document.getElementById("channeldescription").value
+    var defaultVideoId = document.getElementById("defaultvideoid").value
+    var playlistId = document.getElementById("playlistid").value
+
+    if(name.length > 7){
+      this.setState({channelSubmitMessage:"name cannot be more than 7 characters"})
+    }else if(!name.match(/^\w+$/)){
+      this.setState({channelSubmitMessage:"name can only be alphanumeric characters and underscore"})
+    }else if(description.length > 1000){
+      this.setState({channelSubmitMessage:"description cannot be more than 1000 characters"})
+    }else{
+      this.setState({channelSubmitMessage:"working..."})
+      axios.post('/api/channels', {name, description, defaultVideoId, playlistId})
+      .then(() => {
+        this.setState({channelSubmitMessage:""})
+        document.getElementById("channelname").value=""
+        document.getElementById("channeldescription").value=""
+        document.getElementById("defaultvideoid").value=""
+        document.getElementById("playlistid").value=""
+        this.getChannels()
+      })
+      .catch((err) => {
+        this.setState({channelSubmitMessage: err.message})
+      })
+    }
   }
 
   submitDefaultVid = (e) => {
@@ -81,8 +144,6 @@ export default class ManageChannels extends Component {
     })
   }
 
-
-
   render() {
     var today = new Date()
     var tomorrow = new Date()
@@ -93,23 +154,49 @@ export default class ManageChannels extends Component {
 
     return (
       <div>
-        <h1>Manage Channels - list channels</h1>
-        <div>Create a channel</div>
-        <form onSubmit={this.channelSubmit}>
-          <input type="text" id="channelname" name="channelname"/><br/>
-          <input type="submit" value="submit" />
-        </form>
-        <br />
-        <br/><br/>
-
-        <div>Select a channel</div>
-        <select id="channel" defaultValue={'DEFAULT'} onChange={this.onChannelChange}>
-          <option disabled value='DEFAULT'> -- select an option -- </option>
-          {this.state.channels.map(ch => {
-            return <option value={`${ch.id}`}>{ch.id} - {ch.name}</option>
-          })}
-        </select>
-        <br/><br/>
+        <h1 style={{textAlign:"left"}}>Manage Channels</h1>
+        <Tabs activeTab={this.state.activeTab} changeTab={this.handleTabClick} />
+        {this.state.activeTab.key=="create"?
+        <div>
+          <ul>
+            <li>Channel names must be 7 characters or less and contain only alphanumeric characters.</li><br/>
+            <li>Channel description must be less than 1000 characters.</li><br/>
+            <li>Youtube Video Id is visible in the youtube url when watching a video, the id follows the "v=", for example in
+            "https://www.youtube.com/watch?v=Pfm8M3q-XXX" the video id is Pfm8M3q-XXX</li><br/>
+            <li>Playlist youtube id is visibile in the url of the playlist page on youtube or when playing a playlist.  The id follows "list=", for example
+            in "https://www.youtube.com/playlist?list=PLnEsh8867eks9qXCyR_vYfVjL3EppXXXX" the id is PLnEsh8867eks9qXCyR_vYfVjL3EppXXXX
+            </li><br/>
+          </ul>
+          <form onSubmit={this.channelSubmit}>
+            <br/>
+            <label>Channel Name:</label>
+            <input type="text" id="channelname" name="channelname"/><br/>
+            <br/>
+            <label>Channel Description (optional):</label>
+            <textarea type="text" id="channeldescription" name="channeldescription"/><br/>
+            <br/>
+            <label>Default Video Youtube ID (optional):</label>
+            <input type="text" id="defaultvideoid" name="defaultvideoid"/><br/>
+            <br/>
+            <label>Looping Playlist Youtube ID:</label>
+            <input type="text" id="playlistid" name="playlistid"/><br/><br/>
+            <input type="submit" value="submit" />
+          </form>
+          <div style={{color:"red"}}>{this.state.channelSubmitMessage}</div>
+          <br />
+          <br/><br/>
+        </div>
+        :null}
+        {this.state.activeTab.key=="vedit"?
+        <div>
+          <div>Select a channel</div>
+          <select id="channel" defaultValue={'DEFAULT'} onChange={this.onChannelChange}>
+            <option disabled value='DEFAULT'> -- select an option -- </option>
+            {this.state.channels.map(ch => {
+              return <option value={`${ch.id}`}>{ch.id} - {ch.name}</option>
+            })}
+          </select>
+          <br/><br/>
         {this.state.selectedChannelId?
         <div>
           <div>Program channel as looping playlist</div>
@@ -188,6 +275,8 @@ export default class ManageChannels extends Component {
 
           <br /><br />
         </div>:null}
+        </div>
+        :null}
       </div>
     )
   }

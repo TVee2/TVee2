@@ -32,7 +32,9 @@ class Tabs extends React.Component {
 class Tab extends React.Component {
   render() {
     return (
-        <button style={{margin:"0 2px", backgroundColor:`${this.props.isActive?"papayawhip":"white"}`}} onClick={this.props.handleClick} className={`videobutton ${this.props.data.dim==8?"eight":"sixteen"}`}></button>
+      <li onClick={this.props.handleClick} className={this.props.isActive ? "active" : null}>
+        <a>{this.props.data.name}</a>
+      </li>
     );
   }
 }
@@ -105,7 +107,7 @@ class CreatePix extends React.Component {
          {self?
          (
             <div id="touchArea" className="center-al col-xs-12">
-              <Tabs activeTab={this.state.activeTab} changeTab={this.handleClick} />
+               <Tabs activeTab={this.state.activeTab} changeTab={this.handleClick} />
                <div className="ok col-xs-12" id="pallcont2">
                  <Palette />
                </div>
