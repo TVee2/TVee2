@@ -48,6 +48,7 @@
     "fs": "0.0.1-security",
     "googleapis": "^66.0.0",
     "history": "^4.9.0",
+    "i": "^0.3.6",
     "morgan": "^1.9.1",
     "multer-s3": "^2.9.0",
     "passport": "^0.4.0",
