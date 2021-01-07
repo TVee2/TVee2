@@ -15,7 +15,7 @@ export default class ManageVideos extends Component {
     var yid = document.getElementById("yid").value
     axios.post('/api/videos/youtubelink', {yid})
     .then((res) => {
-      this.props.getMyVids()
+      // this.props.getMyVids()
     })
     .catch((err) => {})
   }

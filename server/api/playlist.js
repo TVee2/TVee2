@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
 
 .post('/ytplaylist/:plid', async (req, res, next) => {
   try {
-    var playlist = await uploadPlaylist(req.params.plid)
+    var playlist = await uploadPlaylist(req.params.plid, req.user)
     res.json(playlist)
   } catch (err) {
     res.status(500).json(err);

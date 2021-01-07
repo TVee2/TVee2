@@ -36,20 +36,13 @@ export default class Scheduler extends Component {
   }
 
   componentDidMount(){
-    this.getMyVids()
+    // this.getMyVids()
     // this.getMyPlaylistItems()
     this.getChannels()
   }
 
   componentWillUnmount(){
     socket.off()
-  }
-
-  getMyVids = () => {
-    axios.get('/api/videos')
-    .then((ret) => {
-      this.setState({videos:ret.data})
-    })
   }
 
   getMyPlaylistItems = () => {
@@ -259,10 +252,14 @@ export default class Scheduler extends Component {
     var yid = document.getElementById("yid").value
     axios.post('/api/videos/youtubelink', {yid})
     .then((res) => {
-      this.getMyVids()
+      // this.getMyVids()
     })
     .catch((err) => {})
   }
+          // <Route path={this.props.match.url + "/videos"} render={(props) => (
+          //     <ManageVideos videos={this.state.videos} getMyVids={this.getMyVids}/>
+          //   )}
+          // />
 
   render() {
     return (
@@ -271,10 +268,6 @@ export default class Scheduler extends Component {
 
 
         <div style={{position:"absolute", left:"135px"}}>
-          <Route path={this.props.match.url + "/videos"} render={(props) => (
-              <ManageVideos videos={this.state.videos} getMyVids={this.getMyVids}/>
-            )}
-          />
           <Route path={this.props.match.url + "/lists"} render={(props) => (
               <ManageLists/>
             )}
