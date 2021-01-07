@@ -31,6 +31,7 @@ Channel.hasMany(Segment)
 Channel.hasMany(Timeslot)
 Channel.belongsTo(User)
 Channel.belongsTo(Playlist)
+Channel.belongsTo(Program, {as:'defaultProgram', constraints:false})
 
 Program.belongsTo(User)
 Program.belongsToMany(Video, {through: "videosrc"})

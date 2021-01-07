@@ -23,8 +23,7 @@ module.exports = require('express')
         })
     })
     .catch(err => {
-      console.log(err)
-      res.status(500).send('Internal Server Error')
+      res.status(500).send(err)
     })
   })
 
@@ -54,8 +53,7 @@ module.exports = require('express')
           })
       })
       .catch(err => {
-        console.log(err)
-        res.status(500).send('Internal Server Error')
+        res.status(500).send(err)
       })
     })
   })
@@ -79,7 +77,7 @@ module.exports = require('express')
           res.status(201).json(pix)
         })
         .catch(err => {
-          console.log(err)
+          res.status(500).send(err)
         })
     } else {
       res.status(201).json({message: 'submitted pix is blank'})
@@ -111,7 +109,7 @@ module.exports = require('express')
           res.status(201).json(pix)
         })
         .catch(err => {
-          console.log(err)
+          res.status(500).send(err)
         })
     } else {
       res.status(201).json({message: 'submitted pix is blank'})
@@ -122,16 +120,19 @@ module.exports = require('express')
     Pix.findOne({
       where: {id: req.params.id},
     })
-      .then(pix => {
-        return pix.destroy()
+    .then(pix => {
+      return pix.destroy()
+    })
+    .then(() => {
+      return Pix.findAll({
+        order: [['id', 'DESC']],
+        where: {userId: req.user.id},
       })
-      .then(() => {
-        return Pix.findAll({
-          order: [['id', 'DESC']],
-          where: {userId: req.user.id},
-        })
-      })
-      .then(pixs => {
-        res.status(200).json(pixs)
-      })
+    })
+    .then(pixs => {
+      res.status(200).json(pixs)
+    })
+    .catch((err) => {
+      res.status(500).send(err)
+    })
   })

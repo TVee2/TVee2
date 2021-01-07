@@ -4,11 +4,12 @@ const turnOnChannelEmitter = require('../channelEmitter')
 const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders')
 const { Op } = require("sequelize");
 
+const {uploadProgram, uploadPlaylist} = require('./crudHelpers')
+
 module.exports = router
 
 router
 .get('/', (req, res, next) => {
-  //time is greater than current
   var now = new Date().getTime()
   Channel.findAll({
     include: [
@@ -21,20 +22,25 @@ router
     res.status(200).json(channels)
   })
   .catch((err) => {
-    res.status(400).json({error: err.message})
+    res.status(500).json(err)
   })
 })
 
 .post('/setdefsrc/:channelId', async (req, res, next) => {
   var channelId = req.params.channelId
-  var channel = await Channel.findByPk(channelId)
-  channel.defaultSrc = req.body.defaultSrc
-  await channel.save()
-  res.json({message: "default saved to channel"})
+  try{
+    var channel = await Channel.findByPk(channelId)
+    var program = await uploadProgram(req.body.defaultSrc)
+
+    await channel.save()
+    res.json({message: "default saved to channel"})
+
+  }catch(err){
+    res.status(500).json(err);
+  }
 })
 
 .get('/timeslots', (req, res, next) => {
-  //time is greater than current
   var now = new Date().getTime()
   Channel.findAll({
     include: [
@@ -49,7 +55,7 @@ router
     res.status(200).json(channels)
   })
   .catch((err) => {
-    res.status(400).json({error: err.message})
+    res.status(500).json({error: err.message})
   })
 })
 
@@ -62,42 +68,55 @@ router
     res.status(200).json(channel)
   })
   .catch((err) => {
-    res.status(400).json({error: err.message})
+    res.status(500).json(err)
   })
 })
 
-.post('/', (req, res, next) => {
-  Channel.findAll({where:{userId:req.user.id}})
-  .then((channels)=>{ 
-    if(channels.length>=3){
-      res.json({err:"user can't create more than 3 channels"})
-    }else{
-      const user = req.user
-      Channel.create(req.body)
-      .then((channel) => User.findOne({where: {id: user.id}})
-        .then((user) => channel.setUser(user))
-      )
-      .then((channel) => {
-        Channel.findByPk(channel.id, {include:[{model:User}]})
-        .then((channel)=>{
-          //turn on channel emitter
-          var io = req.app.locals.io
-          turnOnChannelEmitter(channel, io)
-          res.status(201).json(channel)
-        })
-      })
-      .catch((err) => {
-        res.status(400).json({error: err.message})
-      })
+.post('/', async (req, res, next) => {
+  var {name, description, defaultVideoId, playlistId} = req.body
+
+  if(name.length>7){
+    return res.json({err:"name length too long"})
+  }else if(description.length>1000){
+    return res.json({err:"description length too long"})
+  }else if(!name.match(/^\w+$/)){
+    return res.json({err:"channel name must be alphanumeric underscore characters only"})
+  }
+
+  var channels = await Channel.findAll({where:{userId:req.user.id}})
+  if(channels.length>=3){
+    return res.json({err:"user can't create more than 3 channels"})
+  }
+
+  try{
+    var program = await uploadProgram(defaultVideoId)
+    var playlist = await uploadPlaylist(playlistId)
+    var channel = await Channel.create({name, description, userId:req.user.id})
+    await channel.setDefaultProgram(program)
+    await channel.setPlaylist(playlist)
+    await seedNext24HrTimeslots(channel.id, true)
+
+    channel = await Channel.findByPk(channel.id, {include:[{model:User}]})
+    var io = req.app.locals.io
+    turnOnChannelEmitter(channel, io)
+    res.status(201).json(channel)
+  } catch(err) {
+    if(program){
+      program.destroy()
     }
-  })
+    if(channel){
+      channel.destroy()
+    }
+    if(playlist){
+      playlist.destroy()
+    }
+    res.status(500).json(err);
+  }
 })
-
 
 .post('/playlist', async (req, res, next) => {
   var {channelId, playlistId} = req.body
 
-  //reset all channel related stuff
   await Segment.destroy({where:{channelId}})
   await Timeslot.destroy({where:{channelId}})
   var channel = await Channel.findByPk(channelId)
@@ -123,6 +142,6 @@ router
     res.status(202).json(channels)
   })
   .catch((err) => {
-    res.status(400).json({error: err.message})
+    res.status(500).json(err);
   })
 })

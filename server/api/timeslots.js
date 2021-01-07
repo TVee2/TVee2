@@ -53,19 +53,22 @@ router
       res.json({today:today_ts, tomorrow:tomorrow_ts})
     })
   })
+  .catch((err)=>{
+    res.status(500).send(err)
+  })
 })
 
 .delete('/previous', (req, res, next) => {
-  console.log("in destroy")
   Segment.destroy({where: {time:{[Op.lt]:new Date().getTime()}}})
   .then((ts)=>{
     Segment.findAll()
     .then((all) => {
-      console.log("destroyed")
       res.json({prev:"deleted"})
     })
   })
-  .catch((err)=>{console.log(err)})
+  .catch((err)=>{
+    res.status(500).send(err)   
+  })
 })
 
 .delete('/all', (req, res, next) => {
@@ -76,7 +79,9 @@ router
   .then((ret)=>{
     res.json({})
   })
-  .catch((err)=>{console.log(err)})
+  .catch((err)=>{
+    res.status(500).send(err)
+  })
 })
 
 .delete('/:timeslotId', (req, res, next) => {
@@ -86,6 +91,9 @@ router
   })
   .then((ts)=>{
     res.json(ts)
+  })
+  .catch((err) => {
+    res.status(500).send(err)
   })
 })
 
@@ -146,7 +154,6 @@ router
           })
         }else{
           io.emit(upload_time, `conflict`)
-
           res.json({conflict_timeslot: ts})
         }
       })
@@ -154,37 +161,6 @@ router
   })
   .catch((err)=>{
     io.emit(upload_time, `theres been an error`)
-    console.log(err)})
+    res.status(500).send(err)
+  })
 })
-
-// .post('/:channelId/experimental', (req, res, next) => {
-//   var date = new Date(date)
-//   var now = new Date()
-
-//   date.setHours(hr, min, sec)
-//   var date = date.getTime()
-
-//   var startDate = date
-//   var endDate = date + program.duration*1000
-
-//   for(var i = 0;i<120;i++){
-//     //seed 120 segments from now till 120 segments from now, alternate sample videos
-
-//   }
-
-//   Timeslot.create({starttime:date, endtime:Math.ceil(date+program.duration*1000), recurring, channelId:req.params.channelId})
-//     .then((ts) => {
-//       return ts.setProgram(program)
-//     })
-//     .then(async (ts)=>{
-//       for(let i=0;i<(ts.endtime - ts.starttime)/1000;i++){
-//         var new_time = Math.floor((ts.starttime/1000) + i)
-//         var segment = await Segment.create({tkey:req.params.channelId + '' + new_time, progress:i, programId:program.id, timeslotId: ts.id, channelId:req.params.channelId})
-//       }
-//     })
-//     .then(()=>{
-//       res.json(ts)
-//     })
-//   .catch((err)=>{console.log(err)})
-// })
-

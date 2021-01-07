@@ -8,7 +8,4 @@ module.exports = db.define('channel', {
   description:{
     type: Sequelize.TEXT,
   },
-  defaultSrc:{
-    type: Sequelize.STRING,
-  }
 })
