@@ -13,7 +13,9 @@ router
   var now = new Date().getTime()
   Channel.findAll({
     include: [
-      {model: User}
+      {model: User},
+      {model: Playlist},
+      {model: Program, as: "defaultProgram"},
     ],
     order: [['createdAt', 'ASC']],
     limit: 50

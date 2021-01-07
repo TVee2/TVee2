@@ -8,6 +8,9 @@ module.exports = db.define('playlist', {
   description:{
     type: Sequelize.TEXT,
   },
+  youtubeId:{
+    type: Sequelize.STRING,
+  },
   thumbnailUrl:{
     type: Sequelize.STRING,   
   },

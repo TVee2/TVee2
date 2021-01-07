@@ -114,7 +114,7 @@ module.exports.uploadPlaylist = async (playlistId, user) => {
       thumbedResults = thumbedResults + parseInt(resultsPerPage)
     }
 
-    var new_playlist = await Playlist.create({title:playlist_title, description:playlist_description, isYoutubePlaylist:true, thumbnailUrl, userId: user.id})
+    var new_playlist = await Playlist.create({title:playlist_title, youtubeId:playlistId, description:playlist_description, isYoutubePlaylist:true, thumbnailUrl, userId: user.id})
     for(var j = 0;j<items.length;j++){
       var yid = items[j].snippet.resourceId.videoId
       var position = parseInt(items[j].snippet.position)

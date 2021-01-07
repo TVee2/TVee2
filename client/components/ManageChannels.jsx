@@ -155,6 +155,11 @@ export default class ManageChannels extends Component {
     tomorrow.setHours(0,0,0,0)
     today.setHours(0,0,0,0)
 
+    var channel
+    if(this.state.selectedChannelId){
+      channel = this.state.channels.find((channel) => {return channel.id==this.state.selectedChannelId})
+    }
+
     return (
       <div>
         <h1 style={{textAlign:"left"}}>Manage Channels</h1>
@@ -202,7 +207,18 @@ export default class ManageChannels extends Component {
           <br/><br/>
         {this.state.selectedChannelId?
         <div>
-          <div>Program channel as looping playlist</div>
+          {channel?<div>
+            <div>CHANNEL INFORMATION</div>
+            <div>Address - {channel.id}</div>
+            <div>Name - {channel.name}</div>
+            <div>Description - {channel.description?channel.description:"none"}</div>
+            <div>Youtube Playlist ID - {channel.playlist?channel.playlist.youtubeId:"none"}</div>
+            <div>Youtube Title - {channel.playlist?channel.playlist.title:"none"}</div>
+            <div>Default Video ID - {channel.defaultProgram?channel.defaultProgram.youtubeId:"none"}</div><br/>
+          </div>:null}
+          <br/><br/>
+          <div>EDIT CHANNEL INFORMATION</div>
+          <div>Change looping playlist (first upload a playlist)</div>
           <div>Select a playlist</div>
           <select id="playlist" defaultValue={'DEFAULT'} value={this.state.selectedPlaylistId} onChange={this.onPlaylistChange}>
             <option disabled value='DEFAULT'> -- select an option -- </option>
@@ -210,17 +226,16 @@ export default class ManageChannels extends Component {
               return <option value={`${playlist.id}`}>{playlist.title}</option>
             })}
           </select>
-          <br/><br/>
           <button onClick={this.setChannelPlaylist}>Submit</button>
           <br/><br/>
-          <br/><br/>
-          <div>Optionally, set a placeholder video.  If none will default to tvdrop video</div>
+          <div>Change placeholder video.  If none will default to tvdrop video</div>
           <form onSubmit={this.submitDefaultVid}>
             <input type="text" id="defaultVid" name="defaultVid"/><br/>
             <input type="submit" value="submit" />
           </form>
           <div>{this.state.loadingMessage}</div>
 
+          <br /><br />
           <br /><br />
 
 
