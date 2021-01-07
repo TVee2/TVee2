@@ -3,6 +3,10 @@ import axios from 'axios'
 import {Link} from 'react-router-dom'
 
 export default class ChannelBrowse extends Component {
+  componentDidMount(){
+    this.props.getChannels()
+  }
+
   getNext30 = () => {
     var now = new Date()
     var minutes = now.getMinutes()
@@ -30,9 +34,7 @@ export default class ChannelBrowse extends Component {
     var now = new Date().getTime()
     var elem = document.getElementById("scheduleitem0")
     var winwidth = window.innerWidth
-    var scaler = winwidth*10
-    //show 3 hours in inner width
-    //get next 6 30 minute adjacent to current time    
+    var scaler = winwidth*10 
 
     return (
       <div>
@@ -70,7 +72,7 @@ export default class ChannelBrowse extends Component {
                   >
                   <div id={`zz${timeslot.id}`} style={{width:"200px", position:"absolute",  backgroundColor:`${timeslot.program.color}`}} className=''>
                     {timeslot.program.title}
-                    <div>Youtube video: {timeslot.program.ytVideoId}</div>
+                    <div>Youtube video: {timeslot.program.youtubeId}</div>
                     <div>{`Starttime: ${new Date(parseInt(timeslot.starttime)).toLocaleTimeString()}`}</div>
                     <div>{`Endtime: ${new Date(parseInt(timeslot.endtime)).toLocaleTimeString()}`}</div>
                     <img style={{height:"100px", width:"100px"}} src={timeslot.program.thumbnailUrl}></img>

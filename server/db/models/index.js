@@ -3,7 +3,6 @@ const Segment = require('./segment')
 const Program = require('./program')
 const Channel = require('./channel')
 const Comment = require('./comment')
-const Video = require('./video')
 const Timeslot = require('./timeslot')
 const Playlist = require('./playlist')
 const PlaylistItem = require('./playlistItem')
@@ -34,7 +33,6 @@ Channel.belongsTo(Playlist)
 Channel.belongsTo(Program, {as:'defaultProgram', constraints:false})
 
 Program.belongsTo(User)
-Program.belongsToMany(Video, {through: "videosrc"})
 
 Playlist.hasMany(PlaylistItem)
 Playlist.belongsTo(User)
@@ -64,7 +62,6 @@ module.exports = {
   Segment,
   User,
   Comment,
-  Video,
   Timeslot,
   Playlist,
   PlaylistItem,

@@ -106,12 +106,15 @@ export default class ManageChannels extends Component {
   }
 
   channelSubmit = (e) => {
+    e.preventDefault()
     var name = document.getElementById("channelname").value
     var description = document.getElementById("channeldescription").value
     var defaultVideoId = document.getElementById("defaultvideoid").value
     var playlistId = document.getElementById("playlistid").value
 
-    if(name.length > 7){
+    if(name.length==0 || playlistId.length==0){
+      this.setState({channelSubmitMessage:"name and playlistid are required"})
+    }else if(name.length > 7){
       this.setState({channelSubmitMessage:"name cannot be more than 7 characters"})
     }else if(!name.match(/^\w+$/)){
       this.setState({channelSubmitMessage:"name can only be alphanumeric characters and underscore"})
@@ -241,7 +244,7 @@ export default class ManageChannels extends Component {
                   >
                     <div id={`zz${timeslot.id}`} style={{width:"200px", position:"absolute",  backgroundColor:`${timeslot.program.color}`}} className=''>
                       {timeslot.program.title}
-                      <div>Youtube video: {timeslot.program.ytVideoId}</div>
+                      <div>Youtube video: {timeslot.program.youtubeId}</div>
                       <div>{`Starttime: ${new Date(parseInt(timeslot.starttime)).toLocaleTimeString()}`}</div>
                       <div>{`Endtime: ${new Date(parseInt(timeslot.endtime)).toLocaleTimeString()}`}</div>
                       <img style={{height:"100px", width:"100px"}} src={timeslot.program.thumbnailUrl}></img>
@@ -262,7 +265,7 @@ export default class ManageChannels extends Component {
                     >
                     <div id={`zz${timeslot.id}`} style={{width:"200px", position:"absolute",  backgroundColor:`${timeslot.program.color}`}} className=''>
                       {timeslot.program.title}
-                      <div>Youtube video: {timeslot.program.ytVideoId}</div>
+                      <div>Youtube video: {timeslot.program.youtubeId}</div>
                       <div>{`Starttime: ${new Date(parseInt(timeslot.starttime)).toLocaleTimeString()}`}</div>
                       <div>{`Endtime: ${new Date(parseInt(timeslot.endtime)).toLocaleTimeString()}`}</div>
                       <img style={{height:"100px", width:"100px"}} src={timeslot.program.thumbnailUrl}></img>

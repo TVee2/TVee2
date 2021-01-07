@@ -3,7 +3,7 @@ module.exports = router
 
 router.use('/users', require('./users'))
 router.use('/comments', require('./comments'))
-router.use('/videos', require('./vid'))
+router.use('/programs', require('./program'))
 router.use('/timeslots', require('./timeslots'))
 router.use('/channels', require('./channels'))
 router.use('/playlist', require('./playlist'))

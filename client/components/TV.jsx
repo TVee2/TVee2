@@ -84,8 +84,10 @@ export default class TV extends Component {
     axios.get(`/api/channels/${channelId}`)
     .then((res) => {
       var channel = res.data
+
       if(channel){
-        this.setState({channel, noChannel:false, defaultSrc:channel.defaultSrc, showChannelId:true}, () => {
+        var defaultSrc = channel.defaultProgram?channel.defaultProgram.youtubeId:""
+        this.setState({channel, noChannel:false, defaultSrc, showChannelId:true}, () => {
           if(this.interval){
             clearTimeout(this.interval)
           }
@@ -96,24 +98,22 @@ export default class TV extends Component {
           socket.on(this.state.channel.id, segment => {
             var src
             var isYoutubeId = false
-            if(segment&&segment.program&&segment.program.ytVideoId){
+            if(segment&&segment.program&&segment.program.youtubeId){
               isYoutubeId = true
-              src = segment.program.ytVideoId
+              src = segment.program.youtubeId
               var {progress} = segment
               this.setState({src, isYoutubeId, progress, emitterChannelId:this.state.channel.id, segment})
 
-            }else if(!segment||!segment.program||!segment.program.videos.length===0||(!segment.program.videos[0].path&&!segment.program.videos[0].youtubeId)){
+            }else if(!segment||!segment.program||!segment.program.youtubeId){
               this.setState({src:"no source", emitterChannelId:this.state.channel.id,})
             }else{
-              var video = segment.program.videos[0]
-              if(video.path){
-                src = video.path
-              }else if(video.youtubeId){
+              var video = segment.program
+              if(video.youtubeId){
                 src = video.youtubeId
                 isYoutubeId = true
               }
               var {progress} = segment
-              this.setState({src, isYoutubeId, progress, emitterChannelId:this.state.channel.id, segment})
+              this.setState({src, isYoutubeId, progress, emitterChannelId: this.state.channel.id, segment})
             }
           })
           socket.on(`c${this.state.channel.id}`, comment => {
@@ -197,7 +197,9 @@ export default class TV extends Component {
   changeChannel = (id) => {
     history.push(`/tv/${id}`)
     socket.off()
-    this.getChannel(id) 
+    this.setState({channel:null, src:'', defaultSrc:''}, () => {
+      this.getChannel(id) 
+    })
   }
 
   hideCover = () => {
@@ -222,6 +224,7 @@ export default class TV extends Component {
             </div>
           :null}
           <VideoPlayer
+            channel={this.state.channel}
             noChannel={this.state.noChannel}
             showCover={this.props.showCover}
             removeCover={this.props.removeCover}
@@ -249,9 +252,11 @@ export default class TV extends Component {
             comments={this.state.comments}
             channelId={this.props.match.params.channelId}
           />
-          <div style={{position:"absolute", zIndex:"5", backgroundColor:"yellowgreen", top:"600px", height:"300px", width:"315px"}}></div>
-          <div style={{position:"absolute", zIndex:"5", backgroundColor:"magenta", top:"600px", left:"320px", height:"300px", width:"315px"}}></div>
-
+          <div style={{position:"absolute", zIndex:"5", top:"585px"}}>
+            <div style={{margin:"10px"}}>{this.state.channel?this.state.channel.description:null}</div>
+            <div style={{margin:"3px", display:"inline-block", backgroundColor:"yellowgreen", height:"300px", width:"315px"}}></div>
+            <div style={{margin:"3px", display:"inline-block", backgroundColor:"magenta", height:"300px", width:"315px"}}></div>
+          </div>
         </div>
       </div>
     )

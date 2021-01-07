@@ -1,7 +1,7 @@
 'use strict'
 
 const db = require('../server/db')
-const {User, Segment, Channel, Program, Video} = require('../server/db/models')
+const {User, Segment, Channel, Program} = require('../server/db/models')
 
 async function seed() {
   await db.sync({force: true})
@@ -13,19 +13,12 @@ async function seed() {
 
   const channel = await Channel.create({name:"SciFi", userId:1})
   const channel2 = await Channel.create({name:"Horror", userId:1})
-  const channel3 = await Channel.create({name:"Classics", userId:1})
-
-    //this is useful
-    //await Segment.create({tkey:`d3/h${Math.floor(i/3600)}/m${Math.floor((i%3600)/60)}/s${i%60}`, channelId:channel.id})
+  // const channel3 = await Channel.create({name:"Classics", userId:1})
 
 
-  const video1 = await Video.create({quality: "420p", path: '/videos/test1.mp4', duration: 35, original:true})
-  const video2 =  await Video.create({quality: "420p", path: '/videos/test2.mp4', duration: 30, original:true})
 
   const program1 = await Program.create({title: 'city', duration: 35, ad:false})
-  await program1.addVideo(video1)
-  const program2 = await Program.create({title: 'wave', duration: 30, ad:false, videoId:video2.id})
-  await program2.addVideo(video2)
+  const program2 = await Program.create({title: 'wave', duration: 30, ad:false})
 
 
   var counter = 0

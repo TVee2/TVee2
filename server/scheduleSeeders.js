@@ -78,8 +78,8 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
   for(var i=0;i<items.length;i++){
     let item = items[i]
     if(item.embeddable){    
-      let {id, title, thumbnailUrl, duration, width, height, ytVideoId} = item
-      var program = await Program.findOrCreate({where: {title, thumbnailUrl, width, height, duration, ytVideoId, playlistItemId:id}})
+      let {id, title, thumbnailUrl, duration, width, height, youtubeId} = item
+      var program = await Program.findOrCreate({where: {title, thumbnailUrl, width, height, duration, youtubeId, playlistItemId:id}})
       if(Array.isArray(program)){
         program = program[0]
       }
@@ -91,7 +91,7 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
   console.log("channelid", channelId, "playlistarr length", item_arr.length)
 
   while(timecounter < (now+(60*60*24))) {
-    var {title, thumbnailUrl, duration, ytVideoId, position} = item_arr[j].item
+    var {title, thumbnailUrl, duration, youtubeId, position} = item_arr[j].item
     duration = parseInt(duration)
     if((timecounter+duration)>now){
       var program = item_arr[j].program

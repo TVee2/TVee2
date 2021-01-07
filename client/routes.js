@@ -63,7 +63,7 @@ class Routes extends Component {
           )}
         />
         <Route path="/tvbrowse" render={(props) => (
-            <ChannelBrowse channels={this.state.chtimeslots}/>
+            <ChannelBrowse channels={this.state.chtimeslots} getChannels={this.getChannels}/>
           )}
         />
         <Route path="/login" component={Login} />

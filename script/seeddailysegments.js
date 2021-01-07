@@ -1,4 +1,4 @@
-const {User, Segment, Schedule, Program, Video, Channel, Timeslot} = require('../db/models')
+const {User, Segment, Schedule, Program, Channel, Timeslot} = require('../db/models')
 
 var seed_daily_segments = async function() {
   Timeslot.findAll({where: {recurring: "dailyrecurring"}, include: {model: Program}})

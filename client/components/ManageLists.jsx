@@ -94,24 +94,28 @@ export default class ManageLists extends Component {
         :null}
         {this.state.activeTab.key=="view"?
           <div>
-            <div>Select a playlist</div>
-            <select id="playlist" defaultValue={'DEFAULT'} value={this.state.selectedPlaylistId} onChange={this.onPlaylistChange}>
-              <option disabled value='DEFAULT'> -- select an option -- </option>
-              {this.state.playlists.map(playlist => {
-                return <option value={`${playlist.id}`}>{playlist.id} - {playlist.title}</option>
-              })}
-            </select>
-            <br/><br/>
-            <div>Selected Playlist</div>
-            {this.state.playlists.map((playlist, i) => {
-              if(playlist.id != this.state.selectedPlaylistId){
-                return
-              }else{
-                return <ul>Playlist {i+1} - {playlist.title}{playlist.playlistItems.map((v) => {
-                  return <div><img src={v.thumbnailUrl}></img>{v.title} - {new Date(v.duration * 1000).toISOString().substr(11, 8)}</div>
-                })}</ul>
-              }
-            })}
+            {this.state.playlists.length?
+              <div>
+                <div>Select a playlist</div>
+                <select id="playlist" defaultValue={'DEFAULT'} value={this.state.selectedPlaylistId} onChange={this.onPlaylistChange}>
+                  <option disabled value='DEFAULT'> -- select an option -- </option>
+                  {this.state.playlists.map(playlist => {
+                    return <option value={`${playlist.id}`}>{playlist.id} - {playlist.title}</option>
+                  })}
+                </select>
+                <br/><br/>
+                <div>Selected Playlist</div>
+                {this.state.playlists.map((playlist, i) => {
+                  if(playlist.id != this.state.selectedPlaylistId){
+                    return
+                  }else{
+                    return <ul>Playlist {i+1} - {playlist.title}{playlist.playlistItems.map((v) => {
+                      return <div><img src={v.thumbnailUrl}></img>{v.title} - {new Date(v.duration * 1000).toISOString().substr(11, 8)}</div>
+                    })}</ul>
+                  }
+                })}
+              </div>
+            :<div style={{margin:"20px"}}>Import a playlist to view playlists</div>}
           </div>
         :null}
 

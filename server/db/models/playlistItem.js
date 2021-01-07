@@ -14,11 +14,11 @@ module.exports = db.define('playlistItem', {
   duration:{
     type: Sequelize.STRING,
   },
-  ytVideoId:{
-    type: Sequelize.STRING,   
+  youtubeId:{
+    type: Sequelize.STRING,
   },
   embeddable:{
-    type: Sequelize.BOOLEAN,  
+    type: Sequelize.BOOLEAN,
   },
   playableVideo:{
     type: Sequelize.BOOLEAN,

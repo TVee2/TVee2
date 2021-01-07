@@ -62,7 +62,7 @@ router
 .get('/:id', (req, res, next) => {
   Channel.findOne({
     where: {id: req.params.id},
-    include: {model: User},
+    include: [{model: User}, {model:Program, as: 'defaultProgram'}],
   })
   .then((channel) => {
     res.status(200).json(channel)
@@ -76,22 +76,23 @@ router
   var {name, description, defaultVideoId, playlistId} = req.body
 
   if(name.length>7){
-    return res.json({err:"name length too long"})
+    return res.status(400).json(new Error("name length too long"))
   }else if(description.length>1000){
-    return res.json({err:"description length too long"})
+    return res.status(400).json(new Error("description length too long"))
   }else if(!name.match(/^\w+$/)){
-    return res.json({err:"channel name must be alphanumeric underscore characters only"})
+    return res.status(400).json(new Error("channel name must be alphanumeric underscore characters only"))
   }
 
   var channels = await Channel.findAll({where:{userId:req.user.id}})
-  if(channels.length>=3){
-    return res.json({err:"user can't create more than 3 channels"})
-  }
+  // if(channels.length>=3){
+  //   return res.status(500).json({err:"user can't create more than 3 channels"})
+  // }
 
   try{
-    var program = await uploadProgram(defaultVideoId)
-    var playlist = await uploadPlaylist(playlistId)
+    var program = await uploadProgram(defaultVideoId, req.user)
+    var playlist = await uploadPlaylist(playlistId, req.user)
     var channel = await Channel.create({name, description, userId:req.user.id})
+
     await channel.setDefaultProgram(program)
     await channel.setPlaylist(playlist)
     await seedNext24HrTimeslots(channel.id, true)

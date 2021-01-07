@@ -7,7 +7,7 @@ const auth = new google.auth.GoogleAuth({
 });
 google.options({auth});
 
-module.exports.parseDuration = async (PlaylistItem) => {
+parseDuration = (item) => {
   var str = item.contentDetails.duration
   let n = str.length;
   let duration = 0;
@@ -39,29 +39,35 @@ module.exports.parseDuration = async (PlaylistItem) => {
   return duration
 }
 
-module.exports.uploadProgram = async (youtubeId) => {
- const yvid = await youtube.videos.list({
+module.exports.uploadProgram = async (youtubeId, user) => {
+  const yvid = await youtube.videos.list({
     part: 'status, contentDetails, snippet',
     id: youtubeId
   });
+
   var item = yvid.data.items[0]
   if(!item){
     throw new Error("Video doesnt exist or is set to private")
   }
+
   var embeddable = item.status.embeddable
   if(!embeddable){
     return res.json({err:"Not embeddable or set to private"});
   }
-  var duration = parseDuration(item)
-  var title = item.snippet.title
-  var thumbnailUrl = item.snippet.thumbnails.default.url
-  var program = await Program.create({ad:false, title, duration, thumbnailUrl, userId:req.user.id})
-  var video = await Video.create({youtubeId:yid, duration, thumbnailUrl})
-  await program.addVideo(video)
-  return program
+  try{
+    var duration = parseDuration(item)
+    var title = item.snippet.title
+    var thumbnailUrl = item.snippet.thumbnails.default.url
+    var program = await Program.create({title, duration, youtubeId, thumbnailUrl, userId:user.id})
+    return program
+  }catch(err){
+    throw new Error(err)
+  }
 }
 
-module.exports.uploadPlaylist = async (playlistId) => {
+module.exports.uploadPlaylist = async (playlistId, user) => {
+  try{
+
     var playlist_meta = await youtube.playlists.list({
       part: 'status, contentDetails, snippet',
       id: playlistId
@@ -79,7 +85,7 @@ module.exports.uploadPlaylist = async (playlistId) => {
 
     var items_meta = await youtube.playlistItems.list({
       part: 'status, contentDetails, snippet',
-      playlistId: req.params.plid
+      playlistId: playlistId
     })
 
     items_meta = items_meta.data
@@ -100,7 +106,7 @@ module.exports.uploadPlaylist = async (playlistId) => {
       }
       ret = await youtube.playlistItems.list({
         part: 'status, contentDetails, snippet',
-        playlistId: req.params.plid,
+        playlistId: playlistId,
         pageToken: nextPageToken
       })
       items_meta = ret.data
@@ -108,7 +114,7 @@ module.exports.uploadPlaylist = async (playlistId) => {
       thumbedResults = thumbedResults + parseInt(resultsPerPage)
     }
 
-    var new_playlist = await Playlist.create({title:playlist_title, description:playlist_description, isYoutubePlaylist:true, thumbnailUrl, userId:req.user.id})
+    var new_playlist = await Playlist.create({title:playlist_title, description:playlist_description, isYoutubePlaylist:true, thumbnailUrl, userId: user.id})
     for(var j = 0;j<items.length;j++){
       var yid = items[j].snippet.resourceId.videoId
       var position = parseInt(items[j].snippet.position)
@@ -153,7 +159,7 @@ module.exports.uploadPlaylist = async (playlistId) => {
       playlistItem = await PlaylistItem.create({
         playlistId: new_playlist.id,
         position,
-        ytVideoId: item.id,
+        youtubeId: item.id,
         duration,
         thumbnailUrl,
         embeddable,
@@ -163,7 +169,9 @@ module.exports.uploadPlaylist = async (playlistId) => {
         height,
       })
     }
-
     return new_playlist
+  }catch(err){
+    console.log(err)
+  }
 }
 
