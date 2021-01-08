@@ -66,15 +66,9 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
   var timecounter = now
   var lastTimeslot = await Timeslot.findOne({limit:1, include: {model:Program, include:{model:PlaylistItem}}, order:[['starttime', 'DESC']], where:{channelId:channel.id}})
   var j = 0
-  if(lastTimeslot && lastTimeslot.program && lastTimeslot.program.playlistItem){
-    timecounter = Math.floor(parseInt(lastTimeslot.endtime)/1000)
-    var matchIndex = indexOfMatch(items, (item)=>{return lastTimeslot.program.playlistItem.id == item.id})
-    j = matchIndex===-1?0:matchIndex
-  }
 
   //seed programs for all timeslot items
   var item_arr = []
-  console.log(j, "matchindex", items.length)
   for(var i=0;i<items.length;i++){
     let item = items[i]
     if(item.embeddable){    
@@ -84,6 +78,17 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
         program = program[0]
       }
       item_arr.push({item, program})
+    }
+  }
+
+  if(lastTimeslot && lastTimeslot.program && lastTimeslot.program.playlistItem){
+    timecounter = Math.floor(parseInt(lastTimeslot.endtime)/1000)
+    var matchIndex = indexOfMatch(items, (item)=>{return lastTimeslot.program.playlistItem.id == item.id})
+    j = matchIndex===-1?0:matchIndex
+    if(j==item_arr.length-1){
+      j=0
+    }else{
+      j++
     }
   }
 
