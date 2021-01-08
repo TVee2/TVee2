@@ -18,7 +18,8 @@ export default class App extends React.Component {
       isListSelected:false,
       isChatSelected:true,
       showPlippiBar:false,
-      selectedPix:null
+      selectedPix:null,
+      submitCooldown:false
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleFormChange = this.handleFormChange.bind(this)
@@ -31,7 +32,6 @@ export default class App extends React.Component {
   handleSubmit(event) {
     event.preventDefault()
     this.addComment({content: this.state.value, channelId: this.props.channelId})
-    this.setState({value: ''})
   }
 
   componentDidMount() {
@@ -39,17 +39,20 @@ export default class App extends React.Component {
   }
 
   addComment = (obj) => {
+    if(this.state.submitCooldown){
+      return
+    }
+    this.setState({submitCooldown:true})
     axios.post(`/api/comments`, obj)
+    .then(() => {
+      this.setState({value: ''})
+      setTimeout(() => {this.setState({submitCooldown:false})}, 500)
+    })
     .catch((err) => {
+      this.setState({submitCooldown:false})
       console.log(err)
     })
   }
-
-  // componentDidUpdate(prevProps, prevState){
-  //   if(prevProps.channelId !== this.props.channelId){
-  //     this.props.getComments(this.props.channelId)
-  //   }
-  // }
 
   handleChatClick = () => {
     this.setState({isCreateSelected:false, isListSelected:false, isChatSelected:true})
@@ -68,7 +71,18 @@ export default class App extends React.Component {
   }
 
   submitPixToChat = () => {
+    if(this.state.submitCooldown){
+      return
+    }
+    this.setState({submitCooldown:true})
     axios.post('/api/comments/pix', {pix:this.state.selectedPix, channelId:this.props.channelId})
+    .then(() => {
+      this.setState({selectedPix:null})
+      setTimeout(() => {this.setState({submitCooldown:false})}, 3000)
+    })
+    .catch(() => {
+      this.setState({submitCooldown:false})
+    })
   }
 
   render() {

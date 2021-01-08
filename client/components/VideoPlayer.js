@@ -16,6 +16,7 @@ export default class VideoPlayer extends Component {
       channelJustChanged:false,
       showKeypad:false,
       controlChannelOnChange:"",
+      vidStatus:null
     }
     this.videoplayer=null
     this.defaultVideoPlayer=null
@@ -34,9 +35,10 @@ export default class VideoPlayer extends Component {
   }
 
   onYTPlayerStateChange = (event) => {
+    this.setState({vidStatus:event.data})
     if(event.data==1){
       //is playing
-      console.log("yt playing")
+      console.log("yt playing", this.props.src, this.props.progress)
       if(this.state.channelJustChanged){
         this.ytSound(!this.state.mute)
       }
@@ -108,32 +110,6 @@ export default class VideoPlayer extends Component {
     this.videoplayer = ytplayer
     this.defaultVideoPlayer = defaultPlayer
 
-    // var vid = document.getElementById('vid')
-    // this.setState({vid})
-
-    // vid.addEventListener(
-    //   'loadedmetadata',
-    //   metadata => {
-    //     console.log(
-    //       'current progress',
-    //       this.props.progress,
-    //       'vid duration',
-    //       metadata.target.duration,
-    //       'is playing',
-    //       this.props.progress < metadata.target.duration
-    //         ? 'true'
-    //         : 'false filling time'
-    //     )
-
-    //     if (this.props.progress > metadata.target.duration) {
-    //       this.props.fillTime()
-    //     } else {
-    //       vid.currentTime = this.props.progress
-    //     }
-    //   },
-    //   false
-    // )
-
     var listener = () => {
       if (!this.state.dirty && this.videoplayer.unMute) {
         this.props.removeCover()
@@ -176,7 +152,7 @@ export default class VideoPlayer extends Component {
       this.setState({fill_time:true, init_loading:false})
     }
 
-    if(this.props.isYoutubeId && this.videoplayer && this.videoplayer.getCurrentTime){
+    if(this.props.isYoutubeId && this.state.vidStatus==1 && this.videoplayer && this.videoplayer.getCurrentTime){
       if(this.props.src && this.props.src!=="no source" && !!this.props.progress && Math.abs(this.props.progress - Math.round(this.videoplayer.getCurrentTime())) > 2){
         if(this.videoplayer.seekTo){
           console.log("seeking")
