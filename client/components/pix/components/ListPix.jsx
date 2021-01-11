@@ -51,7 +51,6 @@ class OwnProfile extends React.Component {
     var r = confirm("Are you sure you want to delete pix?")
     if(r){
       const post = this.state.pixList.result.find((pix) => (pix && evt.target.value==pix.id));
-      console.log(post.id)
 
       axios.delete('/api/pix/'+post.id)
       .then(()=>{
@@ -60,16 +59,16 @@ class OwnProfile extends React.Component {
     }
   }
 
-
   goToEdit = (pix) => {
     this.props.saveDraft({img: pix.img, palette:pix.palette})
     this.props.setPalette(pix.palette)
-    this.props.handleCreateClick()
+    this.props.navRelay()
   }
 
   goToProfPicEdit = ()=>{
     this.props.saveDraft({img: this.state.me.profilePicture.pix.img, palette:this.state.me.profilePicture.pix.palette})
     this.props.setPalette(this.state.me.profilePicture.pix.palette)
+    this.props.navRelay()
   }
 
   handlePrevious = () => {

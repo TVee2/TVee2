@@ -189,7 +189,7 @@ class Canvas extends React.Component {
       var p = document.createElement("p")
       p.innerHTML="Submitting your pix..."
       create.appendChild(p)
-      this.props.handleChatClick()
+      this.props.navRelay()
     }
   }
 

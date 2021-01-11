@@ -20,7 +20,6 @@ export default class Generic extends Component {
             <Link to="/manage/lists">Playlists</Link>
             <Link to="/manage/channels">Channels</Link>
             <Link to="/manage/me">Me</Link>
-            <Link to="/manage/devtools">Devtools</Link>
           </div>
         </nav>
       </div>

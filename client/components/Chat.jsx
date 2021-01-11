@@ -6,8 +6,8 @@ import store from './pix/store'
 import CreatePix from './pix/components/CreatePix'
 import PixBlock from './pix/components/PixBlock'
 import ListPix from './pix/components/ListPix'
-import "./pix/styles.css";
 import PixBar from './PixBar'
+import "./pix/styles.css";
 
 export default class App extends React.Component {
   constructor() {
@@ -144,8 +144,8 @@ export default class App extends React.Component {
             }
           </div>:null}
 
-          {this.state.isCreateSelected?<CreatePix handleChatClick={this.handleChatClick}/>:null}
-          {this.state.isListSelected?<ListPix handleCreateClick={this.handleCreateClick}/>:null}
+          {this.state.isCreateSelected?<CreatePix navRelay={this.handleChatClick}/>:null}
+          {this.state.isListSelected?<ListPix navRelay={this.handleCreateClick}/>:null}
         </div>
       </Provider>
     )

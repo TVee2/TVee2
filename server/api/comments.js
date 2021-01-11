@@ -6,7 +6,7 @@ router
 .get('/', (req, res, next) => {
   var channelId = req.query.channelId
   Post.findAll({
-    include: [{model:User}, {model:Pix}, {model: Comment}],
+    include: [{model:User, include:{model:Pix, as:"profilePicture"}}, {model:Pix}, {model: Comment}],
     where:{channelId},
     order: [['createdAt', 'DESC']],
     limit: 20

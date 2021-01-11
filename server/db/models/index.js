@@ -41,8 +41,8 @@ Program.belongsTo(PlaylistItem)
 PlaylistItem.belongsTo(Playlist)
 
 Pix.belongsTo(User)
-User.hasMany(Pix)
-User.belongsTo(Pix, {as: 'profilePicture', constraints:false})
+User.hasMany(Pix, {as: 'creations'})
+User.belongsTo(Pix, {as: 'profilePix', constraints:false})
 
 Post.belongsTo(Pix)
 Post.belongsTo(Comment)

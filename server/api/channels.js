@@ -10,7 +10,6 @@ module.exports = router
 
 router
 .get('/', (req, res, next) => {
-  var now = new Date().getTime()
   Channel.findAll({
     include: [
       {model: User},
@@ -19,6 +18,24 @@ router
     ],
     order: [['createdAt', 'ASC']],
     limit: 50
+  })
+  .then((channels) => {
+    res.status(200).json(channels)
+  })
+  .catch((err) => {
+    res.status(500).json(err)
+  })
+})
+
+.get('/editable', (req, res, next) => {
+  Channel.findAll({
+    where:{userId:req.user.id},
+    include: [
+      {model: User},
+      {model: Playlist},
+      {model: Program, as: "defaultProgram"},
+    ],
+    order: [['createdAt', 'ASC']]
   })
   .then((channels) => {
     res.status(200).json(channels)
@@ -91,11 +108,14 @@ router
   // }
 
   try{
-    var program = await uploadProgram(defaultVideoId, req.user)
+
     var playlist = await uploadPlaylist(playlistId, req.user)
     var channel = await Channel.create({name, description, userId:req.user.id})
+    if(defaultVideoId){
+      var program = await uploadProgram(defaultVideoId, req.user)
+      await channel.setDefaultProgram(program)
+    }
 
-    await channel.setDefaultProgram(program)
     await channel.setPlaylist(playlist)
     await seedNext24HrTimeslots(channel.id, true)
 
@@ -113,7 +133,7 @@ router
     if(playlist){
       playlist.destroy()
     }
-    res.status(500).json(err);
+    res.status(500).json({err:err.message});
   }
 })
 

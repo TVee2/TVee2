@@ -32,6 +32,7 @@ router.post('/signup', async (req, res, next) => {
   }
   var color = randColor()
   req.body.color = color
+  console.log(req.body)
   try {
     const user = await User.create(req.body)
     req.login(user, err => (err ? next(err) : res.json(user)))
@@ -57,7 +58,7 @@ router.get('/me', (req, res) => {
 router.get('/me/detailed', (req, res) => {
   var user = req.user
   if(req.user){
-    User.findByPk(user.id, {include: [{model:Pix, as:"profilePicture"}]})
+    return User.findByPk(user.id, {include: [{model:Pix, as:"profilePix"}]})
     .then((user)=>{
       return res.json(user)
     })

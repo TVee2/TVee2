@@ -115,7 +115,7 @@ class CreatePix extends React.Component {
                        editMode={this.props.editMode}
                        profPicMode={this.props.profPicMode}
                        getDrawStateAndSaveDraft = {this.getDrawStateAndSaveDraft}
-                       handleChatClick={this.props.handleChatClick}
+                       navRelay={this.props.navRelay}
                        dim={this.state.activeTab.dim}
                        symbol={this.state.activeTab.symbol}/> 
             </div>)

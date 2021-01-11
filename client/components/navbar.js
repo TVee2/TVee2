@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store'
+import BackgroundColor from './BackgroundColor'
 
 const Navbar = ({handleClick, isLoggedIn}) => (
-  <div style={{position:"absolute", zIndex:"11", backgroundColor:"white", width:"100%"}}>
+  <div id="topBarContainer" style={{height:"148px", position:"absolute", zIndex:"11", backgroundColor:"white", width:"100%"}}>
+    <BackgroundColor/>
     <h1>TVDrop</h1>
     <nav>
       {isLoggedIn ? (
@@ -27,7 +29,6 @@ const Navbar = ({handleClick, isLoggedIn}) => (
         </div>
       )}
     </nav>
-    <hr />
   </div>
 )
 

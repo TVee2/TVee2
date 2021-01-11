@@ -12,7 +12,6 @@ import ManageVideos from './components/ManageVideos'
 import ManageLists from './components/ManageLists'
 import ManageChannels from './components/ManageChannels'
 import ManageMe from './components/ManageMe'
-import Devtools from './components/Devtools'
 
 import axios from 'axios'
 
@@ -63,7 +62,7 @@ class Routes extends Component {
           )}
         />
         <Route path="/tvbrowse" render={(props) => (
-            <ChannelBrowse channels={this.state.chtimeslots} getChannels={this.getChannels}/>
+            <ChannelBrowse channels={this.state.chtimeslots} getChannels={this.getChannelsWTimeslots}/>
           )}
         />
         <Route path="/login" component={Login} />

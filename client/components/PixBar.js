@@ -33,7 +33,9 @@ export default class Generic extends Component {
     return (
       <div>
         {this.state.pixList.map((pix)=>{
-          return <PixBlock onClick={this.props.selectPixHandler} pix={pix} dim={32}/>
+          return (<div style={{display:"inline-block", margin:"2px 2px"}}>
+            <PixBlock onClick={this.props.selectPixHandler.bind(this, pix)} pix={pix} dim={this.props.dim?this.props.dim:32}/>
+          </div>)
         })}
       </div>
     )

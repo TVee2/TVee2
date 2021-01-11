@@ -10,6 +10,7 @@ class PixBlock extends React.Component {
   }
 
   componentWillMount(){
+
     var dim
 
     if(this.props.dim){
@@ -22,17 +23,7 @@ class PixBlock extends React.Component {
     }
     this.setState({dim})
 
-
-    var pix = this.props.pix
-    var id = pix.id
     var grab='';
-    if(pix.size===8){
-      grab += "kl"
-    }else if (pix.size===16) {
-      grab += "al"
-    }else if (pix.size===32) {
-      grab += "bl"
-    }
 
     if(this.props.adgrab){
       grab += this.props.adgrab
@@ -42,7 +33,10 @@ class PixBlock extends React.Component {
   }
 
   componentDidUpdate(prevProps){
-    if(prevProps.pix.img!==this.props.pix.img){
+    if(!this.props.pix){
+      return
+    }
+    if(!prevProps.pix || prevProps.pix.img!==this.props.pix.img){
       this.draw()
     }
   }
@@ -75,10 +69,16 @@ class PixBlock extends React.Component {
   }
 
   componentDidMount(){
+    if(!this.props.pix){
+      return
+    }
     this.draw()
   }
 
   render(){
+    if(!this.props.pix){
+      return <div>No Pix set as profile picture</div>
+    }
     var pix=this.props.pix
     var data= pix.img;
     var palette = pix.palette;

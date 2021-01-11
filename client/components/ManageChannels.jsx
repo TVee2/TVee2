@@ -57,7 +57,7 @@ export default class ManageChannels extends Component {
   }
 
   getChannels = () => {
-    axios.get('/api/channels')
+    axios.get('/api/channels/editable')
    .then((ret) => {
       this.setState({channels:ret.data})
     })
