@@ -2,6 +2,7 @@ const router = require('express').Router()
 const {User, Timeslot, Program, Segment} = require('../db/models')
 module.exports = router
 const {Op} = require('sequelize')
+const io = require('../socket/index.js').io
 
 router
 .get('/:channelId', (req, res, next) => {
@@ -99,8 +100,6 @@ router
 
 
 .post('/:channelId', (req, res, next) => {
-  var io = req.app.locals.io
-
   var {vid_title, date, upload_time, recurring} = req.body
   var date = new Date(date).getTime()
   var now = new Date()

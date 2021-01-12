@@ -1,12 +1,14 @@
 const router = require('express').Router()
 const {User, Vote, Comment, Post, Pix} = require('../db/models')
+const io = require('../socket/index.js').io
+
 module.exports = router
 
 router
 .get('/', (req, res, next) => {
   var channelId = req.query.channelId
   Post.findAll({
-    include: [{model:User, include:{model:Pix, as:"profilePicture"}}, {model:Pix}, {model: Comment}],
+    include: [{model:User, include:[{model:Pix, as:"profilePix"}]}, {model:Pix}, {model: Comment}],
     where:{channelId},
     order: [['createdAt', 'DESC']],
     limit: 20
@@ -15,12 +17,12 @@ router
     res.status(200).json(posts)
   })
   .catch((err) => {
+    console.log(err)
     res.status(500).json(err);
   })
 })
 
 .post('/', (req, res, next) => {
-  var io = req.app.locals.io
   const user = req.user
   Comment.create(req.body)
   .then((comment)=>{
@@ -39,7 +41,6 @@ router
 })
 
 .post('/pix', (req, res, next) => {
-  var io = req.app.locals.io
   const user = req.user
   Pix.findOne({where:{id:req.body.pix.id}})
   .then((pix) => {

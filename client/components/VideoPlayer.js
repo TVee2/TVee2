@@ -322,6 +322,7 @@ export default class VideoPlayer extends Component {
                 <button className = "downchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 0"}} onClick={this.downChannel} ></button>   
                 <button className = "keypad" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 7px"}} onClick={()=>{this.setState({showKeypad:!this.state.showKeypad})}} ></button>   
                 <div style={{visibility:this.state.showKeypad?"":"hidden", width:"180px"}}><input value={this.state.controlChannelOnChange} id="channelchange" onChange={this.channelInputOnChange} style={{fontSize:"30px", display:"inline-block", height:"33px", width:"100px", margin:"14px 2px 14px 7px"}}></input><button onClick={this.switchChannel} style={{display:"inline-block", height:"40px", margin:"14px 7px 14px 0", verticalAlign:"super"}}>Go</button></div>
+                <div style={{color:"white", margin:"19px 0px 14px 120px", fontSize:"30px"}}>{this.props.numViewers}</div>
               </div>
             </div>
             <div style={{width:"100%", backgroundColor:"black"}}></div>

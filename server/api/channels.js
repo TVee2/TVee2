@@ -1,12 +1,24 @@
 const router = require('express').Router()
-const {User, Channel, Playlist, Timeslot, Segment, PlaylistItem, Program} = require('../db/models')
+const {User, Channel, Playlist, Timeslot, Segment, PlaylistItem, Program, Hashtag} = require('../db/models')
 const turnOnChannelEmitter = require('../channelEmitter')
 const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders')
 const { Op } = require("sequelize");
+const roomVisitors = require('../socket/index.js').roomVisitors()
 
 const {uploadProgram, uploadPlaylist} = require('./crudHelpers')
 
 module.exports = router
+
+var get10MostActiveChannels = () => {
+  var arr = []
+  for (const [key, value] of Object.entries(roomVisitors)) {
+    arr.push({id:key, viewers:value.length})
+  }
+  arr.sort((a,b) => {
+    return b.viewers - a.viewers
+  })
+  return arr.slice(0, 10).map((item) => item.id)
+}
 
 router
 .get('/', (req, res, next) => {
@@ -39,6 +51,21 @@ router
   })
   .then((channels) => {
     res.status(200).json(channels)
+  })
+  .catch((err) => {
+    res.status(500).json(err)
+  })
+})
+
+.post('/favorites/:id', (req, res, next) => {
+  Channel.findOne({
+    where: {id: req.params.id},
+  })
+  .then((channel) => {
+    return req.user.addFavoriteChannel(channel)
+  })
+  .then(() => {
+    res.status(200).json({message:"added to favorites"})
   })
   .catch((err) => {
     res.status(500).json(err)
@@ -78,21 +105,8 @@ router
   })
 })
 
-.get('/:id', (req, res, next) => {
-  Channel.findOne({
-    where: {id: req.params.id},
-    include: [{model: User}, {model:Program, as: 'defaultProgram'}],
-  })
-  .then((channel) => {
-    res.status(200).json(channel)
-  })
-  .catch((err) => {
-    res.status(500).json(err)
-  })
-})
-
 .post('/', async (req, res, next) => {
-  var {name, description, defaultVideoId, playlistId} = req.body
+  var {name, description, defaultVideoId, playlistId, hashtags} = req.body
 
   if(name.length>7){
     return res.status(400).json(new Error("name length too long"))
@@ -102,15 +116,16 @@ router
     return res.status(400).json(new Error("channel name must be alphanumeric underscore characters only"))
   }
 
-  var channels = await Channel.findAll({where:{userId:req.user.id}})
+  // var channels = await Channel.findAll({where:{userId:req.user.id}})
   // if(channels.length>=3){
   //   return res.status(500).json({err:"user can't create more than 3 channels"})
   // }
-
+  hashtags=['testhashtag1', 'testhashtag2', 'testhashtag3']
   try{
-
+    var hashobj = hashtags.map((htag) => {return {tag:htag}})
     var playlist = await uploadPlaylist(playlistId, req.user)
-    var channel = await Channel.create({name, description, userId:req.user.id})
+    var channel = await Channel.create({name, description, Hashtags: [hashobj]})
+    await req.user.addCreatedChannel(channel)
     if(defaultVideoId){
       var program = await uploadProgram(defaultVideoId, req.user)
       await channel.setDefaultProgram(program)
@@ -120,7 +135,6 @@ router
     await seedNext24HrTimeslots(channel.id, true)
 
     channel = await Channel.findByPk(channel.id, {include:[{model:User}]})
-    var io = req.app.locals.io
     turnOnChannelEmitter(channel, io)
     res.status(201).json(channel)
   } catch(err) {
@@ -162,9 +176,84 @@ router
     }
   })
   .then((channels) => {
-    res.status(202).json(channels)
+    res.status(200).json(channels)
   })
   .catch((err) => {
     res.status(500).json(err);
+  })
+})
+
+.get('/new', (req, res, next) => {
+  //get channels by created at descending, maybe that have been around for at least a day
+  Channel.findAll({
+    order: [['createdAt', 'DESC']],
+    limit: 10,
+  })
+  .then((channels) => {
+    res.status(200).json(channels)
+  })
+  .catch((err) => {
+    res.status(500).json(err);
+  })
+})
+
+.get('/related', (req, res, next) => {
+  //more you might like, if favorites
+  //most active/popular if no favorites
+  //get channels with related or matching hashtags to your favorites
+  //provided 4 hashtags, return ten channels with either same/fuzzy matched hashtags
+
+  Channel.findAll({
+    order: [['createdAt', 'DESC']],
+    limit: 10,
+  })
+  .then((channels) => {
+    res.status(200).json(channels)
+  })
+  .catch((err) => {
+    res.status(500).json(err);
+  })
+})
+
+.get('/active', (req, res, next) => {
+  //get channels with most visitors currently
+  var channelIds = get10MostActiveChannels()
+  Channel.findAll({
+    where: {id: {[Op.in]: channelIds}},
+    order: [['createdAt', 'DESC']],
+  })
+  .then((channels) => {
+    res.status(200).json(channels)
+  })
+  .catch((err) => {
+    res.status(500).json(err);
+  })
+})
+
+.get('/favorites', (req, res, next) => {
+  //get channels that user has starred
+  // console.log(Object.keys(req.user.__proto__));
+  req.user.getFavoriteChannels()
+  .then(channels => {
+    console.log(channels)
+    res.status(200).json(channels)
+  })
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err);
+  })
+})
+
+.get('/:id', (req, res, next) => {
+  var numViewers = roomVisitors[req.params.id]?(roomVisitors[req.params.id].length+1):1
+  Channel.findOne({
+    where: {id: req.params.id},
+    include: [{model: User}, {model:Program, as: 'defaultProgram'}],
+  })
+  .then((channel) => {
+    res.status(200).json({channel, numViewers})
+  })
+  .catch((err) => {
+    res.status(500).json(err)
   })
 })

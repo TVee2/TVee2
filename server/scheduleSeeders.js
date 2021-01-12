@@ -35,18 +35,17 @@ async function seedNext2hrSegments(channelId){
     timeslot.seeded = true
     await timeslot.save()
   }
-
 }
 
 function indexOfMatch(array, fn) {
   var result = -1;
   array.some(function(e, i) {
     if (fn(e)) {
-      result = i;
-      return true;
+      result = i
+      return true
     }
-  });
-  return result;
+  })
+  return result
 }
 
 async function seedNext24HrTimeslots(channelId, seedSegments){

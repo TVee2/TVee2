@@ -33,6 +33,7 @@ export default class TV extends Component {
       vidWidth:null,
       isYoutubeId:false,
       noChannel:false,
+      numViewers:0,
     }
     this.interval=null
   }
@@ -73,6 +74,7 @@ export default class TV extends Component {
   }
 
   componentWillUnmount() {
+    socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
     socket.off()
   }
 
@@ -83,11 +85,11 @@ export default class TV extends Component {
     this.getComments(channelId)
     axios.get(`/api/channels/${channelId}`)
     .then((res) => {
-      var channel = res.data
-
+      var channel = res.data.channel
+      var numViewers = res.data.numViewers
       if(channel){
         var defaultSrc = channel.defaultProgram?channel.defaultProgram.youtubeId:""
-        this.setState({channel, noChannel:false, defaultSrc, showChannelId:true}, () => {
+        this.setState({channel, numViewers, noChannel:false, defaultSrc, showChannelId:true}, () => {
           if(this.interval){
             clearTimeout(this.interval)
           }
@@ -128,6 +130,7 @@ export default class TV extends Component {
           socket.on('connect', () => {
             this.setState({socket_error:false})
           })
+          socket.emit('roomenter', {channelId: channel.id, userId:this.props.user.id})
         })
       }else{
         this.setState({noChannel:true})
@@ -180,24 +183,35 @@ export default class TV extends Component {
     return prev_channel_id
   }
 
-  incrementChannel = () => {
-    var nextChannel = this.nextChannelId()
-    history.push(`/tv/${nextChannel}`)
-    socket.off()
-    this.getChannel(nextChannel)
-  }
+  // incrementChannel = () => {
+  //   var nextChannel = this.nextChannelId()
+  //   history.push(`/tv/${nextChannel}`)
+  //   socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
+  //   socket.off()
+  //   this.getChannel(nextChannel)
+  // }
+
+  // decrementChannel = () => {
+  //   var prevChannel = this.prevChannelId()
+  //   history.push(`/tv/${prevChannel}`)
+  //   socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
+  //   socket.off()
+  //   this.getChannel(prevChannel)
+  // }
 
   decrementChannel = () => {
-    var prevChannel = this.prevChannelId()
-    history.push(`/tv/${prevChannel}`)
-    socket.off()
-    this.getChannel(prevChannel)
+    this.changeChannel(this.prevChannelId())
+  }
+
+  incrementChannel = () => {
+    this.changeChannel(this.nextChannelId())
   }
 
   changeChannel = (id) => {
     history.push(`/tv/${id}`)
+    socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
     socket.off()
-    this.setState({channel:null, src:'', defaultSrc:''}, () => {
+    this.setState({channel:null, numViewers:0, src:'', defaultSrc:''}, () => {
       this.getChannel(id) 
     })
   }
@@ -242,6 +256,7 @@ export default class TV extends Component {
             incrementChannel={this.incrementChannel}
             decrementChannel={this.decrementChannel}
             changeChannel={this.changeChannel}
+            numViewers={this.state.numViewers}
           />
           <Chat
             smallwindow={smallwindow}

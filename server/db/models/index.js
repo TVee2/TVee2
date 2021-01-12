@@ -8,13 +8,8 @@ const Playlist = require('./playlist')
 const PlaylistItem = require('./playlistItem')
 const Pix = require('./pix')
 const Post = require('./post')
-
-/**
- * If we had any associations to make, this would be a great place to put them!
- * ex. if we had another model called BlogPost, we might say:
- *
- *    BlogPost.belongsTo(User)
- */
+const Hashtag = require('./hashtag')
+const ChannelVisitLog = require('./channelVisitLog')
 
 Timeslot.belongsTo(Program)
 Timeslot.belongsTo(Channel)
@@ -28,11 +23,10 @@ Comment.belongsTo(Channel)
 
 Channel.hasMany(Segment)
 Channel.hasMany(Timeslot)
+Channel.hasMany(Hashtag)
 Channel.belongsTo(User)
 Channel.belongsTo(Playlist)
 Channel.belongsTo(Program, {as:'defaultProgram', constraints:false})
-
-Program.belongsTo(User)
 
 Playlist.hasMany(PlaylistItem)
 Playlist.belongsTo(User)
@@ -41,20 +35,19 @@ Program.belongsTo(PlaylistItem)
 PlaylistItem.belongsTo(Playlist)
 
 Pix.belongsTo(User)
+Program.belongsTo(User)
 User.hasMany(Pix, {as: 'creations'})
 User.belongsTo(Pix, {as: 'profilePix', constraints:false})
+User.hasMany(Channel, {as: 'createdChannels'})
+User.hasMany(Channel, {as: 'favoriteChannels'})
 
 Post.belongsTo(Pix)
 Post.belongsTo(Comment)
 Post.belongsTo(User)
 Post.belongsTo(Channel)
 
-/**
- * We'll export all of our models here, so that any time a module needs a model,
- * we can just require it from 'db/models'
- * for example, we can say: const {User} = require('../db/models')
- * instead of: const User = require('../db/models/user')
-*/
+ChannelVisitLog.belongsTo(User)
+ChannelVisitLog.belongsTo(Channel)
 
 module.exports = {
   Program,
@@ -66,5 +59,7 @@ module.exports = {
   Playlist,
   PlaylistItem,
   Pix,
-  Post
+  Post,
+  Hashtag,
+  ChannelVisitLog,
 }

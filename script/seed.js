@@ -11,15 +11,12 @@ async function seed() {
     User.create({email: 'will@pix.com', username:"will", password: '1234'}),
   ])
 
-  const channel = await Channel.create({name:"SciFi", userId:1})
-  const channel2 = await Channel.create({name:"Horror", userId:1})
+  // const channel = await Channel.create({name:"SciFi", userId:1})
+  // const channel2 = await Channel.create({name:"Horror", userId:1})
   // const channel3 = await Channel.create({name:"Classics", userId:1})
-
-
 
   const program1 = await Program.create({title: 'city', duration: 35, ad:false})
   const program2 = await Program.create({title: 'wave', duration: 30, ad:false})
-
 
   var counter = 0
   var vidswitch = true
