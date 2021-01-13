@@ -112,6 +112,12 @@ export default class ManageChannels extends Component {
     var defaultVideoId = document.getElementById("defaultvideoid").value
     var playlistId = document.getElementById("playlistid").value
 
+    var htag1 = document.getElementById("htag1").value
+    var htag2 = document.getElementById("htag2").value
+    var htag3 = document.getElementById("htag3").value
+    var htag4 = document.getElementById("htag4").value
+    var hashtags = [htag1, htag2, htag3, htag4]
+
     if(name.length==0 || playlistId.length==0){
       this.setState({channelSubmitMessage:"name and playlistid are required"})
     }else if(name.length > 7){
@@ -122,13 +128,18 @@ export default class ManageChannels extends Component {
       this.setState({channelSubmitMessage:"description cannot be more than 1000 characters"})
     }else{
       this.setState({channelSubmitMessage:"working..."})
-      axios.post('/api/channels', {name, description, defaultVideoId, playlistId})
+      axios.post('/api/channels', {name, description, defaultVideoId, playlistId, hashtags})
       .then(() => {
         this.setState({channelSubmitMessage:""})
         document.getElementById("channelname").value=""
         document.getElementById("channeldescription").value=""
         document.getElementById("defaultvideoid").value=""
         document.getElementById("playlistid").value=""
+        document.getElementById("htag1").value = ""
+        document.getElementById("htag2").value = ""
+        document.getElementById("htag3").value = ""
+        document.getElementById("htag4").value = ""
+
         this.getChannels()
       })
       .catch((err) => {
@@ -179,6 +190,12 @@ export default class ManageChannels extends Component {
             <br/>
             <label>Channel Name:</label>
             <input type="text" id="channelname" name="channelname"/><br/>
+            <br/>
+            <label>Enter 4 hashtags:</label>
+            <input type="text" id="htag1" name="htag1"/><br/>
+            <input type="text" id="htag2" name="htag2"/><br/>
+            <input type="text" id="htag3" name="htag3"/><br/>
+            <input type="text" id="htag4" name="htag4"/><br/>
             <br/>
             <label>Channel Description (optional):</label>
             <textarea type="text" id="channeldescription" name="channeldescription"/><br/>

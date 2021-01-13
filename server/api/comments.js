@@ -1,6 +1,5 @@
 const router = require('express').Router()
 const {User, Vote, Comment, Post, Pix} = require('../db/models')
-const io = require('../socket/index.js').io
 
 module.exports = router
 
@@ -31,6 +30,7 @@ router
   .then((post) => {
     Post.findByPk(post.id, {include:[{model:User}, {model:Pix}, {model: Comment}]})
     .then((post)=>{
+      var io = req.app.locals.io
       io.emit(`c${post.channelId}`, post)
       res.status(201).json(post)
     })
@@ -48,6 +48,7 @@ router
     .then((post)=>{
       Post.findByPk(post.id, {include:[{model:User}, {model:Pix}, {model: Comment}]})
       .then((post)=>{
+        var io = req.app.locals.io
         io.emit(`c${post.channelId}`, post)
         res.status(201).json(post)
       })

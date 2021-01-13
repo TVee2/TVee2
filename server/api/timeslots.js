@@ -2,7 +2,6 @@ const router = require('express').Router()
 const {User, Timeslot, Program, Segment} = require('../db/models')
 module.exports = router
 const {Op} = require('sequelize')
-const io = require('../socket/index.js').io
 
 router
 .get('/:channelId', (req, res, next) => {
@@ -132,6 +131,7 @@ router
 
       Timeslot.findOne({where})
       .then((ts)=>{
+        var io = req.app.locals.io
         if(!ts){
           return Timeslot.create({starttime:date, endtime:Math.ceil(date+program.duration*1000), recurring, channelId:req.params.channelId})
           .then((ts) => {
@@ -159,6 +159,8 @@ router
     }
   })
   .catch((err)=>{
+    var io = req.app.locals.io
+
     io.emit(upload_time, `theres been an error`)
     res.status(500).send(err)
   })

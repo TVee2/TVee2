@@ -16,17 +16,19 @@ Timeslot.belongsTo(Channel)
 
 Segment.belongsTo(Program)
 Segment.belongsTo(Timeslot)
-Segment.belongsTo(Channel)
+Segment.belongsTo(Channel, {constraints:false})
 
 Comment.belongsTo(User)
 Comment.belongsTo(Channel)
 
 Channel.hasMany(Segment)
 Channel.hasMany(Timeslot)
-Channel.hasMany(Hashtag)
 Channel.belongsTo(User)
 Channel.belongsTo(Playlist)
 Channel.belongsTo(Program, {as:'defaultProgram', constraints:false})
+
+Channel.belongsToMany(Hashtag, {through: 'channelhashtags'})
+Hashtag.belongsToMany(Channel, {through: 'channelhashtags'})
 
 Playlist.hasMany(PlaylistItem)
 Playlist.belongsTo(User)

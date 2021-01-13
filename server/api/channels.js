@@ -1,8 +1,9 @@
 const router = require('express').Router()
 const {User, Channel, Playlist, Timeslot, Segment, PlaylistItem, Program, Hashtag} = require('../db/models')
+const db = require('../db')
 const turnOnChannelEmitter = require('../channelEmitter')
 const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders')
-const { Op } = require("sequelize");
+const {Op} = require("sequelize");
 const roomVisitors = require('../socket/index.js').roomVisitors()
 
 const {uploadProgram, uploadPlaylist} = require('./crudHelpers')
@@ -20,6 +21,20 @@ var get10MostActiveChannels = () => {
   return arr.slice(0, 10).map((item) => item.id)
 }
 
+function getRandomNoItemsFromArr(arr, n) {
+  var items = arr
+  var len = items.length
+  var result = []
+  var rand = null
+  while (n-- || items.length) {
+    rand = Math.floor(Math.random() * len)
+    result.push(items[rand])
+    items = items.splice(rand)
+    len=items.length
+  }
+  return result
+}
+
 router
 .get('/', (req, res, next) => {
   Channel.findAll({
@@ -35,7 +50,8 @@ router
     res.status(200).json(channels)
   })
   .catch((err) => {
-    res.status(500).json(err)
+    console.log(err)
+    res.status(500).json(err);
   })
 })
 
@@ -53,7 +69,8 @@ router
     res.status(200).json(channels)
   })
   .catch((err) => {
-    res.status(500).json(err)
+    console.log(err)
+    res.status(500).json(err);
   })
 })
 
@@ -68,7 +85,8 @@ router
     res.status(200).json({message:"added to favorites"})
   })
   .catch((err) => {
-    res.status(500).json(err)
+    console.log(err)
+    res.status(500).json(err);
   })
 })
 
@@ -82,6 +100,7 @@ router
     res.json({message: "default saved to channel"})
 
   }catch(err){
+    console.log(err)
     res.status(500).json(err);
   }
 })
@@ -101,7 +120,8 @@ router
     res.status(200).json(channels)
   })
   .catch((err) => {
-    res.status(500).json({error: err.message})
+    console.log(err)
+    res.status(500).json(err);
   })
 })
 
@@ -116,15 +136,17 @@ router
     return res.status(400).json(new Error("channel name must be alphanumeric underscore characters only"))
   }
 
-  // var channels = await Channel.findAll({where:{userId:req.user.id}})
-  // if(channels.length>=3){
-  //   return res.status(500).json({err:"user can't create more than 3 channels"})
-  // }
-  hashtags=['testhashtag1', 'testhashtag2', 'testhashtag3']
+  var channels = await Channel.findAll({where:{userId:req.user.id}})
+  if(channels.length>=9){
+    return res.status(500).json({err:"user can't create more than 9 channels currently, delete an existing. for exceptions contact site"})
+  }
+
   try{
-    var hashobj = hashtags.map((htag) => {return {tag:htag}})
+    var hasharr = hashtags.map((htag) => {return {tag:htag}})
     var playlist = await uploadPlaylist(playlistId, req.user)
-    var channel = await Channel.create({name, description, Hashtags: [hashobj]})
+    var hashtags = await Promise.all(hasharr.map((h)=>Hashtag.findOrCreate({where:h}).then((arr)=>arr[0])))
+    var channel = await Channel.create({name, description})
+    await channel.setHashtags(hashtags)
     await req.user.addCreatedChannel(channel)
     if(defaultVideoId){
       var program = await uploadProgram(defaultVideoId, req.user)
@@ -135,6 +157,7 @@ router
     await seedNext24HrTimeslots(channel.id, true)
 
     channel = await Channel.findByPk(channel.id, {include:[{model:User}]})
+    var io = req.app.locals.io
     turnOnChannelEmitter(channel, io)
     res.status(201).json(channel)
   } catch(err) {
@@ -147,7 +170,8 @@ router
     if(playlist){
       playlist.destroy()
     }
-    res.status(500).json({err:err.message});
+    console.log(err)
+    res.status(500).json(err);
   }
 })
 
@@ -179,6 +203,7 @@ router
     res.status(200).json(channels)
   })
   .catch((err) => {
+    console.log(err)
     res.status(500).json(err);
   })
 })
@@ -193,30 +218,86 @@ router
     res.status(200).json(channels)
   })
   .catch((err) => {
+    console.log(err)
     res.status(500).json(err);
   })
 })
 
-.get('/related', (req, res, next) => {
-  //more you might like, if favorites
-  //most active/popular if no favorites
-  //get channels with related or matching hashtags to your favorites
-  //provided 4 hashtags, return ten channels with either same/fuzzy matched hashtags
-
-  Channel.findAll({
-    order: [['createdAt', 'DESC']],
-    limit: 10,
+.get('/related/favorites', (req, res, next) => {
+  //
+  //related to favorites, more you might like
+  //
+  req.user.getFavoriteChannels()
+  .then((favorites) => {
+    var favs1 = getRandomNoItemsFromArr(favorites, 1)
+    favs1[0].getHashtags()
+  })
+  .then((hashtags) => {
+    hashtags = hashtags.map((hashtag)=>{return hashtag.tag})
+    var str = hashtags.join(',')
+    var list = "('"+hashtags+"')"
+    list = list.replace(/,/g, "\',\'")
+    return db.query(`SELECT DISTINCT channels.id, channels.\"name\", channels.\"defaultProgramId\" FROM channels JOIN channelhashtags ON channels.id = channelhashtags.\"channelId\" JOIN hashtags on hashtags.id = channelhashtags.\"hashtagId\" WHERE tag IN ${list} AND NOT channelhashtags.\"channelId\" = ${req.params.id}`, { type: QueryTypes.SELECT })
   })
   .then((channels) => {
+    var related10 = getRandomNoItemsFromArr(channels, 10)
     res.status(200).json(channels)
   })
   .catch((err) => {
+    console.log(err)
     res.status(500).json(err);
   })
 })
 
+.get('/related/tag/:tagstring', (req, res, next) => {
+  const { QueryTypes } = require('sequelize');
+  // //
+  // //channels that have hash tag
+  // //
+  var list = "('"+req.params.tagstring+"')"
+  list = list.replace(/,/g, "\',\'")
+  db.query(`SELECT DISTINCT channels.id, channels.\"name\", channels.\"defaultProgramId\" FROM channels JOIN channelhashtags ON channels.id = channelhashtags.\"channelId\" JOIN hashtags on hashtags.id = channelhashtags.\"hashtagId\" WHERE tag IN ${list} AND NOT channelhashtags.\"channelId\" = ${req.params.id}`, { type: QueryTypes.SELECT })
+  .then((channels)=>{
+    var related10 = getRandomNoItemsFromArr(channels, 10)
+    res.json(related10)
+  })
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err);
+  })
+})
+
+.get('/related/:id', (req, res, next) => {
+  const { QueryTypes } = require('sequelize');
+  // //
+  // //related to single video
+  // //
+  Channel.findByPk(req.params.id)
+  .then((channel) => {
+    return channel.getHashtags()
+  })
+  .then((hashtags) => {
+    hashtags = hashtags.map((hashtag)=>{return hashtag.tag})
+    var str = hashtags.join(',')
+    var list = "('"+hashtags+"')"
+    list = list.replace(/,/g, "\',\'")
+    db.query(`SELECT DISTINCT channels.id, channels.\"name\", channels.\"defaultProgramId\" FROM channels JOIN channelhashtags ON channels.id = channelhashtags.\"channelId\" JOIN hashtags on hashtags.id = channelhashtags.\"hashtagId\" WHERE tag IN ${list} AND NOT channelhashtags.\"channelId\" = ${req.params.id}`, { type: QueryTypes.SELECT })
+    .then((channels)=>{
+      var related10 = getRandomNoItemsFromArr(channels, 10)
+      res.json(related10)
+    })
+  })
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err);
+  })
+})
+
+
 .get('/active', (req, res, next) => {
-  //get channels with most visitors currently
+  // //
+  // //get channels with most visitors currently
+  // //
   var channelIds = get10MostActiveChannels()
   Channel.findAll({
     where: {id: {[Op.in]: channelIds}},
@@ -226,16 +307,18 @@ router
     res.status(200).json(channels)
   })
   .catch((err) => {
+    console.log(err)
     res.status(500).json(err);
   })
 })
 
 .get('/favorites', (req, res, next) => {
-  //get channels that user has starred
-  // console.log(Object.keys(req.user.__proto__));
+  // //
+  // //get channels that user has starred
+  // //
   req.user.getFavoriteChannels()
   .then(channels => {
-    console.log(channels)
+    var related10 = getRandomNoItemsFromArr(channels, 10)
     res.status(200).json(channels)
   })
   .catch((err) => {
@@ -245,6 +328,9 @@ router
 })
 
 .get('/:id', (req, res, next) => {
+  // //
+  // //get single channel
+  // //
   var numViewers = roomVisitors[req.params.id]?(roomVisitors[req.params.id].length+1):1
   Channel.findOne({
     where: {id: req.params.id},
@@ -254,6 +340,7 @@ router
     res.status(200).json({channel, numViewers})
   })
   .catch((err) => {
-    res.status(500).json(err)
+    console.log(err)
+    res.status(500).json(err);
   })
 })
