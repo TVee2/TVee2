@@ -22,15 +22,17 @@ var get10MostActiveChannels = () => {
 }
 
 function getRandomNoItemsFromArr(arr, n) {
+  var i = n
   var items = arr
   var len = items.length
   var result = []
   var rand = null
-  while (n-- || items.length) {
+  while (i && items.length) {
     rand = Math.floor(Math.random() * len)
     result.push(items[rand])
-    items = items.splice(rand)
+    items.splice(rand, 1)
     len=items.length
+    i--
   }
   return result
 }
