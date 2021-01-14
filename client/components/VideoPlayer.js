@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import CastButton from './CastButton'
 import Entrance from './Entrance'
+import axios from 'axios'
+
 export default class VideoPlayer extends Component {
   constructor(props) {
     super(props)
@@ -16,7 +18,8 @@ export default class VideoPlayer extends Component {
       channelJustChanged:false,
       showKeypad:false,
       controlChannelOnChange:"",
-      vidStatus:null
+      vidStatus:null,
+      relatedChannels:[],
     }
     this.videoplayer=null
     this.defaultVideoPlayer=null
@@ -26,6 +29,7 @@ export default class VideoPlayer extends Component {
     event.target.mute()
     if(this.props.src && this.props.isYoutubeId){
       console.log("player ready")
+      this.getRelatedChannels()
       this.videoplayer.loadVideoById(this.props.src, this.props.progress)
     }
     if(!this.props.showCover){
@@ -46,7 +50,6 @@ export default class VideoPlayer extends Component {
     }else if(event.data==3){
       //is buffering
       console.log("yt buffering")
-      // this.setState({playing:false, fill_time:false, init_loading:true})
 
     }else if(event.data==0){
       //has ended
@@ -54,8 +57,10 @@ export default class VideoPlayer extends Component {
       this.setState({fill_time:true, playing:false})
     }else if(event.data==-1){
       this.setState({playing:false, fill_time:true})
+    }else if(event.data==2){
+      console.log("paused")
     }
-    console.log("player state changed", event.data)
+    // console.log("player state changed", event.data)
   }
 
   onDefaultPlayerReady = (event) => {
@@ -180,6 +185,7 @@ export default class VideoPlayer extends Component {
       if(this.props.isYoutubeId){
         if(this.videoplayer&&this.videoplayer.loadVideoById){
           console.log("trying to play", this.props.src)
+          this.getRelatedChannels()
           this.videoplayer.loadVideoById(this.props.src, this.props.progress)
         }
       }else{
@@ -202,28 +208,49 @@ export default class VideoPlayer extends Component {
   switchPlayer = () => {console.log("switching player"); this.setState({isCasting:!this.state.isCasting})}
 
   upChannel= () => {
-    if(this.videoplayer.mute){
-      this.videoplayer.mute()
-    }
+    this.channelChangeAppearanceUpdate()
     this.props.incrementChannel()
-    this.setState({channelJustChanged:true, init_loading:true})
   }
 
   downChannel= () => {
-    if(this.videoplayer.mute){
-      this.videoplayer.mute()
-    }
+    this.channelChangeAppearanceUpdate()
     this.props.decrementChannel()
-    this.setState({channelJustChanged:true, init_loading:true})
   }
 
   switchChannel= () => {
+    this.channelChangeAppearanceUpdate()
+    var new_channel = document.getElementById("channelchange").value
+    this.props.changeChannel(new_channel)
+  }
+
+  clickChannel = (id) => {
+    this.channelChangeAppearanceUpdate()
+    this.props.changeChannel(id)
+  }
+
+  channelElem = (channel) => {return (
+    <div style={{height:"200px", width:"200px", margin:"10px", cursor:"pointer"}} onClick = {this.clickChannel.bind(this, channel.id)}>
+      <div>{channel.id} - {channel.name}</div>
+      <img style = {{height:"150px", width:"150px", margin:"10px"}} src={channel.thumbnailUrl}></img>
+    </div>
+  )}
+
+  channelChangeAppearanceUpdate = () => {
     if(this.videoplayer.mute){
       this.videoplayer.mute()
     }
-    var new_channel = document.getElementById("channelchange").value
-    this.props.changeChannel(new_channel)
     this.setState({channelJustChanged:true, controlChannelOnChange:"", init_loading:true})
+    this.getRelatedChannels()
+  }
+
+  getRelatedChannels = () => {
+    if(!this.props.channel){
+      return
+    }
+    axios.get(`/api/channels/related/${this.props.channel.id}`)
+    .then((ret) => {
+      this.setState({relatedChannels:ret.data})
+    })
   }
 
   toggleMute = () => {
@@ -327,6 +354,7 @@ export default class VideoPlayer extends Component {
             </div>
             <div style={{width:"100%", backgroundColor:"black"}}></div>
           </div>
+          <div style={{position:"absolute", top:"180px", left:"1000px"}}><div>Related Channels</div>{this.state.relatedChannels.map((channel) => {return this.channelElem(channel)})}</div>
       </div>
     )
   }

@@ -8,4 +8,7 @@ module.exports = db.define('channel', {
   description:{
     type: Sequelize.TEXT,
   },
+  thumbnailUrl: {
+    type: Sequelize.TEXT,   
+  }
 })

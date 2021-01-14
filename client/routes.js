@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter, Route, Switch} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {Login, Signup, UserHome} from './components'
+import {Login, Signup, Home} from './components'
 import TV from './components/TV'
 import Scheduler from './components/Scheduler'
 import Entrance from './components/Entrance'
@@ -55,7 +55,7 @@ class Routes extends Component {
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route path="/home" component={UserHome} />
+        <Route path="/home" component={Home} />
         <Route path="/entrance" component={Entrance} />
         <Route path="/tv/:channelId" render={(props) => (
             <TV  {...props} channels={this.state.channels} showCover={this.state.showCover} removeCover={this.removeCover} user={this.props.user}/>
@@ -78,7 +78,7 @@ class Routes extends Component {
         )}
         {/* Displays our Login component as a fallback */}
         {isLoggedIn? (
-           <Route component={UserHome} />
+           <Route component={Home} />
         ):<Route component={Login} />}
       </Switch>
     )

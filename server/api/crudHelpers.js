@@ -72,7 +72,6 @@ module.exports.uploadPlaylist = async (playlistId, user) => {
       part: 'status, contentDetails, snippet',
       id: playlistId
     })
-
     var playlist_item = playlist_meta.data.items[0]
     if(!playlist_item){
       throw new Error("playlist may be set to private")

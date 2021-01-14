@@ -183,22 +183,6 @@ export default class TV extends Component {
     return prev_channel_id
   }
 
-  // incrementChannel = () => {
-  //   var nextChannel = this.nextChannelId()
-  //   history.push(`/tv/${nextChannel}`)
-  //   socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
-  //   socket.off()
-  //   this.getChannel(nextChannel)
-  // }
-
-  // decrementChannel = () => {
-  //   var prevChannel = this.prevChannelId()
-  //   history.push(`/tv/${prevChannel}`)
-  //   socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
-  //   socket.off()
-  //   this.getChannel(prevChannel)
-  // }
-
   decrementChannel = () => {
     this.changeChannel(this.prevChannelId())
   }
@@ -211,7 +195,7 @@ export default class TV extends Component {
     history.push(`/tv/${id}`)
     socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
     socket.off()
-    this.setState({channel:null, numViewers:0, src:'', defaultSrc:''}, () => {
+    this.setState({channel:null, relatedChannels:[], numViewers:0, src:'', defaultSrc:''}, () => {
       this.getChannel(id) 
     })
   }
@@ -227,7 +211,6 @@ export default class TV extends Component {
     if(width<1000){
       smallwindow=true
     }
-
     return (
       <div>
         {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"115px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}

@@ -147,7 +147,7 @@ router
     var hasharr = hashtags.map((htag) => {return {tag:htag}})
     var playlist = await uploadPlaylist(playlistId, req.user)
     var hashtags = await Promise.all(hasharr.map((h)=>Hashtag.findOrCreate({where:h}).then((arr)=>arr[0])))
-    var channel = await Channel.create({name, description})
+    var channel = await Channel.create({name, description, thumbnailUrl:playlist.thumbnailUrl})
     await channel.setHashtags(hashtags)
     await req.user.addCreatedChannel(channel)
     if(defaultVideoId){
@@ -226,20 +226,24 @@ router
 })
 
 .get('/related/favorites', (req, res, next) => {
+  const { QueryTypes } = require('sequelize');
   //
   //related to favorites, more you might like
   //
+  var fav = null
   req.user.getFavoriteChannels()
   .then((favorites) => {
     var favs1 = getRandomNoItemsFromArr(favorites, 1)
-    favs1[0].getHashtags()
+    fav = favs1[0]
+    return favs1[0].getHashtags()
   })
   .then((hashtags) => {
     hashtags = hashtags.map((hashtag)=>{return hashtag.tag})
     var str = hashtags.join(',')
     var list = "('"+hashtags+"')"
     list = list.replace(/,/g, "\',\'")
-    return db.query(`SELECT DISTINCT channels.id, channels.\"name\", channels.\"defaultProgramId\" FROM channels JOIN channelhashtags ON channels.id = channelhashtags.\"channelId\" JOIN hashtags on hashtags.id = channelhashtags.\"hashtagId\" WHERE tag IN ${list} AND NOT channelhashtags.\"channelId\" = ${req.params.id}`, { type: QueryTypes.SELECT })
+
+    return db.query(`SELECT DISTINCT channels.id, channels.\"name\", channels.\"defaultProgramId\" FROM channels JOIN channelhashtags ON channels.id = channelhashtags.\"channelId\" JOIN hashtags on hashtags.id = channelhashtags.\"hashtagId\" WHERE tag IN ${list} AND NOT channelhashtags.\"channelId\" = ${fav.id}`, { type: QueryTypes.SELECT })
   })
   .then((channels) => {
     var related10 = getRandomNoItemsFromArr(channels, 10)
@@ -283,7 +287,7 @@ router
     var str = hashtags.join(',')
     var list = "('"+hashtags+"')"
     list = list.replace(/,/g, "\',\'")
-    db.query(`SELECT DISTINCT channels.id, channels.\"name\", channels.\"defaultProgramId\" FROM channels JOIN channelhashtags ON channels.id = channelhashtags.\"channelId\" JOIN hashtags on hashtags.id = channelhashtags.\"hashtagId\" WHERE tag IN ${list} AND NOT channelhashtags.\"channelId\" = ${req.params.id}`, { type: QueryTypes.SELECT })
+    db.query(`SELECT DISTINCT channels.id, channels.\"name\", channels.\"thumbnailUrl\", channels.\"defaultProgramId\" FROM channels JOIN channelhashtags ON channels.id = channelhashtags.\"channelId\" JOIN hashtags on hashtags.id = channelhashtags.\"hashtagId\" WHERE tag IN ${list} AND NOT channelhashtags.\"channelId\" = ${req.params.id}`, { type: QueryTypes.SELECT })
     .then((channels)=>{
       var related10 = getRandomNoItemsFromArr(channels, 10)
       res.json(related10)
@@ -306,7 +310,8 @@ router
     order: [['createdAt', 'DESC']],
   })
   .then((channels) => {
-    res.status(200).json(channels)
+    var related10 = getRandomNoItemsFromArr(channels, 10)
+    res.status(200).json(related10)
   })
   .catch((err) => {
     console.log(err)
@@ -321,7 +326,7 @@ router
   req.user.getFavoriteChannels()
   .then(channels => {
     var related10 = getRandomNoItemsFromArr(channels, 10)
-    res.status(200).json(channels)
+    res.status(200).json(related10)
   })
   .catch((err) => {
     console.log(err)
