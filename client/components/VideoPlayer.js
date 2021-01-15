@@ -93,9 +93,6 @@ export default class VideoPlayer extends Component {
 
   componentDidMount() {
     var ytplayer = new YT.Player('player', {
-        height: '700',
-        width: '640',
-        videoId: '',
         events: {
           'onReady': this.onYTPlayerReady,
           'onStateChange': this.onYTPlayerStateChange
@@ -103,9 +100,6 @@ export default class VideoPlayer extends Component {
       });
 
     var defaultPlayer = new YT.Player('timefiller', {
-        height: '700',
-        width: '640',
-        videoId: '',
         events: {
           'onReady': this.onDefaultPlayerReady,
           'onStateChange': this.onDefaultPlayerStateChange
@@ -303,16 +297,26 @@ export default class VideoPlayer extends Component {
       vis1=""
     }
 
-    // <div id="topblinder" style={{backgroundColor:"black", height:"90px", width:"100%", position:"absolute", zIndex:"3"}}></div>
+    var height
+    if(this.props.segment && this.props.segment.program){
+      height = this.props.segment.program.height
+    }
+    if(height=="360"){
+      document.getElementById("player").style.top = "-20%"
+    }else if(height){
+      document.getElementById("player").style.top = "-30%"
+    }
+
     return (
-      <div style={{top:"-22px", width:this.props.vidWidth?this.props.vidWidth:"640px", height:"700px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
+      <div style={{top:"-22px", margin:"0 25px", width:this.props.vidWidth?this.props.vidWidth:"640px", height:"700px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
           <div id="vidcontainer" className="video-container" style={{display:"grid", height:"100%", width:"100%"}}>
             {this.props.showCover?<Entrance/>:null}
             <div style={{visibility:vis6, position:"absolute", height:"100%", width:"100%"}}>
               <div id="noclickscreen" style={{height:"100%", width:"100%", position:"absolute", zIndex:"3"}}></div>
               <div id="player" style={{position:"absolute", width:"100%", height:"160%", top:"-30%"}}></div>
             </div>
-            <div id="botblinder" style={{backgroundColor:isFullscreen?"":"white", height:"320px", width:"100%", top:"600px", position:"absolute", zIndex:"3"}}></div>
+            <div id="topblinder" style={{backgroundColor:"white", top:"145px", height:"25px", width:"100%", position:"absolute", zIndex:"3"}}></div>
+            <div id="botblinder" style={{backgroundColor:isFullscreen?"":"white", height:"320px", width:"100%", top:height=="360"?"660px":"600px", position:"absolute", zIndex:"3"}}></div>
             <img src="/static.gif" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis3, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
@@ -339,7 +343,7 @@ export default class VideoPlayer extends Component {
               controls={false}
             />
           </div>
-          <div style={{backgroundColor:"black", position:"absolute", display:"flex", width:"100%", zIndex:"5", top:"530px", height:"70px"}}>
+          <div style={{backgroundColor:"black", position:"absolute", display:"flex", width:"100%", zIndex:"5", top:height=="360"?"653px":"530px", height:"70px"}}>
             <div style={{display:"flex"}}>
               {this.state.mute?<button className="videobutton mute" onClick={this.toggleMute}></button>:<button className="videobutton unmute" onClick={this.toggleMute}></button>}
               <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
@@ -347,9 +351,13 @@ export default class VideoPlayer extends Component {
               <div style={{display:"flex", backgroundColor:"black"}}>
                 <button className = "upchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 0 14px 7px"}} onClick={this.upChannel} ></button>
                 <button className = "downchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 0"}} onClick={this.downChannel} ></button>   
-                <button className = "keypad" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 7px"}} onClick={()=>{this.setState({showKeypad:!this.state.showKeypad})}} ></button>   
+                <button className = "keypad" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 7px"}} onClick={() => {this.setState({showKeypad:!this.state.showKeypad})}} ></button>   
                 <div style={{visibility:this.state.showKeypad?"":"hidden", width:"180px"}}><input value={this.state.controlChannelOnChange} id="channelchange" onChange={this.channelInputOnChange} style={{fontSize:"30px", display:"inline-block", height:"33px", width:"100px", margin:"14px 2px 14px 7px"}}></input><button onClick={this.switchChannel} style={{display:"inline-block", height:"40px", margin:"14px 7px 14px 0", verticalAlign:"super"}}>Go</button></div>
                 <div style={{color:"white", margin:"19px 0px 14px 120px", fontSize:"30px"}}>{this.props.numViewers}</div>
+                {this.props.isFavorite?
+                  <button onClick = {this.props.removeFavorite} className = "favorite" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 14px"}}></button>
+                  :
+                  <button onClick = {this.props.addFavorite} className = "notfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 14px"}}></button>}
               </div>
             </div>
             <div style={{width:"100%", backgroundColor:"black"}}></div>

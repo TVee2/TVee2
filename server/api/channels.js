@@ -76,7 +76,23 @@ router
   })
 })
 
-.post('/favorites/:id', (req, res, next) => {
+.post('/favorites/remove/:id', (req, res, next) => {
+  Channel.findOne({
+    where: {id: req.params.id},
+  })
+  .then((channel) => {
+    return req.user.removeFavoriteChannel(channel)
+  })
+  .then(() => {
+    res.status(200).json({message:"removed from favorites"})
+  })
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err);
+  })
+})
+
+.post('/favorites/add/:id', (req, res, next) => {
   Channel.findOne({
     where: {id: req.params.id},
   })
@@ -144,12 +160,14 @@ router
   }
 
   try{
-    var hasharr = hashtags.map((htag) => {return {tag:htag}})
     var playlist = await uploadPlaylist(playlistId, req.user)
-    var hashtags = await Promise.all(hasharr.map((h)=>Hashtag.findOrCreate({where:h}).then((arr)=>arr[0])))
-    var channel = await Channel.create({name, description, thumbnailUrl:playlist.thumbnailUrl})
-    await channel.setHashtags(hashtags)
-    await req.user.addCreatedChannel(channel)
+    var channel = await Channel.create({name, description, thumbnailUrl:playlist.thumbnailUrl, userId:req.user.id})
+    var hashtags = hashtags.filter((h) => h)
+    if(hashtags.length){
+      var hasharr = hashtags.map((htag) => {return {tag:htag}})
+      var hashtags = await Promise.all(hasharr.map((h)=>Hashtag.findOrCreate({where:h}).then((arr)=>arr[0])))
+      await channel.setHashtags(hashtags)
+    }
     if(defaultVideoId){
       var program = await uploadProgram(defaultVideoId, req.user)
       await channel.setDefaultProgram(program)
@@ -325,8 +343,32 @@ router
   // //
   req.user.getFavoriteChannels()
   .then(channels => {
+    // console.log(channels)
     var related10 = getRandomNoItemsFromArr(channels, 10)
     res.status(200).json(related10)
+  })
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err);
+  })
+})
+
+.get('/isfavorite/:id', (req, res, next) => {
+  res.set('Cache-Control', 'no-store')
+
+  // //
+  // //get channels that user has starred
+  // //
+  req.user.getFavoriteChannels()
+  .then(favorites => {
+    Channel.findByPk(req.params.id)
+    .then((channel) => {
+      var isFavorite = false
+      if(channel){
+        isFavorite = favorites.some((favorite) => {return favorite.id === channel.id})
+      }
+      return res.status(200).json({isFavorite})
+    })
   })
   .catch((err) => {
     console.log(err)

@@ -110,12 +110,12 @@ form div {
   background-image: url('./icons/pencil.png')
 }
 
-.eight{
-  background-image: url('./icons/eight.png')
+.favorite{
+  background-image: url('./icons/favorite.png')
 }
 
-.sixteen{
-  background-image: url('./icons/sixteen.png')
+.notfavorite{
+  background-image: url('./icons/notfavorite.png')
 }
 
 

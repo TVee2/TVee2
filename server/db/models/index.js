@@ -40,8 +40,11 @@ Pix.belongsTo(User)
 Program.belongsTo(User)
 User.hasMany(Pix, {as: 'creations'})
 User.belongsTo(Pix, {as: 'profilePix', constraints:false})
-User.hasMany(Channel, {as: 'createdChannels'})
-User.hasMany(Channel, {as: 'favoriteChannels'})
+
+Channel.belongsToMany(User, {through: 'userfavchannel'})
+User.belongsToMany(Channel, {as:"favoriteChannels", through: 'userfavchannel'})
+
+User.hasMany(Channel)
 
 Post.belongsTo(Pix)
 Post.belongsTo(Comment)

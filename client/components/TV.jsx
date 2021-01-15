@@ -34,6 +34,7 @@ export default class TV extends Component {
       isYoutubeId:false,
       noChannel:false,
       numViewers:0,
+      isFavorite:false
     }
     this.interval=null
   }
@@ -78,6 +79,13 @@ export default class TV extends Component {
     socket.off()
   }
 
+  getCurrentChannelIsFavorite = () => {
+    axios.get(`/api/channels/isfavorite/${this.state.channel.id}`)
+    .then((res) => {
+      this.setState({isFavorite:res.data.isFavorite})
+    })
+  }
+
   getChannel = (channelId) => {
     if(!channelId){
       channelId = this.props.match.params.channelId
@@ -90,6 +98,7 @@ export default class TV extends Component {
       if(channel){
         var defaultSrc = channel.defaultProgram?channel.defaultProgram.youtubeId:""
         this.setState({channel, numViewers, noChannel:false, defaultSrc, showChannelId:true}, () => {
+          this.getCurrentChannelIsFavorite()
           if(this.interval){
             clearTimeout(this.interval)
           }
@@ -104,18 +113,9 @@ export default class TV extends Component {
               isYoutubeId = true
               src = segment.program.youtubeId
               var {progress} = segment
-              this.setState({src, isYoutubeId, progress, emitterChannelId:this.state.channel.id, segment})
-
+              this.setState({src, height:segment.program.height, isYoutubeId, progress, emitterChannelId:this.state.channel.id, segment})
             }else if(!segment||!segment.program||!segment.program.youtubeId){
               this.setState({src:"no source", emitterChannelId:this.state.channel.id,})
-            }else{
-              var video = segment.program
-              if(video.youtubeId){
-                src = video.youtubeId
-                isYoutubeId = true
-              }
-              var {progress} = segment
-              this.setState({src, isYoutubeId, progress, emitterChannelId: this.state.channel.id, segment})
             }
           })
           socket.on(`c${this.state.channel.id}`, comment => {
@@ -193,7 +193,9 @@ export default class TV extends Component {
 
   changeChannel = (id) => {
     history.push(`/tv/${id}`)
-    socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
+    if(this.state.channel){
+      socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
+    }
     socket.off()
     this.setState({channel:null, relatedChannels:[], numViewers:0, src:'', defaultSrc:''}, () => {
       this.getChannel(id) 
@@ -204,8 +206,21 @@ export default class TV extends Component {
     this.setState({showCover:false})
   }
 
-  render() {
+  addFavorite = () => {
+    axios.post(`/api/channels/favorites/add/${this.state.channel.id}`)
+    .then(() => {
+      this.getCurrentChannelIsFavorite()
+    })
+  }
 
+  removeFavorite = () => {
+    axios.post(`/api/channels/favorites/remove/${this.state.channel.id}`)
+    .then(() => {
+      this.getCurrentChannelIsFavorite()
+    })
+  }
+
+  render() {
     let width = window.innerWidth;
     let smallwindow=false
     if(width<1000){
@@ -240,6 +255,10 @@ export default class TV extends Component {
             decrementChannel={this.decrementChannel}
             changeChannel={this.changeChannel}
             numViewers={this.state.numViewers}
+            isFavorite={this.state.isFavorite}
+            addFavorite={this.addFavorite}
+            removeFavorite={this.removeFavorite}
+            segment={this.state.segment}
           />
           <Chat
             smallwindow={smallwindow}
@@ -250,8 +269,11 @@ export default class TV extends Component {
             comments={this.state.comments}
             channelId={this.props.match.params.channelId}
           />
-          <div style={{position:"absolute", zIndex:"5", top:"585px"}}>
+          <div style={{position:"absolute", zIndex:"5", margin:"25px", top:this.state.height=="360"?"695px":"585px"}}>
             <div style={{margin:"10px"}}>{this.state.channel?this.state.channel.description:null}</div>
+            <div style={{margin:"10px"}}>{this.state.channel?this.state.channel.hashtags.map((h) => {return h.tag}):null}</div>
+            <div style={{margin:"10px"}}>By: {this.state.channel?this.state.channel.user.username:null}</div>
+
             <div style={{margin:"3px", display:"inline-block", backgroundColor:"yellowgreen", height:"300px", width:"315px"}}></div>
             <div style={{margin:"3px", display:"inline-block", backgroundColor:"magenta", height:"300px", width:"315px"}}></div>
           </div>
