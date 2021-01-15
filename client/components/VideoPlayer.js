@@ -212,9 +212,11 @@ export default class VideoPlayer extends Component {
   }
 
   switchChannel= () => {
-    this.channelChangeAppearanceUpdate()
     var new_channel = document.getElementById("channelchange").value
-    this.props.changeChannel(new_channel)
+    if(new_channel){
+      this.channelChangeAppearanceUpdate()
+      this.props.changeChannel(new_channel)
+    }
   }
 
   clickChannel = (id) => {
@@ -362,7 +364,7 @@ export default class VideoPlayer extends Component {
             </div>
             <div style={{width:"100%", backgroundColor:"black"}}></div>
           </div>
-          <div style={{position:"absolute", top:"180px", left:"1000px"}}><div>Related Channels</div>{this.state.relatedChannels.map((channel) => {return this.channelElem(channel)})}</div>
+          {this.state.relatedChannels.length?<div style={{position:"absolute", top:"180px", left:"1000px"}}><div>Related Channels</div>{this.state.relatedChannels.map((channel) => {return this.channelElem(channel)})}</div>:null}
       </div>
     )
   }

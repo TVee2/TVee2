@@ -197,7 +197,7 @@ export default class TV extends Component {
       socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
     }
     socket.off()
-    this.setState({channel:null, relatedChannels:[], numViewers:0, src:'', defaultSrc:''}, () => {
+    this.setState({channel:null, numViewers:0, src:'', defaultSrc:''}, () => {
       this.getChannel(id) 
     })
   }
@@ -231,7 +231,7 @@ export default class TV extends Component {
         {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"115px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
         <div>
           {this.state.showChannelId?
-            <div style={{position:"absolute", color:"greenyellow", zIndex:"2", fontSize:"64px", margin:"15px"}}>
+            <div style={{position:"absolute", color:"greenyellow", zIndex:"2", fontSize:"64px", top:"150px", left:"35px"}}>
               {this.props.match.params.channelId}
             </div>
           :null}
@@ -270,9 +270,9 @@ export default class TV extends Component {
             channelId={this.props.match.params.channelId}
           />
           <div style={{position:"absolute", zIndex:"5", margin:"25px", top:this.state.height=="360"?"695px":"585px"}}>
-            <div style={{margin:"10px"}}>{this.state.channel?this.state.channel.description:null}</div>
-            <div style={{margin:"10px"}}>{this.state.channel?this.state.channel.hashtags.map((h) => {return h.tag}):null}</div>
-            <div style={{margin:"10px"}}>By: {this.state.channel?this.state.channel.user.username:null}</div>
+            {this.state.channel&&this.state.channel.description?<div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>:null}
+            {this.state.channel&&this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Hashtags:{this.state.channel.hashtags.map((h) => {return <span>{` ${h.tag}  `}</span>})}</div>:null}
+            {this.state.channel?<div style={{margin:"10px"}}>By: {this.state.channel.user.username}</div>:null}
 
             <div style={{margin:"3px", display:"inline-block", backgroundColor:"yellowgreen", height:"300px", width:"315px"}}></div>
             <div style={{margin:"3px", display:"inline-block", backgroundColor:"magenta", height:"300px", width:"315px"}}></div>

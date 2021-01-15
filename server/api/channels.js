@@ -383,7 +383,7 @@ router
   var numViewers = roomVisitors[req.params.id]?(roomVisitors[req.params.id].length+1):1
   Channel.findOne({
     where: {id: req.params.id},
-    include: [{model: User}, {model:Program, as: 'defaultProgram'}],
+    include: [{model: User}, {model:Hashtag}, {model:Program, as: 'defaultProgram'}],
   })
   .then((channel) => {
     res.status(200).json({channel, numViewers})
