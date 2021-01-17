@@ -20,15 +20,53 @@ export default class VideoPlayer extends Component {
       controlChannelOnChange:"",
       vidStatus:null,
       relatedChannels:[],
+
+      allChannels:[],
+      selectedAllIndex:null,
+      favoriteChannels:[],
+      selectedFavoriteIndex:null,
+      hotChannels:[],
+      selectedHotChannelIndex:null,
+      newChannels:[],
+      selectedNewChannelIndex:null,
+      flickColor:"greenyellow"
     }
     this.videoplayer=null
     this.defaultVideoPlayer=null
   }
 
+  getAllChannels = () => {
+    axios.get('/api/channels')
+    .then((res) => {
+      this.setState({allChannels:res.data})
+    })
+  }
+
+  getFavoriteChannels = () => {
+    axios.get('/api/channels/favorites')
+    .then((res) => {
+      this.setState({favoriteChannels:res.data})
+    })
+  }
+
+  getHotChannels = () => {
+    axios.get('/api/channels/active')
+    .then((res) => {
+      this.setState({hotChannels:res.data})
+    })
+  }
+
+  getNewChannels = () => {
+    axios.get('/api/channels/new')
+    .then((res) => {
+      this.setState({newChannels:res.data})
+    })
+  }
+
   onYTPlayerReady = (event) => {
     event.target.mute()
     if(this.props.src && this.props.isYoutubeId){
-      console.log("player ready")
+      console.log("player ready w src")
       this.getRelatedChannels()
       this.videoplayer.loadVideoById(this.props.src, this.props.progress)
     }
@@ -136,6 +174,10 @@ export default class VideoPlayer extends Component {
       console.log("ended")
       this.setState({fill_time:true, playing:false})
     }
+    this.getNewChannels()
+    this.getAllChannels()
+    this.getFavoriteChannels()
+    this.getHotChannels()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -225,9 +267,9 @@ export default class VideoPlayer extends Component {
   }
 
   channelElem = (channel) => {return (
-    <div style={{height:"200px", width:"200px", margin:"10px", cursor:"pointer"}} onClick = {this.clickChannel.bind(this, channel.id)}>
+    <div style={{margin:"10px", cursor:"pointer"}} onClick = {this.clickChannel.bind(this, channel.id)}>
       <div>{channel.id} - {channel.name}</div>
-      <img style = {{height:"150px", width:"150px", margin:"10px"}} src={channel.thumbnailUrl}></img>
+      <img style = {{margin:"10px"}} src={channel.thumbnailUrl}></img>
     </div>
   )}
 
@@ -260,6 +302,18 @@ export default class VideoPlayer extends Component {
       this.setState({controlChannelOnChange:e.target.value})
     }
   }
+
+  flickChange = (selector) => {
+    if(selector=="all"){
+
+    }else if(selector=="favorite"){
+
+    }else if(selector=="hot"){
+      
+    }else if(selector=="new"){
+      
+    }
+  } 
 
   render() {
     var isFullscreen
@@ -312,6 +366,7 @@ export default class VideoPlayer extends Component {
     return (
       <div style={{top:"-22px", margin:"0 25px", width:this.props.vidWidth?this.props.vidWidth:"640px", height:"700px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
           <div id="vidcontainer" className="video-container" style={{display:"grid", height:"100%", width:"100%"}}>
+            <img src="/static.gif" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis3, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             {this.props.showCover?<Entrance/>:null}
             <div style={{visibility:vis6, position:"absolute", height:"100%", width:"100%"}}>
               <div id="noclickscreen" style={{height:"100%", width:"100%", position:"absolute", zIndex:"3"}}></div>
@@ -319,12 +374,11 @@ export default class VideoPlayer extends Component {
             </div>
             <div id="topblinder" style={{backgroundColor:"white", top:"145px", height:"25px", width:"100%", position:"absolute", zIndex:"3"}}></div>
             <div id="botblinder" style={{backgroundColor:isFullscreen?"":"white", height:"320px", width:"100%", top:height=="360"?"660px":"600px", position:"absolute", zIndex:"3"}}></div>
-            <img src="/static.gif" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis3, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
-            <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
-            <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
-            <img src="/no_channel.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis8, position:"relative", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_channel.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis8, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             <video
-              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1, margin:0, position:"relative", top:"50%", transform: "translateY(-50%)"}}
+              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis1, margin:0, position:"absolute", top:"50%", transform: "translateY(-50%)"}}
               id="vid"
               src={this.props.src}
               autoPlay
@@ -333,11 +387,11 @@ export default class VideoPlayer extends Component {
               controls={false}
               disableremoteplayback="true"
             />
-            <div style={{visibility:vis2, position:"absolute", height:"100%", width:"100%"}}>
+            <div style={{visibility:vis2, position:"absolute", top:"50%", transform: "translateY(-50%)"}}>
               <div id="timefiller"></div>
             </div>
             <video
-              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis7, position:"relative", top:"50%", transform: "translateY(-50%)"}}
+              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis7, position:"absolute", top:"50%", transform: "translateY(-50%)"}}
               src="/videos/test3.mp4"
               autoPlay
               muted={true}
@@ -353,9 +407,15 @@ export default class VideoPlayer extends Component {
               <div style={{display:"flex", backgroundColor:"black"}}>
                 <button className = "upchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 0 14px 7px"}} onClick={this.upChannel} ></button>
                 <button className = "downchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 0"}} onClick={this.downChannel} ></button>   
+                <div style={{display:"flex", margin:"14px 7px"}}>
+                  <button className = "flickall" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0"}} onClick={this.flickChange.bind(this, "all")} ></button>   
+                  <button className = "flickfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0"}} onClick={this.flickChange.bind(this, "favorite")} ></button>   
+                  <button className = "flickhot" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0"}} onClick={this.flickChange.bind(this, "hot")} ></button>   
+                  <button className = "flicknew" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0"}} onClick={this.flickChange.bind(this, "new")} ></button>   
+                </div>
                 <button className = "keypad" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 7px"}} onClick={() => {this.setState({showKeypad:!this.state.showKeypad})}} ></button>   
                 <div style={{visibility:this.state.showKeypad?"":"hidden", width:"180px"}}><input value={this.state.controlChannelOnChange} id="channelchange" onChange={this.channelInputOnChange} style={{fontSize:"30px", display:"inline-block", height:"33px", width:"100px", margin:"14px 2px 14px 7px"}}></input><button onClick={this.switchChannel} style={{display:"inline-block", height:"40px", margin:"14px 7px 14px 0", verticalAlign:"super"}}>Go</button></div>
-                <div style={{color:"white", margin:"19px 0px 14px 120px", fontSize:"30px"}}>{this.props.numViewers}</div>
+                <div style={{color:"white", margin:"19px 0px 14px 5px", fontSize:"30px"}}>{this.props.numViewers}</div>
                 {this.props.isFavorite?
                   <button onClick = {this.props.removeFavorite} className = "favorite" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"40px", height:"40px", margin:"14px 7px 14px 14px"}}></button>
                   :

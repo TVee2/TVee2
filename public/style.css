@@ -52,8 +52,8 @@ form div {
 }
 
 .videobutton{
-  height: 40px;
-  width: 40px;
+  height: 30px;
+  width: 30px;
   background-color: white;
   background-size: cover;
   display:inline-block;
@@ -91,6 +91,8 @@ form div {
 }
 
 .plippi{
+  margin:0 7px;
+
   background-image: url('./icons/plippi.png')
 }
 
@@ -118,19 +120,9 @@ form div {
   background-image: url('./icons/notfavorite.png')
 }
 
-
-.like{
-  background-image: url('./icons/unlike.png');
-  background-size: cover;
-  height:40px;
-  width:40px;
-}
-
-.unlike{
-  background-image: url('./icons/like.png');
-  background-size: cover;  
-  height:40px;
-  width:40px;
+.abcchat{
+  margin:0 7px;
+  background-image: url('./icons/abc.png')
 }
 
 .cancel{
@@ -200,6 +192,22 @@ form div {
 
 .earthleave{
     background-image: url('./icons/roomleave.png')
+}
+
+.flickall{
+  background-image: url('./icons/all.png')
+}
+
+.flickfavorite{
+  background-image: url('./icons/favorite.png')
+}
+
+.flickhot{
+  background-image: url('./icons/hot.png')
+}
+
+.flicknew{
+  background-image: url('./icons/new.png')
 }
 
 .question{

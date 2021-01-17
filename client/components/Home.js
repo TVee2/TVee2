@@ -52,7 +52,7 @@ export default class Home extends Component {
   channelElem = (channel) => {return (
     <div style={{height:"200px", width:"200px", margin:"10px", cursor:"pointer"}} onClick={this.goToChannel.bind(this, channel.id)}>
       <Link to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link>
-      <img style={{height:"150px", width:"150px", margin:"10px"}} src={channel.thumbnailUrl}></img>
+      <img style={{margin:"10px"}} src={channel.thumbnailUrl}></img>
     </div>
   )}
 

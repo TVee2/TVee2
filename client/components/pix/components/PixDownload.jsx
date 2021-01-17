@@ -15,7 +15,7 @@ class PixDownload extends React.Component {
   }
 
   download_canvas_image = () => {
-    var canvas = document.getElementById(`myCanvas${this.props.grab}${this.props.id}`)
+    var canvas = document.getElementById(`myCanvas${this.props.id}`)
     var image = canvas.toDataURL().replace("image/png", "image/octet-stream");
     var anchor = document.getElementById(`download_${this.props.id}`)
     anchor.setAttribute("href", image)
@@ -29,8 +29,8 @@ class PixDownload extends React.Component {
     
 
     return (
-      <div className="dl-container" id={`${id}${grab}`}>
-        <a id={`download_${id}`} download={`pix_${grab[0]}_${id}.png`}><button onClick={this.download_canvas_image} className="downloadBtn"></button></a>
+      <div className="dl-container" id={`${id}`}>
+        <a id={`download_${id}`} download={`pix_${id}.png`}><button onClick={this.download_canvas_image} className="downloadBtn"></button></a>
       </div>
     )
   }

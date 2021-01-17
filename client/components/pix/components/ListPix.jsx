@@ -175,7 +175,7 @@ class OwnProfile extends React.Component {
             <div className="personButtonContainer">
               <button className = 'hiddenSpacer' ></button>
               <div className="userActionBtn">
-                <PixDownload id={pix.id} grab={grab} pix={pix} palette={pix.palette} data={pix.img}/>
+                <PixDownload id={pix.id} grab="" pix={pix} palette={pix.palette} data={pix.img}/>
               </div>
               <div className="userActionBtn">
                 <button value={ pix.id } className = 'editico' onClick={this.goToEdit.bind(this, pix)}></button>

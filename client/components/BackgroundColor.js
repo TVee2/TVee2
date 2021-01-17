@@ -49,9 +49,9 @@ class BackgroundColor extends React.Component {
     var blue = this_color[2] + month_days*(this_color[2] - next_color[2])/31
 
 
-    document.body.style.background = `-webkit-gradient(linear,0% 0%,0% 100%, from(rgba(${red},${green},${blue},1) ), to(rgba(${black},${black},${black},1)) )`;
-    document.body.style.background = `-moz-linear-gradient(top, rgba(${red},${green},${blue},1) 0%, rgba(${black},${black},${black},1) 100%)`;
-    document.body.style.backgroundAttachment = "fixed";
+    // document.body.style.background = `-webkit-gradient(linear,0% 0%,0% 100%, from(rgba(${red},${green},${blue},1) ), to(rgba(${black},${black},${black},1)) )`;
+    // document.body.style.background = `-moz-linear-gradient(top, rgba(${red},${green},${blue},1) 0%, rgba(${black},${black},${black},1) 100%)`;
+    // document.body.style.backgroundAttachment = "fixed";
     document.getElementById("topBarContainer").style.background = `-webkit-gradient(linear,0% 0%,0% 100%, from(rgba(${red},${green},${blue},1) ), to(rgba(255,255,255,1)) )`;
     document.getElementById("topBarContainer").style.background =  `-moz-linear-gradient(top, rgba(${red},${green},${blue},1) 0%, rgba(255,255,255,1) 100%)`;   
   }

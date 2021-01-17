@@ -269,13 +269,23 @@ export default class TV extends Component {
             comments={this.state.comments}
             channelId={this.props.match.params.channelId}
           />
-          <div style={{position:"absolute", zIndex:"5", margin:"25px", top:this.state.height=="360"?"695px":"585px"}}>
-            {this.state.channel&&this.state.channel.description?<div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>:null}
-            {this.state.channel&&this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Hashtags:{this.state.channel.hashtags.map((h) => {return <span>{` ${h.tag}  `}</span>})}</div>:null}
-            {this.state.channel?<div style={{margin:"10px"}}>By: {this.state.channel.user.username}</div>:null}
-
-            <div style={{margin:"3px", display:"inline-block", backgroundColor:"yellowgreen", height:"300px", width:"315px"}}></div>
-            <div style={{margin:"3px", display:"inline-block", backgroundColor:"magenta", height:"300px", width:"315px"}}></div>
+          <div style={{position:"absolute", display:"flex", zIndex:"5", margin:"0 25px", top:this.state.height=="360"?"710px":"585px"}}>
+            {this.state.segment && this.state.segment.program?
+              <div style={{margin:"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:"316px"}}>
+                    <div>Now Playing:</div>
+                    <div>{this.state.segment.program.title}</div>
+                    <img src={this.state.segment.program.thumbnailUrl}></img>
+                    <div><a href={`https://www.youtube.com/watch?v=${this.state.segment.program.youtubeId}`}>{`youtube.com/watch?v=${this.state.segment.program.youtubeId}`}</a></div>
+              </div>
+            :null}
+            {this.state.channel?
+              <div style={{margin:"0 0 0 4px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"magenta", width:"316px"}}>
+                {this.state.channel?<div style={{margin:"10px"}}>{this.state.channel.name.toUpperCase()}</div>:null}
+                {this.state.channel&&this.state.channel.description?<div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>:null}
+                {this.state.channel&&this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Tags: {this.state.channel.hashtags.map((h) => {return <span style={{border:"solid black 2px"}}> {`${h.tag}`} </span>})}</div>:null}
+                {this.state.channel?<div style={{margin:"10px"}}>By: {this.state.channel.user.username}</div>:null}
+              </div>
+            :null}
           </div>
         </div>
       </div>

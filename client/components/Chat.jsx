@@ -95,7 +95,7 @@ export default class App extends React.Component {
     var visibility = !this.props.collapse || (this.props.collapse && this.props.showChat)//show if no collapse, // show if collapse and showchat is true
     return (
       <Provider store={store}>
-        <div style={{backgroundColor:"white", zIndex:"10", border: "1px solid black", visibility:visibility?"":"hidden", width:smallwindow?"95%":"300px", position:"absolute", left:smallwindow?"0px":"665px", display:smallwindow?"block":"inline-block", margin:smallwindow?"0px":"0 30px"}}>
+        <div style={{backgroundColor:"white", zIndex:"10", border: "1px solid black", visibility:visibility?"":"hidden", width:window.innerwidth<300?"95%":"300px", position:"absolute", left:smallwindow?"":"665px", right:smallwindow?"0px":"", display:smallwindow?"block":"inline-block", margin:smallwindow?"0px":"0 30px"}}>
           <div className="chat-navbar">
             <button className="videobutton chat" onClick={this.handleChatClick}></button>
             <button className="videobutton createpix" onClick={this.handleCreateClick}></button>
@@ -116,7 +116,7 @@ export default class App extends React.Component {
                   }else if(post.pixId){
                     var tag = post.user.email.split("@")[0]
                     return (<div className="comment-bar" style={{backgroundColor: post.user.color}} key={post.id} id={post.id}>
-                      <p><span>{tag}</span>: <div style={{border:"1px solid black", display:"inline-flex"}}><PixBlock pix={post.pix} dim={64} adgrab={`comment${post.id}`}/></div></p>
+                      <p><span>{tag}</span>: <div style={{border:"3px double black", display:"inline-flex"}}><PixBlock pix={post.pix} dim={64} adgrab={`comment${post.id}`}/></div></p>
                     </div>)                   
                   }
                 })
@@ -125,7 +125,8 @@ export default class App extends React.Component {
             </div>
             {this.props.user.id
               ?<div>
-                {this.props.user.email}:
+                {this.state.showPlippiBar?<button className="videobutton plippi" onClick={() => {this.setState({showPlippiBar:!this.state.showPlippiBar})}}/>:<button className="videobutton abcchat" onClick={() => {this.setState({showPlippiBar:!this.state.showPlippiBar})}}/>}
+                {this.props.user.username.toUpperCase()}:
                 {!this.state.showPlippiBar?<div>
                   <form onSubmit={this.handleSubmit}  disabled={this.state.submitDisabled} className="center" style={{padding:"5px", display:"flex"}}>
                     <input type="text" style={{ margin:"10px", padding:'5px', width:"100%"}} className="comment-input" name="comment" placeholder="Submit a Comment!" value={this.state.value} onChange={this.handleFormChange}/>
@@ -138,7 +139,6 @@ export default class App extends React.Component {
                   </div>
                   <PixBar selectPixHandler={this.selectPixHandler}/>
                 </div>}
-                <button className="videobutton plippi" onClick={() => {this.setState({showPlippiBar:!this.state.showPlippiBar})}}/>
               </div>
             :<h3>Login to chat</h3>
             }
