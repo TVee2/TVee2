@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
-import VideoPlayer from './VideoPlayer'
+import obj  from './VideoPlayer'
 import Chat from './Chat'
 import Entrance from './Entrance'
 import axios from 'axios'
 import io from 'socket.io-client'
 import history from '../history'
-
+import {Link} from 'react-router-dom'
+var VideoPlayer = obj.VideoPlayer
 var socket = io()
 
 export default class TV extends Component {
@@ -34,12 +35,28 @@ export default class TV extends Component {
       isYoutubeId:false,
       noChannel:false,
       numViewers:0,
-      isFavorite:false
+      isFavorite:false,
+
+      allChannels:[],
+      selectedAllIndex:0,
+      favoriteChannels:[],
+      selectedFavoriteIndex:null,
+      hotChannels:[],
+      selectedHotChannelIndex:null,
+      newChannels:[],
+      selectedNewChannelIndex:null,
+      flickColor:"greenyellow",
+      selectedFlick: "all",
     }
     this.interval=null
   }
 
   componentDidMount() {
+    this.getNewChannels()
+    this.getAllChannels()
+    this.getFavoriteChannels()
+    this.getHotChannels()
+
     this.getChannel()
     if(window.innerWidth<=1000 || screen.width<=1000){
       this.setState({collapse:true})
@@ -72,6 +89,48 @@ export default class TV extends Component {
         this.setState({vidWidth:null})
       }
     });
+  }
+
+  flickChange = (selector) => {
+    var color = ""
+    if(selector=="all"){
+      color = "greenyellow"
+    }else if(selector=="favorite"){
+      color = "yellow"
+    }else if(selector=="hot"){
+      color = "magenta"
+    }else if(selector=="new"){
+      color = "cyan"      
+    }
+    this.setState({selectedFlick:selector, flickColor:color})
+  }
+
+  getAllChannels = () => {
+    axios.get('/api/channels')
+    .then((res) => {
+      this.setState({allChannels:res.data})
+    })
+  }
+
+  getFavoriteChannels = () => {
+    axios.get('/api/channels/favorites/nonrandom')
+    .then((res) => {
+      this.setState({favoriteChannels:res.data})
+    })
+  }
+
+  getHotChannels = () => {
+    axios.get('/api/channels/active')
+    .then((res) => {
+      this.setState({hotChannels:res.data})
+    })
+  }
+
+  getNewChannels = () => {
+    axios.get('/api/channels/new')
+    .then((res) => {
+      this.setState({newChannels:res.data})
+    })
   }
 
   componentWillUnmount() {
@@ -184,11 +243,102 @@ export default class TV extends Component {
   }
 
   decrementChannel = () => {
-    this.changeChannel(this.prevChannelId())
+    var selector = this.state.selectedFlick
+    var nextIndex
+    var indexor
+    var channelArr
+    var key
+    if(selector=="all"){
+      key = "selectedAllIndex"
+      indexor = this.state.selectedAllIndex
+      channelArr = this.state.allChannels
+    }else if(selector=="favorite"){
+      key = "selectedFavoriteIndex"
+      indexor = this.state.selectedFavoriteIndex
+      channelArr = this.state.favoriteChannels
+    }else if(selector=="hot"){
+      key = "selectedHotChannelIndex"
+      indexor = this.state.selectedHotChannelIndex
+      channelArr = this.state.hotChannels
+    }else if(selector=="new"){
+      key = "selectedNewChannelIndex"
+      indexor = this.state.selectedNewChannelIndex
+      channelArr = this.state.newChannels
+    }
+
+    if(indexor){
+      if(indexor - 1 < 0){
+        nextIndex = channelArr.length - 1
+      }else{
+        nextIndex = indexor - 1
+      }
+    }else{
+      nextIndex = 0  
+    }
+
+    var obj = {}
+    obj[key] = nextIndex
+    this.setState(obj)
+
+    this.changeChannel(channelArr[nextIndex].id)
   }
 
   incrementChannel = () => {
-    this.changeChannel(this.nextChannelId())
+    var selector = this.state.selectedFlick
+    var nextIndex
+    var indexor
+    var channelArr
+    var key
+
+
+    if(selector=="all"){
+      key = "selectedAllIndex"
+      indexor = this.state.selectedAllIndex
+      channelArr = this.state.allChannels
+    }else if(selector=="favorite"){
+      key = "selectedFavoriteIndex"
+      indexor = this.state.selectedFavoriteIndex
+      channelArr = this.state.favoriteChannels
+    }else if(selector=="hot"){
+      key = "selectedHotChannelIndex"
+      indexor = this.state.selectedHotChannelIndex
+      channelArr = this.state.hotChannels
+    }else if(selector=="new"){
+      key = "selectedNewChannelIndex"
+      indexor = this.state.selectedNewChannelIndex
+      channelArr = this.state.newChannels
+    }
+
+    if(indexor){
+      if(indexor + 1 > channelArr.length - 1){
+        console.log(2)
+
+        nextIndex = 0
+      }else{
+        nextIndex = indexor + 1
+      }
+    }else{
+      var selected = channelArr.findIndex((channel, i) => {return channel.id == parseInt(this.props.match.params.channelId)})
+      console.log(selected)
+      if(selected > 0 || selected == 0){
+        if(selected + 1 > channelArr.length - 1){
+        console.log(4)
+
+          nextIndex = 0
+        }else{
+          nextIndex = selected + 1
+        }
+      }else{
+        console.log(6)
+        nextIndex = 0
+      }
+    }
+    var obj = {}
+    obj[key] = nextIndex
+console.log(channelArr, obj, nextIndex, selector)
+    this.setState(obj)
+
+    this.changeChannel(channelArr[nextIndex].id)
   }
 
   changeChannel = (id) => {
@@ -230,16 +380,14 @@ export default class TV extends Component {
       <div>
         {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"115px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
         <div>
-          {this.state.showChannelId?
-            <div style={{position:"absolute", color:"greenyellow", zIndex:"2", fontSize:"64px", top:"150px", left:"35px"}}>
-              {this.props.match.params.channelId}
-            </div>
-          :null}
           <VideoPlayer
             channel={this.state.channel}
             noChannel={this.state.noChannel}
             showCover={this.props.showCover}
             removeCover={this.props.removeCover}
+            dirty={this.props.dirty}
+            muted={this.props.muted}
+            toggleParentStateMuted={this.props.toggleParentStateMuted}
             vidWidth={this.state.vidWidth}
             match={this.props.match}
             src={this.state.src}
@@ -259,6 +407,18 @@ export default class TV extends Component {
             addFavorite={this.addFavorite}
             removeFavorite={this.removeFavorite}
             segment={this.state.segment}
+            showChannelId={this.state.showChannelId}
+            allChannels={this.state.allChannels}
+            favoriteChannels={this.state.favoriteChannels}
+            hotChannels={this.state.hotChannels}
+            newChannels={this.state.newChannels}
+            selectedAllIndex={this.state.selectedAllIndex}
+            selectedFavoriteIndex={this.state.selectedFavoriteIndex}
+            selectedHotChannelIndex={this.state.selectedHotChannelIndex}
+            selectedNewChannelIndex={this.state.selectedNewChannelIndex}
+            flickColor={this.state.flickColor}
+            selectedFlick={this.state.selectedFlick}
+            flickChange={this.flickChange}
           />
           <Chat
             smallwindow={smallwindow}
@@ -272,10 +432,10 @@ export default class TV extends Component {
           <div style={{position:"absolute", display:"flex", zIndex:"5", margin:"0 25px", top:this.state.height=="360"?"710px":"585px"}}>
             {this.state.segment && this.state.segment.program?
               <div style={{margin:"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:"316px"}}>
-                    <div>Now Playing:</div>
-                    <div>{this.state.segment.program.title}</div>
-                    <img src={this.state.segment.program.thumbnailUrl}></img>
-                    <div><a href={`https://www.youtube.com/watch?v=${this.state.segment.program.youtubeId}`}>{`youtube.com/watch?v=${this.state.segment.program.youtubeId}`}</a></div>
+                <div>Now Playing:</div>
+                <div>{this.state.segment.program.title}</div>
+                <img src={this.state.segment.program.thumbnailUrl}></img>
+                <div><a href={`https://www.youtube.com/watch?v=${this.state.segment.program.youtubeId}`}>{`youtube.com/watch?v=${this.state.segment.program.youtubeId}`}</a></div>
               </div>
             :null}
             {this.state.channel?
@@ -283,7 +443,7 @@ export default class TV extends Component {
                 {this.state.channel?<div style={{margin:"10px"}}>{this.state.channel.name.toUpperCase()}</div>:null}
                 {this.state.channel&&this.state.channel.description?<div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>:null}
                 {this.state.channel&&this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Tags: {this.state.channel.hashtags.map((h) => {return <span style={{border:"solid black 2px"}}> {`${h.tag}`} </span>})}</div>:null}
-                {this.state.channel?<div style={{margin:"10px"}}>By: {this.state.channel.user.username}</div>:null}
+                {this.state.channel?<Link to={`/users/${this.state.channel.user.id}`} style={{margin:"10px"}}>By: {this.state.channel.user.username}</Link>:null}
               </div>
             :null}
           </div>

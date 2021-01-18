@@ -108,7 +108,7 @@ export default class App extends React.Component {
                 ?list.map(post => {
                   var date = new Date(post.createdAt)
                   if(post.commentId){
-                    var tag = post.user.email.split("@")[0]
+                    var tag = post.user.username.toLowerCase()
 
                     return (<div className="comment-bar" style={{backgroundColor: post.user.color}} key={post.id} id={post.id}>
                       <p><span>{tag}</span>: <span>{post.comment.content}</span></p>

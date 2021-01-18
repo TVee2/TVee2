@@ -207,7 +207,7 @@ _/|_/|_/|__  _/_/|_/|__~__/_/|_/|_/|_/|_/|_
 
   render() {
     return (
-      <div style={{width: '100%', position:"absolute", height:"750px", top:"170px", padding:"15px", gridColumn:"1", gridRow:"1", zIndex:"10", backgroundColor:"white"}}>
+      <div style={{width: '100%', position:"absolute", height:"780px", top:"170px", padding:"15px", gridColumn:"1", gridRow:"1", zIndex:"10", backgroundColor:"white"}}>
         <pre id="pre"></pre>
         <pre id="post"></pre>
       </div>

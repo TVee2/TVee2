@@ -63,7 +63,7 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
   var items = await PlaylistItem.findAll({where:{playlistId:playlist.id}, order:[['position','ASC']]})
   var now = Math.floor(new Date().getTime()/1000)
   var timecounter = now
-  var lastTimeslot = await Timeslot.findOne({limit:1, include: {model:Program, include:{model:PlaylistItem}}, order:[['starttime', 'DESC']], where:{channelId:channel.id}})
+  var lastTimeslot = await Timeslot.findOne({limit:1, include: {model:Program}, order:[['starttime', 'DESC']], where:{channelId:channel.id}})
   var j = 0
 
   //seed programs for all timeslot items
@@ -72,7 +72,7 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
     let item = items[i]
     if(item.embeddable){    
       let {id, title, thumbnailUrl, duration, width, height, youtubeId} = item
-      var program = await Program.findOrCreate({where: {title, thumbnailUrl, width, height, duration, youtubeId, playlistItemId:id}})
+      var program = await Program.findOrCreate({where: {title, thumbnailUrl, width, height, duration, youtubeId}})
       if(Array.isArray(program)){
         program = program[0]
       }
@@ -80,9 +80,9 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
     }
   }
 
-  if(lastTimeslot && lastTimeslot.program && lastTimeslot.program.playlistItem){
+  if(lastTimeslot && lastTimeslot.program && lastTimeslot.program.youtubeId){
     timecounter = Math.floor(parseInt(lastTimeslot.endtime)/1000)
-    var matchIndex = indexOfMatch(items, (item)=>{return lastTimeslot.program.playlistItem.id == item.id})
+    var matchIndex = indexOfMatch(items, (item)=>{return lastTimeslot.program.youtubeId == item.youtubeId})
     j = matchIndex===-1?0:matchIndex
     if(j==item_arr.length-1){
       j=0

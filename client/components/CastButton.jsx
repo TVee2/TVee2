@@ -132,7 +132,7 @@ export default class CastButton extends Component {
 
   render() {
     return (
-      <div style={{display:"inline"}}>
+      <div style={{height:"32px", width:"40px", display:"inline"}}>
         <google-cast-launcher id="castbutton"></google-cast-launcher>
       </div>
     )

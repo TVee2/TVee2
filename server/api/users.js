@@ -15,8 +15,8 @@ router.get('/', async (req, res, next) => {
 
 .get('/:id', async (req, res, next) => {
   try {
-    const users = await User.findByPk(req.params.id, {include: [{model:Channel}, {model:Pix, as:'creations'}]})
-    res.json(users)
+    const user = await User.findByPk(req.params.id, {include: [{model:Channel}, {model:Pix, as:'profilePix'}, {model:Pix, as:'creations'}]})
+    res.json(user)
   } catch (err) {
     next(err)
   }

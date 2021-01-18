@@ -4,7 +4,8 @@ const {User, Segment, Schedule, Program, Channel, Timeslot, Playlist, PlaylistIt
 const {Op} = require('sequelize')
 
 const turnOnChannelEmitter = require('../channelEmitter')
-const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders')
+const {seedNext24HrTimeslots, seedNext2hrSegments, verifyAndUpdatePlaylists} = require('../scheduleSeeders')
+const {updateOrUploadPlaylists} = require('../api/crudHelpers')
 
 var seedAllChannels = async ()=>{
   var channels = await Channel.findAll()
@@ -20,6 +21,14 @@ module.exports.roomVisitors = () => {
   return roomVisitors
 }
 
+var updateChannelPlaylists = () => {
+  Channel.findAll({include:{model:User}})
+  .then((channels) => {
+    channels.forEach((channel)=>{
+      updateOrUploadPlaylists(null, channel.user, channel.playlistId)
+    })
+  })
+}
 
 module.exports.startSeeding = io => {
   io.on('connection', socket => {
@@ -85,6 +94,14 @@ module.exports.startSeeding = io => {
   new CronJob(
   '0 * * * *',
   seedNext2hrSegments,
+  null,
+  true,
+  'America/Chicago'
+  )
+
+  new CronJob(
+  '0 19 * * *',
+  updateChannelPlaylists,
   null,
   true,
   'America/Chicago'

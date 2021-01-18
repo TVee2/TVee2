@@ -2,7 +2,7 @@ const router = require('express').Router()
 const {Playlist, PlaylistItem} = require('../db/models')
 module.exports = router
 
-const {uploadPlaylist} = require('./crudHelpers')
+const {updateOrUploadPlaylist} = require('./crudHelpers')
 
 router.get('/', async (req, res, next) => {
   var userId = req.user.id
@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
 
 .post('/ytplaylist/:plid', async (req, res, next) => {
   try {
-    var playlist = await uploadPlaylist(req.params.plid, req.user)
+    var playlist = await updateOrUploadPlaylists(req.params.plid, req.user)
     res.json(playlist)
   } catch (err) {
     res.status(500).json(err);

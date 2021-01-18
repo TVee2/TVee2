@@ -6,7 +6,7 @@ const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders
 const {Op} = require("sequelize");
 const roomVisitors = require('../socket/index.js').roomVisitors()
 
-const {uploadProgram, uploadPlaylist} = require('./crudHelpers')
+const {uploadProgram, updateOrUploadPlaylists} = require('./crudHelpers')
 
 module.exports = router
 
@@ -160,7 +160,7 @@ router
   }
 
   try{
-    var playlist = await uploadPlaylist(playlistId, req.user)
+    var playlist = await updateOrUploadPlaylists(playlistId, req.user)
     var channel = await Channel.create({name, description, thumbnailUrl:playlist.thumbnailUrl, userId:req.user.id})
     var hashtags = hashtags.filter((h) => h)
     if(hashtags.length){
@@ -235,7 +235,8 @@ router
     limit: 10,
   })
   .then((channels) => {
-    res.status(200).json(channels)
+    var related10 = getRandomNoItemsFromArr(channels, 10)
+    res.status(200).json(related10)
   })
   .catch((err) => {
     console.log(err)
@@ -265,7 +266,7 @@ router
   })
   .then((channels) => {
     var related10 = getRandomNoItemsFromArr(channels, 10)
-    res.status(200).json(channels)
+    res.status(200).json(related10)
   })
   .catch((err) => {
     console.log(err)
@@ -330,6 +331,22 @@ router
   .then((channels) => {
     var related10 = getRandomNoItemsFromArr(channels, 10)
     res.status(200).json(related10)
+  })
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err);
+  })
+})
+
+.get('/favorites/nonrandom', (req, res, next) => {
+  // //
+  // //get favorites not random return
+  // //
+  req.user.getFavoriteChannels({
+    order: [['id', 'ASC']]
+  })
+  .then((channels) => {
+    res.status(200).json(channels)
   })
   .catch((err) => {
     console.log(err)

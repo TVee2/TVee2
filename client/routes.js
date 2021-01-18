@@ -12,8 +12,10 @@ import ManageVideos from './components/ManageVideos'
 import ManageLists from './components/ManageLists'
 import ManageChannels from './components/ManageChannels'
 import ManageMe from './components/ManageMe'
-
+import SingleUser from './components/SingleUser'
+import obj from './components/VideoPlayer'
 import axios from 'axios'
+var Ytplayer = obj.Ytplayer
 
 /**
  * COMPONENT
@@ -23,13 +25,33 @@ class Routes extends Component {
   constructor() {
     super()
 
-    this.state = {channels:[], showCover:true, chtimeslots:[]}
+    this.state = {channels:[], showCover:true, chtimeslots:[], muted:true, dirty:false}
   }
 
   componentDidMount() {
     this.props.loadInitialData()
     this.getChannels()
     this.getChannelsWTimeslots()
+
+    var listener = () => {
+      this.setState({muted: false, dirty: true}, () => {
+        document.removeEventListener('click', listener)
+      })
+
+      this.removeCover()
+      Ytplayer.player.unMute()
+      // if (!this.state.dirty && this.videoplayer.unMute) {
+        // , () => {
+      //     console.log('unmute')
+
+      //     // this.toggleMute()
+      //   })
+      // } else if(this.videoplayer.unMute){
+      // }
+
+    }
+
+    document.addEventListener('click', listener)
   }
 
   getChannels = () => {
@@ -50,6 +72,10 @@ class Routes extends Component {
     this.setState({showCover:false})
   }
 
+  toggleParentStateMuted = () => {
+    this.setState({muted: !this.state.muted})
+  }
+
   render() {
     const {isLoggedIn} = this.props
     return (
@@ -58,7 +84,17 @@ class Routes extends Component {
         <Route path="/home" component={Home} />
         <Route path="/entrance" component={Entrance} />
         <Route path="/tv/:channelId" render={(props) => (
-            <TV  {...props} channels={this.state.channels} showCover={this.state.showCover} removeCover={this.removeCover} user={this.props.user}/>
+          <TV  {...props} channels={this.state.channels}
+            muted={this.state.muted}
+            dirty={this.state.dirty}
+            showCover={this.state.showCover}
+            removeCover={this.removeCover}
+            toggleParentStateMuted = {this.toggleParentStateMuted}
+            user={this.props.user}
+          />)}
+        />
+        <Route path="/users/:id" render={(props) => (
+            <SingleUser {...props} user={this.props.user}/>
           )}
         />
         <Route path="/tvbrowse" render={(props) => (
