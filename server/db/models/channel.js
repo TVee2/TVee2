@@ -11,5 +11,9 @@ module.exports = db.define('channel', {
   },
   thumbnailUrl: {
     type: Sequelize.TEXT,   
+  },
+  active: {
+    type: Sequelize.BOOLEAN,   
+    defaultValue:true
   }
 })

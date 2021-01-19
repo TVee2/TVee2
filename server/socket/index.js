@@ -47,7 +47,7 @@ module.exports.startSeeding = io => {
         return
       }
       roomVisitors[channelId].splice(roomVisitors[channelId].indexOf(socket.id), 1)
-      ChannelVisitLog.findAll({where: {socketId:socket.id, channelId:channelId}, limit:1, order:"createdAt DESC"})
+      ChannelVisitLog.findAll({where: {socketId:socket.id, channelId:channelId}, limit:1, order:[["createdAt DESC"]]})
       .then((logs) => {
         if(logs.length == 1){
           var log = logs[0]

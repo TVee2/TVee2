@@ -42,6 +42,8 @@ export default class ManageChannels extends Component {
       selectedPlaylistId:null,
       timeslots:{today:[], tomorrow:[], defaultSrc:""},
       activeTab: channelTabData[0],
+      selectedRadio: null,
+      selectedChannel:null,
     }
 
     this.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -59,10 +61,19 @@ export default class ManageChannels extends Component {
   getChannels = () => {
     axios.get('/api/channels/editable')
    .then((ret) => {
-      this.setState({channels:ret.data, selectedChannelId:ret.data[0].id}, () => {
-        this.getChannelSchedule(this.state.selectedChannelId)
-      })
+      if(ret.data.length){      
+        this.setState({channels:ret.data, selectedChannelId:ret.data[0].id}, () => {
+          this.getChannelSchedule(this.state.selectedChannelId)
+        })
+      }
     })
+  }
+
+  getChannel = (id) => {
+    axios.get(`/api/channels/${id}`)
+   .then((ret) => {
+      this.setState({selectedChannel:ret.data.channel})
+    })  
   }
 
   getChannelSchedule = () => {
@@ -77,6 +88,7 @@ export default class ManageChannels extends Component {
 
   onChannelChange = (e) => {
     this.setState({selectedChannelId: e.target.value, timeslots:{today:[], tomorrow:[]}}, () => {
+      this.getChannel(this.state.selectedChannelId)
       this.getChannelSchedule(this.state.selectedChannelId)
     })
   }
@@ -177,6 +189,10 @@ export default class ManageChannels extends Component {
 
   }
 
+  radioChange = (e) => {
+    this.setState({selectedRadio:e.target.value})
+  }
+
   render() {
     var today = new Date()
     var tomorrow = new Date()
@@ -185,11 +201,7 @@ export default class ManageChannels extends Component {
     tomorrow.setHours(0,0,0,0)
     today.setHours(0,0,0,0)
 
-    var channel
-    if(this.state.selectedChannelId){
-      channel = this.state.channels.find((channel) => {return channel.id==this.state.selectedChannelId})
-    }
-
+    var channel = this.state.selectedChannel
     return (
       <div>
         <h1 style={{textAlign:"left"}}>Manage Channels</h1>
@@ -221,14 +233,23 @@ export default class ManageChannels extends Component {
             <br/>
             <label>Default Video Youtube ID (optional):</label>
             <input type="text" id="defaultvideoid" name="defaultvideoid"/><br/>
+
+            <label htmlFor="playlist">Youtube Playlist Upload</label><br/>
+            <input type="radio" onChange={this.radioChange} id="playlist" name="uploadtype" value="playlist"/>
+            <label htmlFor="channelcreator">Youtube Channel Upload</label><br/>
+            <input type="radio" onChange={this.radioChange} id="channelcreator" name="uploadtype" value="channelcreator"/>
+            
             <br/>
-            <label>Looping Playlist Youtube ID:</label>
-            <input type="text" id="playlistid" name="playlistid"/><br/><br/>
-            <input type="submit" value="submit" />
-            <br/>
-            <label>OR Youtube Channel Id:</label>
-            <input type="text" id="playlistid" name="playlistid"/><br/><br/>
-            <input type="submit" value="submit" />
+            {this.state.selectedRadio=="playlist"?<div>
+              <label>Looping Playlist Youtube ID:</label>
+              <input type="text" id="playlistid" name="playlistid"/>
+            </div>:null}
+            {this.state.selectedRadio=="channelcreator"?<div>
+              <label>Youtube Channel Id:</label>
+              <input type="text" id="playlistid" name="playlistid"/>
+            </div>:null}
+            <br/><br/>
+            <input disabled={!this.state.selectedRadio} type="submit" value="submit" />
           </form>
           <div style={{color:"red"}}>{this.state.channelSubmitMessage}</div>
           <br />
@@ -247,56 +268,57 @@ export default class ManageChannels extends Component {
           <br/><br/>
         {this.state.selectedChannelId?
         <div>
+        {console.log(channel)}
           {channel?<div>
             <div>CHANNEL INFORMATION</div>
             <div>Address - {channel.id}</div>
             <div>Name - {channel.name}</div>
             <div>Description - {channel.description?channel.description:"none"}</div>
-            <div>Tags - {channel.hashtags.length?channel.hashtags.map((h) => {return <div>{h.tag}</div>}):"none"}</div>
-            <div>Youtube Playlist ID - {channel.playlist?channel.playlist.youtubeId:"none"}</div>
-            <div>Youtube Title - {channel.playlist?channel.playlist.title:"none"}</div>
-            <div>Default Video ID - {channel.defaultProgram?channel.defaultProgram.youtubeId:"none"}</div><br/>
+            <div>Change channel description</div>
+            <form onSubmit={this.changeDescription}>
+              <textarea type="text" id="description" name="description" defaultValue={channel.description}/><br/>
+              <input type="submit" value="submit" />
+            </form>
+
+            <div>Seeding currently set to {channel.playlist.youtubeId?"seed by playlist":""}{channel.playlist.youtubeChannelId?"seed by channel":""} and seeding from {channel.playlist.youtubeId?"playlist":""}{channel.playlist.youtubeChannelId?"channel":""} id {channel.playlist.youtubeId?channel.playlist.youtubeId:channel.playlist.youtubeChannelId}</div>
+            <div>Set/Change playlist id (this will replace current id and switch to the playlist seeding scheme)</div>
+            <form onSubmit={this.submitDefaultVid}>
+              <input type="text" id="changeplaylistid" name="changeplaylistid" defaultValue={channel.playlist.youtubeId}/><br/>
+              <input type="submit" value="submit" />
+            </form>
+            <div>Set/Change youtube channel id (this will replace current id and switch to the channel creator seeding scheme)</div>
+            <form onSubmit={this.submitDefaultVid}>
+              <input type="text" id="changeyoutubechannelid" name="changeyoutubechannelid" defaultValue={channel.playlist.youtubeChannelId}/><br/>
+              <input type="submit" value="submit" />
+            </form>
+
+            <div>Tags - {channel && channel.hashtags && channel.hashtags.length?channel.hashtags.map((h) => {return <div>{h.tag}</div>}):"none"}</div>
+            <div>Edit tags</div>
+            <form onSubmit={this.submitDefaultVid}>
+              <input type="text" id="htag1" name="htag1" defaultValue={channel.hashtags[0]?channel.hashtags[0].tag:""}/><br/>
+              <input type="text" id="htag2" name="htag2" defaultValue={channel.hashtags[1]?channel.hashtags[1].tag:""}/><br/>
+              <input type="text" id="htag3" name="htag3" defaultValue={channel.hashtags[2]?channel.hashtags[2].tag:""}/><br/>
+              <input type="text" id="htag4" name="htag4" defaultValue={channel.hashtags[3]?channel.hashtags[3].tag:""}/><br/>
+              <input type="submit" value="submit" />
+            </form>
+            <div>Placeholder Video ID - {channel.defaultProgram?channel.defaultProgram.youtubeId:"none"}</div><br/>
+            <div>Change placeholder video.  If none will default to tvdrop video</div>
+            <form onSubmit={this.submitDefaultVid}>
+              <input type="text" id="defaultVid" name="defaultVid" defaultValue={channel.defaultProgram?channel.defaultProgram.youtubeId:""}/><br/>
+              <input type="submit" value="submit" />
+            </form>
           </div>:null}
+          <div>Youtube specific information will need to be changed on youtube.  Information is updated nightly.</div>
           <br/><br/>
+          <div>INACTIVATE CHANNEL <button onClick={this.deleteChannel}>GO</button></div>
           <div>DELETE THIS CHANNEL <button onClick={this.deleteChannel}>DELETE</button></div>
-          <div>EDIT CHANNEL INFORMATION</div>
-          <div>Reseed segments<button>Go</button></div>
-          <div>Change looping playlist (first upload a playlist)</div>
-          <div>Change playlist id</div>
-          <form onSubmit={this.submitDefaultVid}>
-            <input type="text" id="changeplaylistid" name="changeplaylistid"/><br/>
-            <input type="submit" value="submit" />
-          </form>
-          <div>Edit tags</div>
-          <form onSubmit={this.submitDefaultVid}>
-            <input type="text" id="htag1" name="htag1"/><br/>
-            <input type="text" id="htag2" name="htag2"/><br/>
-            <input type="text" id="htag3" name="htag3"/><br/>
-            <input type="text" id="htag4" name="htag4"/><br/>
-            <input type="submit" value="submit" />
-          </form>
-          <div>Select a playlist</div>
-          <select id="playlist" defaultValue={'DEFAULT'} value={this.state.selectedPlaylistId} onChange={this.onPlaylistChange}>
-            <option disabled value='DEFAULT'> -- select an option -- </option>
-            {this.state.playlists.map(playlist => {
-              return <option value={`${playlist.id}`}>{playlist.title}</option>
-            })}
-          </select>
-          <button onClick={this.setChannelPlaylist}>Submit</button>
+          <div>DELETE FUTURE TIMESLOTS AND RESEED WITH CURRENT PLAYLIST
+            <button>Go</button>
+            (if playlist id changed this will delete all future timeslots and seed new timeslots from updated playlist, otherwise schedule will update nightly)
+          </div>
           <br/><br/>
-          <div>Change channel description</div>
-          <form onSubmit={this.changeDescription}>
-            <textarea type="text" id="description" name="description"/><br/>
-            <input type="submit" value="submit" />
-          </form>
-          <div>Change placeholder video.  If none will default to tvdrop video</div>
-          <form onSubmit={this.submitDefaultVid}>
-            <input type="text" id="defaultVid" name="defaultVid"/><br/>
-            <input type="submit" value="submit" />
-          </form>
           <div>{this.state.loadingMessage}</div>
 
-          <br /><br />
           <br /><br />
 
 

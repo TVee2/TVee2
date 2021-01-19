@@ -23,17 +23,6 @@ class VideoPlayer extends Component {
       controlChannelOnChange:"",
       vidStatus:null,
       relatedChannels:[],
-
-      allChannels:[],
-      selectedAllIndex:null,
-      favoriteChannels:[],
-      selectedFavoriteIndex:null,
-      hotChannels:[],
-      selectedHotChannelIndex:null,
-      newChannels:[],
-      selectedNewChannelIndex:null,
-      flickColor:"greenyellow",
-      selectedFlick: "all"
     }
     this.videoplayer=null
     this.defaultVideoPlayer=null
@@ -380,10 +369,10 @@ class VideoPlayer extends Component {
                 <button className = "upchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"20px 0 20px 7px"}} onClick={this.upChannel} ></button>
                 <button className = "downchannel" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"20px 7px 20px 0"}} onClick={this.downChannel} ></button>   
                 <div style={{display:"flex", margin:"20px 7px"}}>
-                  <div className = "flickall" style={{ border:this.props.selectedFlick=="all"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0 1px"}} onClick={this.props.flickChange.bind(this, "all")} ></div>   
-                  <div className = "flickfavorite" style={{ border:this.props.selectedFlick=="favorite"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0 1px"}} onClick={this.props.flickChange.bind(this, "favorite")} ></div>   
-                  <div className = "flickhot" style={{ border:this.props.selectedFlick=="hot"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0 1px"}} onClick={this.props.flickChange.bind(this, "hot")} ></div>   
-                  <div className = "flicknew" style={{ border:this.props.selectedFlick=="new"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0 1px"}} onClick={this.props.flickChange.bind(this, "new")} ></div>   
+                  {this.props.allChannels.length?<div className = "flickall" style={{ border:this.props.selectedFlick=="all"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0 1px"}} onClick={this.props.flickChange.bind(this, "all")} ></div>:null}
+                  {this.props.favoriteChannels.length?<div className = "flickfavorite" style={{ border:this.props.selectedFlick=="favorite"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0 1px"}} onClick={this.props.flickChange.bind(this, "favorite")}></div>:null}
+                  {this.props.hotChannels.length?<div className = "flickhot" style={{ border:this.props.selectedFlick=="hot"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0 1px"}} onClick={this.props.flickChange.bind(this, "hot")} ></div>:null}
+                  {this.props.newChannels.length?<div className = "flicknew" style={{ border:this.props.selectedFlick=="new"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"0 1px"}} onClick={this.props.flickChange.bind(this, "new")} ></div>:null}
                 </div>
                 <button className = "keypad" style={{imageRendering:"pixelated", backgroundSize:"cover", width:"30px", height:"30px", margin:"20px 2px 20px 7px"}} onClick={() => {this.setState({showKeypad:!this.state.showKeypad})}} ></button>   
                 <div style={{visibility:this.state.showKeypad?"":"hidden", dispaly:"flex", width:"170px"}}>

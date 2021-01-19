@@ -253,28 +253,35 @@ router
   //related to favorites, more you might like
   //
   var fav = null
-  req.user.getFavoriteChannels()
-  .then((favorites) => {
-    var favs1 = getRandomNoItemsFromArr(favorites, 1)
-    fav = favs1[0]
-    return favs1[0].getHashtags()
-  })
-  .then((hashtags) => {
-    hashtags = hashtags.map((hashtag)=>{return hashtag.tag})
-    var str = hashtags.join(',')
-    var list = "('"+hashtags+"')"
-    list = list.replace(/,/g, "\',\'")
+  if(!req.user){
+    res.json({})
+  }else{
+    req.user.getFavoriteChannels()
+    .then((favorites) => {
+      if(!favorites.length){
+        return res.json([])
+      }
+      var favs1 = getRandomNoItemsFromArr(favorites, 1)
+      fav = favs1[0]
+      return favs1[0].getHashtags()
+    })
+    .then((hashtags) => {
+      hashtags = hashtags.map((hashtag)=>{return hashtag.tag})
+      var str = hashtags.join(',')
+      var list = "('"+hashtags+"')"
+      list = list.replace(/,/g, "\',\'")
 
-    return db.query(`SELECT DISTINCT channels.id, channels.\"name\", channels.\"defaultProgramId\" FROM channels JOIN channelhashtags ON channels.id = channelhashtags.\"channelId\" JOIN hashtags on hashtags.id = channelhashtags.\"hashtagId\" WHERE tag IN ${list} AND NOT channelhashtags.\"channelId\" = ${fav.id}`, { type: QueryTypes.SELECT })
-  })
-  .then((channels) => {
-    var related10 = getRandomNoItemsFromArr(channels, 10)
-    res.status(200).json(related10)
-  })
-  .catch((err) => {
-    console.log(err)
-    res.status(500).json(err);
-  })
+      return db.query(`SELECT DISTINCT channels.id, channels.\"name\", channels.\"defaultProgramId\" FROM channels JOIN channelhashtags ON channels.id = channelhashtags.\"channelId\" JOIN hashtags on hashtags.id = channelhashtags.\"hashtagId\" WHERE tag IN ${list} AND NOT channelhashtags.\"channelId\" = ${fav.id}`, { type: QueryTypes.SELECT })
+    })
+    .then((channels) => {
+      var related10 = getRandomNoItemsFromArr(channels, 10)
+      res.status(200).json(related10)
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).json(err);
+    })
+  }
 })
 
 .get('/related/tag/:tagstring', (req, res, next) => {
@@ -345,32 +352,40 @@ router
   // //
   // //get favorites not random return
   // //
-  req.user.getFavoriteChannels({
-    order: [['id', 'ASC']]
-  })
-  .then((channels) => {
-    res.status(200).json(channels)
-  })
-  .catch((err) => {
-    console.log(err)
-    res.status(500).json(err);
-  })
+  if(!req.user){
+    res.json({})
+  }else{
+    req.user.getFavoriteChannels({
+      order: [['id', 'ASC']]
+    })
+    .then((channels) => {
+      res.status(200).json(channels)
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).json(err);
+    })
+  }
 })
 
 .get('/favorites', (req, res, next) => {
   // //
   // //get channels that user has starred
   // //
-  req.user.getFavoriteChannels()
-  .then(channels => {
-    // console.log(channels)
-    var related10 = getRandomNoItemsFromArr(channels, 10)
-    res.status(200).json(related10)
-  })
-  .catch((err) => {
-    console.log(err)
-    res.status(500).json(err);
-  })
+  if(!req.user){
+    res.json({})
+  }else{
+    req.user.getFavoriteChannels()
+    .then(channels => {
+      // console.log(channels)
+      var related10 = getRandomNoItemsFromArr(channels, 10)
+      res.status(200).json(related10)
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).json(err);
+    })
+  }
 })
 
 .get('/isfavorite/:id', (req, res, next) => {
@@ -379,21 +394,25 @@ router
   // //
   // //get channels that user has starred
   // //
-  req.user.getFavoriteChannels()
-  .then(favorites => {
-    Channel.findByPk(req.params.id)
-    .then((channel) => {
-      var isFavorite = false
-      if(channel){
-        isFavorite = favorites.some((favorite) => {return favorite.id === channel.id})
-      }
-      return res.status(200).json({isFavorite})
+  if(!req.user){
+    res.json({})
+  }else{
+    req.user.getFavoriteChannels()
+    .then(favorites => {
+      Channel.findByPk(req.params.id)
+      .then((channel) => {
+        var isFavorite = false
+        if(channel){
+          isFavorite = favorites.some((favorite) => {return favorite.id === channel.id})
+        }
+        return res.status(200).json({isFavorite})
+      })
     })
-  })
-  .catch((err) => {
-    console.log(err)
-    res.status(500).json(err);
-  })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).json(err);
+    })
+  }
 })
 
 .get('/:id', (req, res, next) => {
@@ -403,7 +422,7 @@ router
   var numViewers = roomVisitors[req.params.id]?(roomVisitors[req.params.id].length+1):1
   Channel.findOne({
     where: {id: req.params.id},
-    include: [{model: User}, {model:Hashtag}, {model:Program, as: 'defaultProgram'}],
+    include: [{model: User}, {model:Hashtag}, {model:Playlist}, {model:Program, as: 'defaultProgram'}],
   })
   .then((channel) => {
     res.status(200).json({channel, numViewers})

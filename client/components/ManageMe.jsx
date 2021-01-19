@@ -89,7 +89,7 @@ export default class ManageMe extends Component {
   }
 
   unfavorite = (id) => {
-    axios.post(`/api/channels/unfavorite/${id}`)
+    axios.post(`/api/channels/favorites/remove/${id}`)
     .then((res) => {
       this.getFavorites()
     })
@@ -113,7 +113,7 @@ export default class ManageMe extends Component {
               <div>Email: {this.state.user.email}</div>
               <div>Member Since: {this.state.user.createdAt}</div>
               <div>{this.state.favorites.map((channel) => {
-                return <div>{channel.name}<img src={channel.thumbnailUrl}></img><button onClick={this.unfavorite().bind(this, id)}></button></div>
+                return <div>{channel.name}<img src={channel.thumbnailUrl}></img><button onClick={this.unfavorite.bind(this, channel.id)}>unfavorite</button></div>
               })}</div>
             </div>
           </div>

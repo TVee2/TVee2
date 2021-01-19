@@ -134,7 +134,9 @@ export default class TV extends Component {
   }
 
   componentWillUnmount() {
-    socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
+    if(this.state.channel){
+      socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
+    }
     socket.off()
   }
 

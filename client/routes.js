@@ -39,15 +39,9 @@ class Routes extends Component {
       })
 
       this.removeCover()
-      Ytplayer.player.unMute()
-      // if (!this.state.dirty && this.videoplayer.unMute) {
-        // , () => {
-      //     console.log('unmute')
-
-      //     // this.toggleMute()
-      //   })
-      // } else if(this.videoplayer.unMute){
-      // }
+      if(Ytplayer.player){
+        Ytplayer.player.unMute()
+      }
 
     }
 
