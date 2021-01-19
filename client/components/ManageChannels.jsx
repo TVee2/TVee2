@@ -44,6 +44,13 @@ export default class ManageChannels extends Component {
       activeTab: channelTabData[0],
       selectedRadio: null,
       selectedChannel:null,
+      disableChannelSelect:false,
+
+      showChannelDescriptionEdit:false,
+      showHashtagEdit:false,
+      showPlaceholderEdit:false,
+      showPlaylistIdEdit:false,
+      showYoutubeChannelIdEdit:false,
     }
 
     this.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -52,6 +59,22 @@ export default class ManageChannels extends Component {
   componentDidMount() {
     this.getChannels()
     this.getPlaylists()
+  }
+
+  toggleShowChannelDescriptionEdit = () => {
+    this.setState({showChannelDescriptionEdit:!this.state.showChannelDescriptionEdit})
+  }
+
+  toggleShowHashtagEdit = () => {
+    this.setState({showHashtagEdit:!this.state.showHashtagEdit})
+  }
+
+  toggleShowPlaceholderEdit = () => {
+    this.setState({showPlaceholderEdit:!this.state.showPlaceholderEdit})   
+  }
+
+  toggleShowPlaylistIdEdit = () => {
+    this.setState({showPlaylistIdEdit:!this.state.showPlaylistIdEdit, showYoutubeChannelIdEdit:!this.state.showYoutubeChannelIdEdit})
   }
 
   handleTabClick = (tab) => {
@@ -185,8 +208,54 @@ export default class ManageChannels extends Component {
     }
   }
 
-  changeDescription = () => {
+  resetForms = () => {
 
+  }
+
+  requestChannelEdit = (obj) => {
+    this.setState({disableChannelSelect:true})
+
+    axios.put(`/api/channel${this.state.selectedChannel.id}`, obj)
+    .then(() => {
+      this.setState({disableChannelSelect:false})
+      this.getChannel(channel.id)
+    }).catch(() => {
+      this.setState({disableChannelSelect:false})
+    })
+  }
+
+  changeDescription = () => {
+    event.preventDefault()
+    var description = document.getElementById("description").value
+    this.requestChannelEdit({description})
+  }
+
+  changeYoutubeChannelId = () => {
+    event.preventDefault()
+    var youtubeChannelId = document.getElementById("changeyoutubechannelid").value
+    this.requestChannelEdit({youtubeChannelId})
+  }
+
+  changePlaylistId = () => {
+    event.preventDefault()
+    var playlistId = document.getElementById("changeplaylistid").value
+    this.requestChannelEdit({playlistId})
+  }
+
+  changeDefaultVidId = () => {
+    event.preventDefault()
+    var defaultVid = document.getElementById("defaultVid").value
+    this.requestChannelEdit({defaultVid})
+  }
+
+  changeHashtags = () => {
+    event.preventDefault()
+    var htag1 = document.getElementById("htag1").value
+    var htag2 = document.getElementById("htag2").value
+    var htag3 = document.getElementById("htag3").value
+    var htag4 = document.getElementById("htag4").value
+    var tags = [htag1, htag2, htag3, htag4]
+    this.requestChannelEdit({hashtags:tags})
   }
 
   radioChange = (e) => {
@@ -259,7 +328,7 @@ export default class ManageChannels extends Component {
         {this.state.activeTab.key=="vedit"?
         <div>
           <div>Select a channel</div>
-          <select id="channel" defaultValue={'DEFAULT'} onChange={this.onChannelChange}>
+          <select disabled={this.state.disableChannelSelect} id="channel" defaultValue={'DEFAULT'} onChange={this.onChannelChange}>
             <option disabled value='DEFAULT'> -- select an option -- </option>
             {this.state.channels.map(ch => {
               return <option value={`${ch.id}`}>{ch.id} - {ch.name}</option>
@@ -268,45 +337,56 @@ export default class ManageChannels extends Component {
           <br/><br/>
         {this.state.selectedChannelId?
         <div>
-        {console.log(channel)}
           {channel?<div>
             <div>CHANNEL INFORMATION</div>
             <div>Address - {channel.id}</div>
             <div>Name - {channel.name}</div>
             <div>Description - {channel.description?channel.description:"none"}</div>
-            <div>Change channel description</div>
-            <form onSubmit={this.changeDescription}>
-              <textarea type="text" id="description" name="description" defaultValue={channel.description}/><br/>
-              <input type="submit" value="submit" />
-            </form>
 
+            <button onClick={this.toggleShowChannelDescriptionEdit}>Edit</button>
+            {this.state.showChannelDescriptionEdit?<div>
+            <div>Change channel description</div>
+              <form onSubmit={this.changeDescription}>
+                <textarea type="text" id="description" name="description" defaultValue={channel.description}/><br/>
+                <input type="submit" value="submit" />
+              </form>
+            </div>:null}
             <div>Seeding currently set to {channel.playlist.youtubeId?"seed by playlist":""}{channel.playlist.youtubeChannelId?"seed by channel":""} and seeding from {channel.playlist.youtubeId?"playlist":""}{channel.playlist.youtubeChannelId?"channel":""} id {channel.playlist.youtubeId?channel.playlist.youtubeId:channel.playlist.youtubeChannelId}</div>
-            <div>Set/Change playlist id (this will replace current id and switch to the playlist seeding scheme)</div>
-            <form onSubmit={this.submitDefaultVid}>
-              <input type="text" id="changeplaylistid" name="changeplaylistid" defaultValue={channel.playlist.youtubeId}/><br/>
-              <input type="submit" value="submit" />
-            </form>
+            <button onClick={this.toggleShowPlaylistIdEdit}>Edit</button>
+            {this.state.showPlaylistIdEdit?<div>
+              <div>Set/Change playlist id (this will replace current id and switch to the playlist seeding scheme)</div>
+              <form onSubmit={this.changePlaylistId}>
+                <input type="text" id="changeplaylistid" name="changeplaylistid" defaultValue={channel.playlist.youtubeId}/><br/>
+                <input type="submit" value="submit" />
+              </form>
+            </div>:null}
+            {this.state.showYoutubeChannelIdEdit?<div>
             <div>Set/Change youtube channel id (this will replace current id and switch to the channel creator seeding scheme)</div>
-            <form onSubmit={this.submitDefaultVid}>
+            <form onSubmit={this.changeYoutubeChannelId}>
               <input type="text" id="changeyoutubechannelid" name="changeyoutubechannelid" defaultValue={channel.playlist.youtubeChannelId}/><br/>
               <input type="submit" value="submit" />
             </form>
-
+            </div>:null}
             <div>Tags - {channel && channel.hashtags && channel.hashtags.length?channel.hashtags.map((h) => {return <div>{h.tag}</div>}):"none"}</div>
-            <div>Edit tags</div>
-            <form onSubmit={this.submitDefaultVid}>
+            <button onClick={this.toggleShowHashtagEdit}>Edit</button>
+            {this.state.showHashtagEdit?<div><div>Edit tags</div>
+            <form onSubmit={this.changeHashtags}>
               <input type="text" id="htag1" name="htag1" defaultValue={channel.hashtags[0]?channel.hashtags[0].tag:""}/><br/>
               <input type="text" id="htag2" name="htag2" defaultValue={channel.hashtags[1]?channel.hashtags[1].tag:""}/><br/>
               <input type="text" id="htag3" name="htag3" defaultValue={channel.hashtags[2]?channel.hashtags[2].tag:""}/><br/>
               <input type="text" id="htag4" name="htag4" defaultValue={channel.hashtags[3]?channel.hashtags[3].tag:""}/><br/>
               <input type="submit" value="submit" />
-            </form>
-            <div>Placeholder Video ID - {channel.defaultProgram?channel.defaultProgram.youtubeId:"none"}</div><br/>
-            <div>Change placeholder video.  If none will default to tvdrop video</div>
-            <form onSubmit={this.submitDefaultVid}>
-              <input type="text" id="defaultVid" name="defaultVid" defaultValue={channel.defaultProgram?channel.defaultProgram.youtubeId:""}/><br/>
-              <input type="submit" value="submit" />
-            </form>
+            </form></div>:null}
+            <br/>
+            <div>Placeholder Video ID - {channel.defaultProgram?channel.defaultProgram.youtubeId:"none"}</div>
+            <button onClick={this.toggleShowPlaceholderEdit}>Edit</button>
+            {this.state.showPlaceholderEdit?<div>
+              <div>Change placeholder video.  If none will default to tvdrop video</div>
+              <form onSubmit={this.changeDefaultVidId}>
+                <input type="text" id="defaultVid" name="defaultVid" defaultValue={channel.defaultProgram?channel.defaultProgram.youtubeId:""}/><br/>
+                <input type="submit" value="submit" />
+              </form>
+            </div>:null}
           </div>:null}
           <div>Youtube specific information will need to be changed on youtube.  Information is updated nightly.</div>
           <br/><br/>

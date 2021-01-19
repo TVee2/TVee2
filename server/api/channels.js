@@ -211,26 +211,6 @@ router
   res.json({message: "initialized channel"})
 })
 
-.delete('/:id', (req, res, next) => {
-  Channel.findOne({
-    where: {id: req.params.id}
-  })
-  .then((channel) => {
-    if (channel) {
-      return channel.destroy()
-    } else {
-      throw new Error('No channel found with matching id.')
-    }
-  })
-  .then((channels) => {
-    res.status(200).json(channels)
-  })
-  .catch((err) => {
-    console.log(err)
-    res.status(500).json(err);
-  })
-})
-
 .get('/new', (req, res, next) => {
   //get channels by created at descending, maybe that have been around for at least a day
   Channel.findAll({
@@ -240,6 +220,7 @@ router
   .then((channels) => {
     var related10 = getRandomNoItemsFromArr(channels, 10)
     res.status(200).json(related10)
+    return
   })
   .catch((err) => {
     console.log(err)
@@ -259,13 +240,16 @@ router
     req.user.getFavoriteChannels()
     .then((favorites) => {
       if(!favorites.length){
-        return res.json([])
+        return Promise.reject([])
       }
       var favs1 = getRandomNoItemsFromArr(favorites, 1)
       fav = favs1[0]
       return favs1[0].getHashtags()
     })
     .then((hashtags) => {
+      if(!hashtags.length){
+        return Promise.reject([])
+      }
       hashtags = hashtags.map((hashtag)=>{return hashtag.tag})
       var str = hashtags.join(',')
       var list = "('"+hashtags+"')"
@@ -276,10 +260,15 @@ router
     .then((channels) => {
       var related10 = getRandomNoItemsFromArr(channels, 10)
       res.status(200).json(related10)
+      return
     })
     .catch((err) => {
-      console.log(err)
-      res.status(500).json(err);
+      if(err.length==0){
+        res.json(err)
+      }else{
+        console.log(err)
+        res.status(500).json(err);
+      }
     })
   }
 })
@@ -426,6 +415,47 @@ router
   })
   .then((channel) => {
     res.status(200).json({channel, numViewers})
+  })
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err);
+  })
+})
+
+.put('/:id', (req, res, next) => {
+  // //
+  // //get single channel
+  // //
+  Channel.findByPk(req.params.id)
+  .then((channel) => {
+    Playlist.findByPk(channel.playlistId)
+    .then((playlist) => {
+      var {description, defaultVid, playlistId, youtubeChannelId, hashtags} = req.body
+      playlist.update({ youtubeId:playlistId, youtubeChannelId })
+      channel.update({ description, defaultVid, hashtags })
+    })
+    res.status(200).json({channel, numViewers})
+  })
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err);
+  })
+})
+
+.delete('/:id', (req, res, next) => {
+  Channel.findOne({
+    where: {id: req.params.id}
+  })
+  .then((channel) => {
+    if (channel) {
+      return channel.destroy()
+    } else {
+      throw new Error('No channel found with matching id.')
+    }
+  })
+  .then((channels) => {
+    res.status(200).json(channels)
+    return
   })
   .catch((err) => {
     console.log(err)
