@@ -163,6 +163,9 @@ router
     var playlist = await updateOrUploadPlaylists(playlistId, req.user)
     var channel = await Channel.create({name, description, thumbnailUrl:playlist.thumbnailUrl, userId:req.user.id})
     var hashtags = hashtags.filter((h) => h)
+    if(hashtags.some((h)=>{return h.length>15})){
+      return res.status(400).json(new Error("hashtag greater than 15 chars"))
+    }
     if(hashtags.length){
       var hasharr = hashtags.map((htag) => {return {tag:htag}})
       var hashtags = await Promise.all(hasharr.map((h)=>Hashtag.findOrCreate({where:h}).then((arr)=>arr[0])))

@@ -59,7 +59,9 @@ export default class ManageChannels extends Component {
   getChannels = () => {
     axios.get('/api/channels/editable')
    .then((ret) => {
-      this.setState({channels:ret.data})
+      this.setState({channels:ret.data, selectedChannelId:ret.data[0].id}, () => {
+        this.getChannelSchedule(this.state.selectedChannelId)
+      })
     })
   }
 
@@ -116,6 +118,7 @@ export default class ManageChannels extends Component {
     var htag2 = document.getElementById("htag2").value
     var htag3 = document.getElementById("htag3").value
     var htag4 = document.getElementById("htag4").value
+
     var hashtags = [htag1, htag2, htag3, htag4]
 
     if(name.length==0 || playlistId.length==0){
@@ -126,6 +129,8 @@ export default class ManageChannels extends Component {
       this.setState({channelSubmitMessage:"name can only be alphanumeric characters and underscore"})
     }else if(description.length > 1000){
       this.setState({channelSubmitMessage:"description cannot be more than 1000 characters"})
+    }else if(htag1.length>15 || htag2.length>15 || htag3.length>15 || htag4.length>15){
+      this.setState({channelSubmitMessage:"hashtags cannot be more than 15 characters"})
     }else{
       this.setState({channelSubmitMessage:"working..."})
       axios.post('/api/channels', {name, description, defaultVideoId, playlistId, hashtags})
@@ -156,6 +161,20 @@ export default class ManageChannels extends Component {
       document.getElementById("defaultVid").value = ""
       this.setState({loadingMessage:""})
     })
+  }
+
+  deleteChannel = (id) => {
+    var r = confirm("Are you sure you want to delete this channel?");
+    if (r == true) {
+      axios.delete(`/api/channels/${id}`)
+      .then((res) => {
+        this.getChannels()
+      })
+    }
+  }
+
+  changeDescription = () => {
+
   }
 
   render() {
@@ -206,6 +225,10 @@ export default class ManageChannels extends Component {
             <label>Looping Playlist Youtube ID:</label>
             <input type="text" id="playlistid" name="playlistid"/><br/><br/>
             <input type="submit" value="submit" />
+            <br/>
+            <label>OR Youtube Channel Id:</label>
+            <input type="text" id="playlistid" name="playlistid"/><br/><br/>
+            <input type="submit" value="submit" />
           </form>
           <div style={{color:"red"}}>{this.state.channelSubmitMessage}</div>
           <br />
@@ -229,13 +252,29 @@ export default class ManageChannels extends Component {
             <div>Address - {channel.id}</div>
             <div>Name - {channel.name}</div>
             <div>Description - {channel.description?channel.description:"none"}</div>
+            <div>Tags - {channel.hashtags.length?channel.hashtags.map((h) => {return <div>{h.tag}</div>}):"none"}</div>
             <div>Youtube Playlist ID - {channel.playlist?channel.playlist.youtubeId:"none"}</div>
             <div>Youtube Title - {channel.playlist?channel.playlist.title:"none"}</div>
             <div>Default Video ID - {channel.defaultProgram?channel.defaultProgram.youtubeId:"none"}</div><br/>
           </div>:null}
           <br/><br/>
+          <div>DELETE THIS CHANNEL <button onClick={this.deleteChannel}>DELETE</button></div>
           <div>EDIT CHANNEL INFORMATION</div>
+          <div>Reseed segments<button>Go</button></div>
           <div>Change looping playlist (first upload a playlist)</div>
+          <div>Change playlist id</div>
+          <form onSubmit={this.submitDefaultVid}>
+            <input type="text" id="changeplaylistid" name="changeplaylistid"/><br/>
+            <input type="submit" value="submit" />
+          </form>
+          <div>Edit tags</div>
+          <form onSubmit={this.submitDefaultVid}>
+            <input type="text" id="htag1" name="htag1"/><br/>
+            <input type="text" id="htag2" name="htag2"/><br/>
+            <input type="text" id="htag3" name="htag3"/><br/>
+            <input type="text" id="htag4" name="htag4"/><br/>
+            <input type="submit" value="submit" />
+          </form>
           <div>Select a playlist</div>
           <select id="playlist" defaultValue={'DEFAULT'} value={this.state.selectedPlaylistId} onChange={this.onPlaylistChange}>
             <option disabled value='DEFAULT'> -- select an option -- </option>
@@ -245,6 +284,11 @@ export default class ManageChannels extends Component {
           </select>
           <button onClick={this.setChannelPlaylist}>Submit</button>
           <br/><br/>
+          <div>Change channel description</div>
+          <form onSubmit={this.changeDescription}>
+            <textarea type="text" id="description" name="description"/><br/>
+            <input type="submit" value="submit" />
+          </form>
           <div>Change placeholder video.  If none will default to tvdrop video</div>
           <form onSubmit={this.submitDefaultVid}>
             <input type="text" id="defaultVid" name="defaultVid"/><br/>

@@ -46,17 +46,26 @@ export default class ManageMe extends Component {
       activeTab: meTabData[0],
       user:{},
       showPlippiBar: false,
+      favorites:[]
     }
   }
 
   componentDidMount() {
     this.getMe()
+    this.getFavorites()
   }
 
   getMe = () => {
     axios.get('/auth/me/detailed')
     .then((res) => {
       this.setState({user:res.data})
+    })
+  }
+
+  getFavorites = () => {
+    axios.get('/api/channels/favorites')
+    .then((res) => {
+      this.setState({favorites:res.data})
     })
   }
 
@@ -79,6 +88,13 @@ export default class ManageMe extends Component {
     })
   }
 
+  unfavorite = (id) => {
+    axios.post(`/api/channels/unfavorite/${id}`)
+    .then((res) => {
+      this.getFavorites()
+    })
+  }
+
   render() {
     return (
       <div>
@@ -96,12 +112,14 @@ export default class ManageMe extends Component {
               <div>Username: {this.state.user.username}</div>
               <div>Email: {this.state.user.email}</div>
               <div>Member Since: {this.state.user.createdAt}</div>
+              <div>{this.state.favorites.map((channel) => {
+                return <div>{channel.name}<img src={channel.thumbnailUrl}></img><button onClick={this.unfavorite().bind(this, id)}></button></div>
+              })}</div>
             </div>
           </div>
           :null}
           {this.state.activeTab.key=="createpix"?<CreatePix navRelay={this.goToListTab}/>:null}
           {this.state.activeTab.key=="listpix"?<ListPix navRelay={this.goToCreateTab}/>:null}
-          {this.state.activeTab.key=="payment"?<div>payment</div>:null}
         </Provider>
       </div>
     )
