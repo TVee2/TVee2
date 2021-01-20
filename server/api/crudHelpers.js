@@ -238,28 +238,28 @@ module.exports.uploadOrUpdateChannelPlaylist = async (youtubeChannelId, playlist
   }
 }
 
-// module.exports.uploadProgram = async (youtubeId, user) => {
-//   const yvid = await youtube.videos.list({
-//     part: 'status, contentDetails, snippet',
-//     id: youtubeId
-//   });
+module.exports.uploadProgram = async (youtubeId, user) => {
+  const yvid = await youtube.videos.list({
+    part: 'status, contentDetails, snippet',
+    id: youtubeId
+  });
 
-//   var item = yvid.data.items[0]
-//   if(!item){
-//     throw new Error("Video doesnt exist or is set to private")
-//   }
+  var item = yvid.data.items[0]
+  if(!item){
+    throw new Error("Video doesnt exist or is set to private")
+  }
 
-//   var embeddable = item.status.embeddable
-//   if(!embeddable){
-//     return res.json({err:"Not embeddable or set to private"});
-//   }
-//   try{
-//     var duration = parseDuration(item)
-//     var title = item.snippet.title
-//     var thumbnailUrl = item.snippet.thumbnails.default.url
-//     var program = await Program.create({title, duration, youtubeId, thumbnailUrl, userId:user.id})
-//     return program
-//   }catch(err){
-//     throw new Error(err)
-//   }
-// }
+  var embeddable = item.status.embeddable
+  if(!embeddable){
+    return res.json({err:"Not embeddable or set to private"});
+  }
+  try{
+    var duration = parseDuration(item)
+    var title = item.snippet.title
+    var thumbnailUrl = item.snippet.thumbnails.default.url
+    var program = await Program.create({title, duration, youtubeId, thumbnailUrl, userId:user.id})
+    return program
+  }catch(err){
+    throw new Error(err)
+  }
+}

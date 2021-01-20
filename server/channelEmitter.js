@@ -8,7 +8,7 @@ module.exports = (channel, io)=>{
       var srctag = Math.floor(new Date().valueOf()/1000)
       Segment.findByPk(channel.id + '' + srctag, {include: [{model:Program}, {model:Channel}]})
       .then((segment)=>{
-        if(segment.channel.active){
+        if(segment && segment.channel.active){
           io.emit(channel.id, segment)
         }
       })

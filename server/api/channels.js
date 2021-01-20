@@ -430,24 +430,51 @@ router
   })
 })
 
-.put('/:id', (req, res, next) => {
+.put('/:id', async (req, res, next) => {
   // //
   // //get single channel
   // //
-  Channel.findByPk(req.params.id)
-  .then((channel) => {
-    Playlist.findByPk(channel.playlistId)
-    .then((playlist) => {
-      var {description, defaultVid, playlistId, youtubeChannelId, hashtags} = req.body
-      playlist.update({ youtubeId:playlistId, youtubeChannelId })
-      channel.update({ description, defaultVid, hashtags })
-    })
-    res.status(200).json({channel, numViewers})
-  })
-  .catch((err) => {
+  var hashtags = req.body.hashtags 
+  if(hashtags){
+    hashtags = req.body.hashtags.filter((h) => h)
+    if(hashtags.some((h)=>{return h.length>15})){
+      return res.status(400).json(new Error("hashtag greater than 15 chars"))
+    }
+    if(hashtags.length){
+      var hasharr = hashtags.map((htag) => {return {tag:htag}})
+      hashtags = await Promise.all(hasharr.map((h)=>Hashtag.findOrCreate({where:h}).then((arr)=>arr[0])))
+    }
+  }
+  var playlistId
+  var youtubeChannelId
+  if(req.body.playlistId){
+    playlistId = req.body.playlistId
+    youtubeChannelId = ""
+  }else if(req.body.youtubeChannelId){
+    playlistId=""
+    youtubeChannelId = req.body.youtubeChannelId
+  }
+  var defaultVideoId = req.body.defaultVid
+  var channel = await Channel.findByPk(req.params.id)
+  var playlist = await Playlist.findByPk(channel.playlistId)
+  var {description} = req.body
+  try{
+    if(playlistId || youtubeChannelId){
+      await playlist.update({ youtubeId:playlistId, youtubeChannelId:youtubeChannelId })
+    }
+    await channel.update({ description })
+    if(defaultVideoId){
+      var program = await uploadProgram(defaultVideoId, req.user)
+      await channel.setDefaultProgram(program)
+    }
+    if(hashtags && hashtags.length){
+      await channel.setHashtags(hashtags)
+    }
+    res.status(200).json({channel})
+  }catch(err){
     console.log(err)
     res.status(500).json(err);
-  })
+  }
 })
 
 .delete('/:id', (req, res, next) => {

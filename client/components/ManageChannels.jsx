@@ -95,7 +95,29 @@ export default class ManageChannels extends Component {
   getChannel = (id) => {
     axios.get(`/api/channels/${id}`)
    .then((ret) => {
-      this.setState({selectedChannel:ret.data.channel})
+      var channel = ret.data.channel
+      this.setState({selectedChannel:channel}, () => {      
+        document.getElementById("channelname")?document.getElementById("channelname").value=channel.name:null
+        document.getElementById("channeldescription")?document.getElementById("channeldescription").value=channel.description:null
+        document.getElementById("defaultvideoid")?document.getElementById("defaultvideoid").value=channel.program.youtubeId:null
+        document.getElementById("playlistid")?document.getElementById("playlistid").value=channel.playlist.playlistId:null
+        document.getElementById("youtubeChannelId")?document.getElementById("youtubeChannelId").value=channel.playlist.youtubeChannelId:null
+        if(document.getElementById("htag1")){
+          channel.hashtags[0]?document.getElementById("htag1").value = channel.hashtags[0].tag:document.getElementById("htag2").value = ""
+        }
+        if(document.getElementById("htag2")){
+          channel.hashtags[1]?document.getElementById("htag2").value = channel.hashtags[1].tag:document.getElementById("htag2").value = ""
+        }
+
+        if(document.getElementById("htag3")){
+          channel.hashtags[2]?document.getElementById("htag3").value = channel.hashtags[2].tag:document.getElementById("htag2").value = ""
+        }
+
+        if(document.getElementById("htag4")){
+          channel.hashtags[3]?document.getElementById("htag4").value = channel.hashtags[3].tag:document.getElementById("htag2").value = ""
+        }
+      })
+
     })  
   }
 
@@ -242,7 +264,7 @@ export default class ManageChannels extends Component {
   requestChannelEdit = (obj) => {
     this.setState({disableChannelSelect:true})
 
-    axios.put(`/api/channel${this.state.selectedChannel.id}`, obj)
+    axios.put(`/api/channels/${this.state.selectedChannel.id}`, obj)
     .then(() => {
       this.setState({disableChannelSelect:false})
       this.getChannel(this.state.selectedChannel.id)
