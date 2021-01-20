@@ -82,7 +82,7 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
 
   if(lastTimeslot && lastTimeslot.program && lastTimeslot.program.youtubeId){
     timecounter = Math.floor(parseInt(lastTimeslot.endtime)/1000)
-    var matchIndex = indexOfMatch(items, (item)=>{return lastTimeslot.program.youtubeId == item.youtubeId})
+    var matchIndex = indexOfMatch(item_arr, (item)=>{return lastTimeslot.program.youtubeId == item.program.youtubeId})
     j = matchIndex===-1?0:matchIndex
     if(j==item_arr.length-1){
       j=0

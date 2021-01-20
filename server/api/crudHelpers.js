@@ -8,7 +8,6 @@ const auth = new google.auth.GoogleAuth({
 google.options({auth});
 
 parseDuration = (item) => {
-  console.log(item)
   var str = item.contentDetails.duration
   let n = str.length;
   let duration = 0;

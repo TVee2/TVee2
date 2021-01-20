@@ -162,7 +162,7 @@ router
   try{
     var playlist
     if(youtubeChannelId){
-      playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, req.user, 3*60*60)
+      playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, req.user, 4*60*60)
     }else if(playlistId){
       playlist = await uploadOrUpdatePlaylist(playlistId, null, req.user)
     }
