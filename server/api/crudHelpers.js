@@ -8,6 +8,7 @@ const auth = new google.auth.GoogleAuth({
 google.options({auth});
 
 parseDuration = (item) => {
+  console.log(item)
   var str = item.contentDetails.duration
   let n = str.length;
   let duration = 0;
@@ -41,17 +42,12 @@ parseDuration = (item) => {
 
 var buildPlaylistItems = async(items, playlist_instance) => {
   for(var j = 0;j<items.length;j++){
-    var yid = items[j].snippet.resourceId.videoId
-    var position = parseInt(items[j].snippet.position)
-    const yvid = await youtube.videos.list({
-      part: 'status, contentDetails, snippet, player',
-      id: yid
-    });
-    if(yvid.data.items.length==0){
-      console.log("unable to obtain item, private or restricted")
+    var item = items[j].vid
+    if(!item){
       continue
     }
-    var item = yvid.data.items[0]
+    var position = parseInt(items[j].snippet.position)
+
     var embedHtml = item.player.embedHtml
     var matchwidth = "width=\""
     var matchlength = "height=\""
@@ -132,8 +128,22 @@ buildPlaylistAndGetItems = async (playlistId, user, seedDuration) => {
   var cumulative_duration = 0
 
   while(parseInt(totalResults)>thumbedResults){
+    var items_new_meta = []
+    for(var i = 0;i<items_meta.items.length;i++){
+      var yid = items_meta.items[i].snippet.resourceId.videoId
+      const yvid = await youtube.videos.list({
+        part: 'status, contentDetails, snippet, player',
+        id: yid
+      });
+      if(yvid.data.items.length==0){
+        console.log("unable to obtain item, private or restricted")
+        continue
+      }
+      items_meta.items[i].vid = yvid.data.items[0]
+    }
+
     if(seedDuration){
-      add = items_meta.items.filter((item)=>{cumulative_duration = cumulative_duration + parseDuration(item); return cumulative_duration < seedDuration})
+      add = items_meta.items.filter((item)=>{cumulative_duration = cumulative_duration + parseDuration(item.vid); return cumulative_duration < seedDuration})
     }else{
       add = items_meta.items
     }
@@ -214,7 +224,7 @@ module.exports.uploadOrUpdateChannelPlaylist = async (youtubeChannelId, playlist
         part: 'status, contentDetails, snippet',
         id: youtubeChannelId
       })
-      var channel_item = playlist_meta.data.items[0]
+      var channel_item = channel_meta.data.items[0]
       if(!channel_item){
         throw new Error("channel may be set to private")
       }

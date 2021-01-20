@@ -6,7 +6,7 @@ const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders
 const {Op} = require("sequelize");
 const roomVisitors = require('../socket/index.js').roomVisitors()
 
-const {uploadProgram, updateOrUploadPlaylists} = require('./crudHelpers')
+const {uploadProgram, uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist} = require('./crudHelpers')
 
 module.exports = router
 
@@ -162,7 +162,7 @@ router
   try{
     var playlist
     if(youtubeChannelId){
-      playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, user, 3*60*60)
+      playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, req.user, 3*60*60)
     }else if(playlistId){
       playlist = await uploadOrUpdatePlaylist(playlistId, null, req.user)
     }

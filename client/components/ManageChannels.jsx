@@ -167,8 +167,13 @@ export default class ManageChannels extends Component {
     var name = document.getElementById("channelname").value
     var description = document.getElementById("channeldescription").value
     var defaultVideoId = document.getElementById("defaultvideoid").value
-    var playlistId = document.getElementById("playlistid").value
-    var youtubeChannelId = document.getElementById("youtubeChannelId").value
+
+    var ispl = !!document.getElementById("playlistid")
+    var isyci = !!document.getElementById("youtubeChannelId")
+
+    var playlistId = ispl?document.getElementById("playlistid").value:null
+    var youtubeChannelId = isyci?document.getElementById("youtubeChannelId").value:null
+
 
     var htag1 = document.getElementById("htag1").value
     var htag2 = document.getElementById("htag2").value
@@ -177,7 +182,7 @@ export default class ManageChannels extends Component {
 
     var hashtags = [htag1, htag2, htag3, htag4]
 
-    if(name.length==0 || (playlistId.length==0&&youtubeChannelId.length==0)){
+    if(name.length==0 || (playlistId && playlistId.length==0) || (youtubeChannelId && youtubeChannelId.length==0)){
       this.setState({channelSubmitMessage:"name and playlistid or youtubeChannelId are required"})
     }else if(name.length > 7){
       this.setState({channelSubmitMessage:"name cannot be more than 7 characters"})
@@ -195,8 +200,8 @@ export default class ManageChannels extends Component {
         document.getElementById("channelname").value=""
         document.getElementById("channeldescription").value=""
         document.getElementById("defaultvideoid").value=""
-        document.getElementById("playlistid").value=""
-        document.getElementById("youtubeChannelId").value=""
+        ispl?document.getElementById("playlistid").value="":null
+        isyci?document.getElementById("youtubeChannelId").value="":null
         document.getElementById("htag1").value = ""
         document.getElementById("htag2").value = ""
         document.getElementById("htag3").value = ""
@@ -337,7 +342,7 @@ export default class ManageChannels extends Component {
             </div>:null}
             {this.state.selectedRadio=="channelcreator"?<div>
               <label>Youtube Channel Id:</label>
-              <input type="text" id="playlistid" name="playlistid"/>
+              <input type="text" id="youtubeChannelId" name="youtubeChannelId"/>
             </div>:null}
             <br/><br/>
             <input disabled={!this.state.selectedRadio} type="submit" value="submit" />
