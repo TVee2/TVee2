@@ -161,8 +161,7 @@ module.exports.uploadOrUpdatePlaylist = async (playlistYoutubeId, playlistInstan
   var playlistId
   try{
     if(!playlistYoutubeId && !playlistInstanceId){
-      console.log("no parameters given")
-      return
+      throw new Error("no parameters given")
     }
     if(playlistInstanceId){
       playlist_instance = await Playlist.findByPk(playlistInstanceId) 
