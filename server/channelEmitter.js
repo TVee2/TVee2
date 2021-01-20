@@ -6,9 +6,11 @@ module.exports = (channel, io)=>{
     '* * * * * *',
     function() {
       var srctag = Math.floor(new Date().valueOf()/1000)
-      Segment.findByPk(channel.id + '' + srctag, {include: [{model:Program}]})
+      Segment.findByPk(channel.id + '' + srctag, {include: [{model:Program}, {model:Channel}]})
       .then((segment)=>{
-        io.emit(channel.id, segment)
+        if(segment.channel.active){
+          io.emit(channel.id, segment)
+        }
       })
     },
     null,

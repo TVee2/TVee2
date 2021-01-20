@@ -62,19 +62,19 @@ export default class ManageChannels extends Component {
   }
 
   toggleShowChannelDescriptionEdit = () => {
-    this.setState({showChannelDescriptionEdit:!this.state.showChannelDescriptionEdit})
+    this.setState({showHashtagEdit:false, showChannelDescriptionEdit:!this.state.showChannelDescriptionEdit, showPlaceholderEdit:false, showPlaylistIdEdit:false, showYoutubeChannelIdEdit:false})
   }
 
   toggleShowHashtagEdit = () => {
-    this.setState({showHashtagEdit:!this.state.showHashtagEdit})
+    this.setState({showHashtagEdit:!this.state.showHashtagEdit, showChannelDescriptionEdit:false, showPlaceholderEdit:false, showPlaylistIdEdit:false, showYoutubeChannelIdEdit:false})
   }
 
   toggleShowPlaceholderEdit = () => {
-    this.setState({showPlaceholderEdit:!this.state.showPlaceholderEdit})   
+    this.setState({showHashtagEdit:false, showChannelDescriptionEdit:false, showPlaceholderEdit:!this.state.showPlaceholderEdit, showPlaylistIdEdit:false, showYoutubeChannelIdEdit:false})   
   }
 
   toggleShowPlaylistIdEdit = () => {
-    this.setState({showPlaylistIdEdit:!this.state.showPlaylistIdEdit, showYoutubeChannelIdEdit:!this.state.showYoutubeChannelIdEdit})
+    this.setState({showHashtagEdit:false, showChannelDescriptionEdit:false, showPlaylistIdEdit:!this.state.showPlaylistIdEdit, showPlaceholderEdit:false, showYoutubeChannelIdEdit:!this.state.showYoutubeChannelIdEdit})
   }
 
   handleTabClick = (tab) => {
@@ -142,12 +142,33 @@ export default class ManageChannels extends Component {
     }
   }
 
+  channelDeactivate = () => {
+    this.setState({disableChannelSelect:true})
+
+    axios.put('/api/channels/deactivate/${this.state.selectedChannel.id}')
+    .then((channel) => {
+      this.setState({disableChannelSelect:false})
+      this.getChannel(this.state.selectedChannel.id)
+    })
+  }
+
+  channelActivate = () => {
+    this.setState({disableChannelSelect:true})
+
+    axios.put('/api/channels/activate/${this.state.selectedChannel.id}')
+    .then((channel) => {
+      this.setState({disableChannelSelect:false})
+      this.getChannel(this.state.selectedChannel.id)
+    })
+  }
+
   channelSubmit = (e) => {
     e.preventDefault()
     var name = document.getElementById("channelname").value
     var description = document.getElementById("channeldescription").value
     var defaultVideoId = document.getElementById("defaultvideoid").value
     var playlistId = document.getElementById("playlistid").value
+    var youtubeChannelId = document.getElementById("youtubeChannelId").value
 
     var htag1 = document.getElementById("htag1").value
     var htag2 = document.getElementById("htag2").value
@@ -156,8 +177,8 @@ export default class ManageChannels extends Component {
 
     var hashtags = [htag1, htag2, htag3, htag4]
 
-    if(name.length==0 || playlistId.length==0){
-      this.setState({channelSubmitMessage:"name and playlistid are required"})
+    if(name.length==0 || (playlistId.length==0&&youtubeChannelId.length==0)){
+      this.setState({channelSubmitMessage:"name and playlistid or youtubeChannelId are required"})
     }else if(name.length > 7){
       this.setState({channelSubmitMessage:"name cannot be more than 7 characters"})
     }else if(!name.match(/^\w+$/)){
@@ -168,13 +189,14 @@ export default class ManageChannels extends Component {
       this.setState({channelSubmitMessage:"hashtags cannot be more than 15 characters"})
     }else{
       this.setState({channelSubmitMessage:"working..."})
-      axios.post('/api/channels', {name, description, defaultVideoId, playlistId, hashtags})
+      axios.post('/api/channels', {name, description, defaultVideoId, youtubeChannelId, playlistId, hashtags})
       .then(() => {
         this.setState({channelSubmitMessage:""})
         document.getElementById("channelname").value=""
         document.getElementById("channeldescription").value=""
         document.getElementById("defaultvideoid").value=""
         document.getElementById("playlistid").value=""
+        document.getElementById("youtubeChannelId").value=""
         document.getElementById("htag1").value = ""
         document.getElementById("htag2").value = ""
         document.getElementById("htag3").value = ""
@@ -218,7 +240,7 @@ export default class ManageChannels extends Component {
     axios.put(`/api/channel${this.state.selectedChannel.id}`, obj)
     .then(() => {
       this.setState({disableChannelSelect:false})
-      this.getChannel(channel.id)
+      this.getChannel(this.state.selectedChannel.id)
     }).catch(() => {
       this.setState({disableChannelSelect:false})
     })
@@ -388,12 +410,16 @@ export default class ManageChannels extends Component {
               </form>
             </div>:null}
           </div>:null}
-          <div>Youtube specific information will need to be changed on youtube.  Information is updated nightly.</div>
+          <br/>
+          <div>Note: Youtube specific information will need to be changed on youtube.  Information is updated nightly.</div>
           <br/><br/>
-          <div>INACTIVATE CHANNEL <button onClick={this.deleteChannel}>GO</button></div>
+          {this.state.selectedChannel && this.state.selectedChannel.active?
+          <div>DEACTIVATE CHANNEL <button onClick={this.channelDeactivate}>SUBMIT</button></div>:
+          <div>ACTIVATE CHANNEL <button onClick={this.channelActivate}>SUBMIT</button></div>
+          }
           <div>DELETE THIS CHANNEL <button onClick={this.deleteChannel}>DELETE</button></div>
           <div>DELETE FUTURE TIMESLOTS AND RESEED WITH CURRENT PLAYLIST
-            <button>Go</button>
+            <button>SUBMIT</button>
             (if playlist id changed this will delete all future timeslots and seed new timeslots from updated playlist, otherwise schedule will update nightly)
           </div>
           <br/><br/>

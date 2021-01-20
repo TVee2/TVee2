@@ -144,7 +144,7 @@ router
 })
 
 .post('/', async (req, res, next) => {
-  var {name, description, defaultVideoId, playlistId, hashtags} = req.body
+  var {name, description, defaultVideoId, playlistId, youtubeChannelId, hashtags} = req.body
 
   if(name.length>7){
     return res.status(400).json(new Error("name length too long"))
@@ -160,7 +160,15 @@ router
   }
 
   try{
-    var playlist = await updateOrUploadPlaylists(playlistId, req.user)
+    var playlist
+    if(youtubeChannelId){
+      playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, user, 3*60*60)
+    }else if(playlistId){
+      playlist = await uploadOrUpdatePlaylist(playlistId, null, req.user)
+    }
+    if(!playlist){
+      throw Error("seeding playlist id should be supplied, playlist is null")
+    }
     var channel = await Channel.create({name, description, thumbnailUrl:playlist.thumbnailUrl, userId:req.user.id})
     var hashtags = hashtags.filter((h) => h)
     if(hashtags.some((h)=>{return h.length>15})){

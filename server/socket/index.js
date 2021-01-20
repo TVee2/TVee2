@@ -5,7 +5,7 @@ const {Op} = require('sequelize')
 
 const turnOnChannelEmitter = require('../channelEmitter')
 const {seedNext24HrTimeslots, seedNext2hrSegments, verifyAndUpdatePlaylists} = require('../scheduleSeeders')
-const {updateOrUploadPlaylists} = require('../api/crudHelpers')
+const {uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist} = require('../api/crudHelpers')
 
 var seedAllChannels = async ()=>{
   var channels = await Channel.findAll()
@@ -21,16 +21,23 @@ module.exports.roomVisitors = () => {
   return roomVisitors
 }
 
-var updateChannelPlaylists = () => {
-  Channel.findAll({include:{model:User}})
+var updateChannelPlaylists = async () => {
+  Channel.findAll({include:[{model:User}, {model:Playlist}]})
   .then((channels) => {
     channels.forEach((channel)=>{
-      updateOrUploadPlaylists(null, channel.user, channel.playlistId)
+      if(channel.playlist && channel.playlist.youtubeId){
+        uploadOrUpdatePlaylist(null, channel.playlistId, channel.user)
+        .then((pl) => {console.log("updated " + pl.id)})
+      }else if(channel.playlist && channel.playlist.youtubeChannelId){
+        uploadOrUpdateChannelPlaylist(null, channel.playlistId, channel.user, 3*60*60)
+        .then((pl) => {console.log("updated " + pl.id)})
+      }
     })
   })
 }
 
 module.exports.startSeeding = io => {
+  // updateChannelPlaylists()
   io.on('connection', socket => {
     socket.on('roomenter', (data) => {
       //data should maybe be room enter, room leave
