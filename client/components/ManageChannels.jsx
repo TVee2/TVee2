@@ -139,7 +139,7 @@ export default class ManageChannels extends Component {
   }
 
   getPlaylists = () => {
-    axios.get(`/api/playlist`)
+    axios.get(`/api/playlists`)
     .then((ret) => {
       this.setState({playlists:ret.data})
     })

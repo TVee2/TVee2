@@ -16,6 +16,9 @@ const User = db.define('user', {
   admin:{
     type:Sequelize.BOOLEAN
   },
+  superAdmin:{
+    type:Sequelize.BOOLEAN
+  },
   password: {
     type: Sequelize.STRING,
     // Making `.password` act like a func hides it when serializing to JSON.
@@ -23,6 +26,9 @@ const User = db.define('user', {
     get() {
       return () => this.getDataValue('password')
     }
+  },
+  locked: {
+    type:Sequelize.BOOLEAN
   },
   color:{
     type:Sequelize.STRING,

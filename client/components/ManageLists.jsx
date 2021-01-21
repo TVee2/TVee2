@@ -46,7 +46,7 @@ export default class ManageLists extends Component {
   }
 
   getPlaylists = (setplId) => {
-    axios.get(`/api/playlist`)
+    axios.get(`/api/playlists`)
     .then((ret) => {
       var playlists = ret.data
       var defaultId = playlists.length?playlists[0].id:null
@@ -61,7 +61,7 @@ export default class ManageLists extends Component {
     e.preventDefault()
     var playlistId = document.getElementById("playlistId").value
     this.setState({loading:true})
-    axios.post(`/api/playlist/ytplaylist/${playlistId}`)
+    axios.post(`/api/playlists/ytplaylist/${playlistId}`)
     .then((ret) => {
       this.getPlaylists(playlistId)
       this.setState({loading:false, activeTab:playlistTabData[0]})

@@ -4,6 +4,15 @@ const colors = require('../colors.js')
 module.exports = require('express')
   .Router()
 
+  .get('/all', (req, res, next)=>{
+    Pix.findAll({
+      order: [['createdAt', 'DESC']],
+    })
+    .then((items)=>{
+      res.status(200).json(items)
+    })
+  })
+
   .get('/colors', (req, res, next)=>{
     res.status(200).json(colors)
   })
@@ -118,21 +127,24 @@ module.exports = require('express')
 
   .delete('/:id', (req, res, next) => {
     Pix.findOne({
-      where: {id: req.params.id},
+      where: {id: req.params.id}
     })
-    .then(pix => {
-      return pix.destroy()
+    .then((pix) => {
+      if(!req.user.admin || pix.userId != req.user.id){
+        throw new Error("forbidden")
+      }
+      if (pix) {
+        return pix.destroy()
+      } else {
+        throw new Error('No pix found with matching id.')
+      }
     })
-    .then(() => {
-      return Pix.findAll({
-        order: [['id', 'DESC']],
-        where: {userId: req.user.id},
-      })
-    })
-    .then(pixs => {
-      res.status(200).json(pixs)
+    .then((ret) => {
+      res.status(200).json(ret)
+      return
     })
     .catch((err) => {
-      res.status(500).send(err)
+      console.log(err)
+      res.status(500).json(err);
     })
   })

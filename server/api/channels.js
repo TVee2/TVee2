@@ -57,6 +57,15 @@ router
   })
 })
 
+.get('/all', (req, res, next)=>{
+  Channel.findAll({
+    order: [['createdAt', 'DESC']],
+  })
+  .then((items)=>{
+    res.status(200).json(items)
+  })
+})
+
 .get('/editable', (req, res, next) => {
   Channel.findAll({
     where:{userId:req.user.id},
@@ -482,6 +491,9 @@ router
     where: {id: req.params.id}
   })
   .then((channel) => {
+    if(!req.user.admin || channel.userId != req.user.id){
+      throw new Error("forbidden")
+    }
     if (channel) {
       return channel.destroy()
     } else {
@@ -495,5 +507,31 @@ router
   .catch((err) => {
     console.log(err)
     res.status(500).json(err);
+  })
+})
+
+.put('/activate/:id', (req, res, next)=>{
+  Channel.findOne({
+    where: {id: req.params.id}
+  })
+  .then((channel) => {
+    channel.active = true
+    return channel.save()
+  })
+  .then(() => {
+    res.send('OK')
+  })
+})
+
+.put('/deactivate/:id', (req, res, next)=>{
+  Channel.findOne({
+    where: {id: req.params.id}
+  })
+  .then((channel) => {
+    channel.active = false
+    return channel.save()
+  })
+  .then(() => {
+    res.send('OK')
   })
 })

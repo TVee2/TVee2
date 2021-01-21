@@ -6,7 +6,7 @@ router.use('/comments', require('./comments'))
 router.use('/programs', require('./program'))
 router.use('/timeslots', require('./timeslots'))
 router.use('/channels', require('./channels'))
-router.use('/playlist', require('./playlist'))
+router.use('/playlists', require('./playlist'))
 router.use('/pix', require('./pix'))
 
 router.use((req, res, next) => {

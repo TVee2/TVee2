@@ -5,8 +5,9 @@ import {Link} from 'react-router-dom'
 import {logout} from '../store'
 import BackgroundColor from './BackgroundColor'
 
-const Navbar = ({handleClick, isLoggedIn}) => (
+const Navbar = ({handleClick, isLoggedIn, isAdmin}) => (
   <div id="topBarContainer" style={{height:"123px", position:"absolute", zIndex:"11", backgroundColor:"white", width:"100%"}}>
+  {console.log(isAdmin)}
     <BackgroundColor/>
     <h1>TeeVeeDrop</h1>
     <nav>
@@ -16,6 +17,7 @@ const Navbar = ({handleClick, isLoggedIn}) => (
           <Link to="/home">Home</Link>
           <Link to="/tvbrowse">Browse</Link>
           <Link to="/manage">Manage</Link>
+          {isAdmin?<Link to="/admin">ADMIN</Link>:null}
           <a href="#" onClick={handleClick}>
             Logout
           </a>
@@ -35,10 +37,12 @@ const Navbar = ({handleClick, isLoggedIn}) => (
 
 /**
  * CONTAINER
- */
+*/
+
 const mapState = state => {
   return {
-    isLoggedIn: !!state.user.id
+    isLoggedIn: !!state.user.id,
+    isAdmin: !!state.user.admin
   }
 }
 

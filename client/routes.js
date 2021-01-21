@@ -13,6 +13,7 @@ import ManageLists from './components/ManageLists'
 import ManageChannels from './components/ManageChannels'
 import ManageMe from './components/ManageMe'
 import SingleUser from './components/SingleUser'
+import AdminDelete from './components/AdminDelete'
 import obj from './components/VideoPlayer'
 import axios from 'axios'
 var Ytplayer = obj.Ytplayer
@@ -71,7 +72,7 @@ class Routes extends Component {
   }
 
   render() {
-    const {isLoggedIn} = this.props
+    const {isLoggedIn, isAdmin} = this.props
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
@@ -97,6 +98,12 @@ class Routes extends Component {
         />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
+        {isLoggedIn && isAdmin? (
+          <Route path="/admin" render={(props) => (
+              <AdminDelete {...props} user={this.props.user}/>
+            )}
+          />
+        ):null}
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
@@ -118,11 +125,13 @@ class Routes extends Component {
 /**
  * CONTAINER
  */
+
 const mapState = state => {
   return {
     // Being 'logged in' for our purposes will be defined has having a state.user that has a truthy id.
     // Otherwise, state.user will be an empty object, and state.user.id will be falsey
     isLoggedIn: !!state.user.id,
+    isAdmin: !!state.user.admin,
     user: state.user
   }
 }

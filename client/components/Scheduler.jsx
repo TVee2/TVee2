@@ -42,7 +42,7 @@ export default class Scheduler extends Component {
   }
 
   getMyPlaylistItems = () => {
-    axios.get('/api/playlist/items')
+    axios.get('/api/playlists/items')
     .then((ret) => {
       this.setState({videos:ret.data})
     })

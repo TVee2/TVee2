@@ -93,7 +93,6 @@ class PixBlock extends React.Component {
 }
 
 const mapState = (state) => ({
-  color: state.color.selected
 });
 
 const mapDispatch = (dispatch) => {

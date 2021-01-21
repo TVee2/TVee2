@@ -4,6 +4,16 @@ module.exports = router
 const {Op} = require('sequelize')
 
 router
+
+.get('/all', (req, res, next)=>{
+  Timeslot.findAll({
+    order: [['createdAt', 'DESC']],
+  })
+  .then((items)=>{
+    res.status(200).json(items)
+  })
+})
+
 .get('/:channelId', (req, res, next) => {
   var channelId = req.params.channelId
   var timezone_diff = parseInt(req.query.offset) - new Date().getTimezoneOffset()
@@ -163,5 +173,29 @@ router
 
     io.emit(upload_time, `theres been an error`)
     res.status(500).send(err)
+  })
+})
+
+.delete('/:id', (req, res, next) => {
+  Timeslot.findOne({
+    where: {id: req.params.id}
+  })
+  .then((timeslot) => {
+    if(!req.user.admin || timeslot.userId != req.user.id){
+      throw new Error("forbidden")
+    }
+    if (timeslot) {
+      return timeslot.destroy()
+    } else {
+      throw new Error('No timeslot found with matching id.')
+    }
+  })
+  .then((ret) => {
+    res.status(200).json(ret)
+    return
+  })
+  .catch((err) => {
+    console.log(err)
+    res.status(500).json(err);
   })
 })

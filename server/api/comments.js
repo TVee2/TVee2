@@ -21,6 +21,16 @@ router
   })
 })
 
+.get('/all', (req, res, next)=>{
+  Post.findAll({
+    order: [['createdAt', 'DESC']],
+  })
+  .then((items)=>{
+    res.status(200).json(items)
+  })
+})
+
+
 .post('/', (req, res, next) => {
   const user = req.user
   Comment.create(req.body)
@@ -64,16 +74,21 @@ router
     where: {id: req.params.id}
   })
   .then((post) => {
+    if(!req.user.admin || post.userId != req.user.id){
+      throw new Error("forbidden")
+    }
     if (post) {
       return post.destroy()
     } else {
-      throw new Error('No comment found with matching id.')
+      throw new Error('No post found with matching id.')
     }
   })
-  .then((comments) => {
-    res.status(202).json(comments)
+  .then((ret) => {
+    res.status(200).json(ret)
+    return
   })
   .catch((err) => {
+    console.log(err)
     res.status(500).json(err);
   })
 })
