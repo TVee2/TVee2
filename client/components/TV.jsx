@@ -431,9 +431,9 @@ console.log(channelArr, obj, nextIndex, selector)
             comments={this.state.comments}
             channelId={this.props.match.params.channelId}
           />
-          <div style={{position:"absolute", display:"flex", zIndex:"5", margin:"0 25px", top:this.state.height=="360"?"710px":"585px"}}>
+          <div style={{position:"absolute", width:"100%", maxWidth:"640px", display:window.innerWidth<700?"":"flex", zIndex:"5", margin:window.innerWidth<700?"0":"0 25px", top:this.state.height=="360"?"710px":"585px"}}>
             {this.state.segment && this.state.segment.program?
-              <div style={{margin:"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:"316px"}}>
+              <div style={{margin:"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
                 <div>Now Playing:</div>
                 <div>{this.state.segment.program.title}</div>
                 <img src={this.state.segment.program.thumbnailUrl}></img>
@@ -441,7 +441,7 @@ console.log(channelArr, obj, nextIndex, selector)
               </div>
             :null}
             {this.state.channel?
-              <div style={{margin:"0 0 0 4px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"magenta", width:"316px"}}>
+              <div style={{margin:window.innerWidth<700?"0":"0 0 0 4px", maxWidth:"640px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"magenta", width:window.innerWidth<700?"100%":"316px"}}>
                 {this.state.channel?<div style={{margin:"10px"}}>{this.state.channel.name.toUpperCase()}</div>:null}
                 {this.state.channel&&this.state.channel.description?<div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>:null}
                 {this.state.channel&&this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Tags: {this.state.channel.hashtags.map((h) => {return <span style={{border:"solid black 2px"}}> {`${h.tag}`} </span>})}</div>:null}
