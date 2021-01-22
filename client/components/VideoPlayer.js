@@ -313,7 +313,7 @@ class VideoPlayer extends Component {
       height = this.props.segment.program.height
     }
     if(height=="360"){
-      document.getElementById("player").style.top = "-20%"
+      document.getElementById("player").style.top = "-21.4%"
     }else if(height){
       document.getElementById("player").style.top = "-30%"
     }
@@ -360,9 +360,9 @@ class VideoPlayer extends Component {
               controls={false}
             />
           </div>
-          <div style={{backgroundColor:"black", position:"absolute", display:"flex", width:"100%", zIndex:"5", top:height=="360"?"653px":"530px"}}>
+          <div style={{backgroundColor:"black", position:"absolute", display:"flex",  width:"100%", zIndex:"5", top:height=="360"?"650px":"530px"}}>
 
-            <div style={{display:"flex", flexFlow:"wrap"}}>
+            <div style={{display:"flex", flexFlow:"wrap", justifyContent:"space-between", width:"100%"}}>
               <div style={{display:"flex", backgroundColor:"black"}}>
                 {this.props.muted?<button className="videobutton mute" onClick={this.toggleMute}></button>:<button className="videobutton unmute" onClick={this.toggleMute}></button>}
                 <button className="videobutton fullscreen" onClick={this.fullscreen}></button>

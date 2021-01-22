@@ -105,7 +105,7 @@ buildPlaylistAndGetItems = async (playlistId, user, seedDuration) => {
   var playlist = playlist_item.snippet
   var playlist_title = playlist.title
   var playlist_description = playlist.description
-  var thumbnailUrl = playlist.thumbnails.default.url
+  var thumbnailUrl = playlist.thumbnails.default?playlist.thumbnails.default.url:playlist.thumbnails.medium.url
   var playlist_obj = {title:playlist_title, youtubeId:playlistId, description:playlist_description, isYoutubePlaylist:true, thumbnailUrl, userId: user.id}
   
   var items_meta = await youtube.playlistItems.list({
