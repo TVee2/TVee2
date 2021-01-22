@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
+import GoogleSignin from './GoogleSignin'
 
 /**
  * COMPONENT
@@ -35,7 +36,7 @@ const AuthForm = props => {
         </div>
         {error && error.response && <div> {error.response.data} </div>}
       </form>
-      <a href="/auth/google">{displayName} with Google</a>
+      <GoogleSignin/>
     </div>
   )
 }

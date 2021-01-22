@@ -313,31 +313,24 @@ export default class TV extends Component {
 
     if(indexor){
       if(indexor + 1 > channelArr.length - 1){
-        console.log(2)
-
         nextIndex = 0
       }else{
         nextIndex = indexor + 1
       }
     }else{
       var selected = channelArr.findIndex((channel, i) => {return channel.id == parseInt(this.props.match.params.channelId)})
-      console.log(selected)
       if(selected > 0 || selected == 0){
         if(selected + 1 > channelArr.length - 1){
-        console.log(4)
-
           nextIndex = 0
         }else{
           nextIndex = selected + 1
         }
       }else{
-        console.log(6)
         nextIndex = 0
       }
     }
     var obj = {}
     obj[key] = nextIndex
-console.log(channelArr, obj, nextIndex, selector)
     this.setState(obj)
 
     this.changeChannel(channelArr[nextIndex].id)
@@ -380,7 +373,7 @@ console.log(channelArr, obj, nextIndex, selector)
     }
     return (
       <div>
-        {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"115px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
+        {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"72px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
         <div>
           <VideoPlayer
             channel={this.state.channel}
@@ -431,7 +424,7 @@ console.log(channelArr, obj, nextIndex, selector)
             comments={this.state.comments}
             channelId={this.props.match.params.channelId}
           />
-          <div style={{position:"absolute", width:"100%", maxWidth:"640px", display:window.innerWidth<700?"":"flex", zIndex:"5", margin:window.innerWidth<700?"0":"0 25px", top:this.state.height=="360"?"710px":"585px"}}>
+          <div style={{position:"absolute", width:"100%", maxWidth:"640px", display:window.innerWidth<700?"":"flex", zIndex:"5", margin:window.innerWidth<700?"0":"0 25px", top:this.state.height=="360"?"710px":"535px"}}>
             {this.state.segment && this.state.segment.program?
               <div style={{margin:"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
                 <div>Now Playing:</div>

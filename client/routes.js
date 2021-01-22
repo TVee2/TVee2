@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {withRouter, Route, Switch} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {Login, Signup, Home} from './components'
+import LoginSignup from './components/LoginSignup'
 import TV from './components/TV'
 import Scheduler from './components/Scheduler'
 import Entrance from './components/Entrance'
@@ -96,8 +97,7 @@ class Routes extends Component {
             <ChannelBrowse channels={this.state.chtimeslots} getChannels={this.getChannelsWTimeslots}/>
           )}
         />
-        <Route path="/login" component={Login} />
-        <Route path="/signup" component={Signup} />
+        <Route path="/login" component={LoginSignup} />
         {isLoggedIn && isAdmin? (
           <Route path="/admin" render={(props) => (
               <AdminDelete {...props} user={this.props.user}/>
@@ -116,7 +116,7 @@ class Routes extends Component {
         {/* Displays our Login component as a fallback */}
         {isLoggedIn? (
            <Route component={Home} />
-        ):<Route component={Login} />}
+        ):<Route component={LoginSignup} />}
       </Switch>
     )
   }

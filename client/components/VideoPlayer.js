@@ -319,7 +319,7 @@ class VideoPlayer extends Component {
     }
 
     return (
-      <div style={{top:"-22px", margin:window.innerWidth<700?"0":"0 25px", width:this.props.vidWidth?this.props.vidWidth:"640px", height:"700px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
+      <div style={{top:"-73px", margin:window.innerWidth<700?"0":"0 25px", width:this.props.vidWidth?this.props.vidWidth:"640px", height:"700px", display:"inline-block", position:"absolute", backgroundColor:"black"}}>
           {this.props.showChannelId?
             <div style={{position:"absolute", color:this.props.flickColor, zIndex:"2", fontSize:"64px", top:"175px", left:"25px"}}>
               {this.props.match.params.channelId}

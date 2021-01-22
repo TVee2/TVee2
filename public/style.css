@@ -9,6 +9,53 @@ a {
   text-decoration: none;
 }
 
+.headerButton {
+  height:40px;
+  width:40px;
+  background-color: white;
+  background-size: cover;
+  display:inline-block;
+  margin: 14px 4px;
+  border-radius:5px;
+  image-rendering: pixelated;
+}
+
+.logoword{
+  width:118px;
+  height:40px;
+  background-color: white;
+  background-size: cover;
+  display:inline-block;
+  margin: 14px 4px;
+  border-radius:5px;
+  image-rendering: pixelated;
+  background-image: url('./icons/logoword.png')
+}
+
+.home{
+  background-image: url('./icons/logoicon.png')
+}
+
+.logout{
+  background-image: url('./icons/logoutico.png')
+}
+
+.login{
+  background-image: url('./icons/login.png')
+}
+
+.browse{
+  background-image: url('./icons/browse.png')
+}
+
+.manage{
+  background-image: url('./icons/manage.png')
+}
+
+.admin{
+  background-image: url('./icons/admin.png')
+}
+
 label {
   display: block;
 }
