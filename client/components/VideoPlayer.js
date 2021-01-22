@@ -313,8 +313,12 @@ class VideoPlayer extends Component {
       height = this.props.segment.program.height
     }
     if(height=="360"){
+      document.getElementById("static").style.height = "480px"
+      document.getElementById("static").style.top = "58.6%"
       document.getElementById("player").style.top = "-21.4%"
     }else if(height){
+      document.getElementById("static").style.height = "360px"
+      document.getElementById("static").style.top = "50%"
       document.getElementById("player").style.top = "-30%"
     }
 
@@ -326,7 +330,7 @@ class VideoPlayer extends Component {
             </div>
           :null}
           <div id="vidcontainer" className="video-container" style={{display:"grid", height:"100%", width:"100%"}}>
-            <img src="/static.gif" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis3, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/static.gif" id="static" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis3, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             {this.props.showCover?<Entrance/>:null}
             <div style={{visibility:vis6, position:"absolute", height:"100%", width:"100%"}}>
               <div id="noclickscreen" style={{height:"100%", width:"100%", position:"absolute", zIndex:"3"}}></div>

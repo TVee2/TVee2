@@ -275,7 +275,7 @@ export default class TV extends Component {
         nextIndex = indexor - 1
       }
     }else{
-      nextIndex = 0  
+      nextIndex = channelArr.length - 1 
     }
 
     var obj = {}
