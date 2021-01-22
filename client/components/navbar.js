@@ -6,7 +6,7 @@ import {logout} from '../store'
 import BackgroundColor from './BackgroundColor'
 
 const Navbar = ({handleClick, isLoggedIn, isAdmin}) => (
-  <div id="topBarContainer" style={{height:"123px", position:"absolute", zIndex:"11", backgroundColor:"white", width:"100%"}}>
+  <div id="topBarContainer" style={{height:"115px", position:"absolute", zIndex:"11", backgroundColor:"white", width:"100%"}}>
   {console.log(isAdmin)}
     <BackgroundColor/>
     <h1>TeeVeeDrop</h1>

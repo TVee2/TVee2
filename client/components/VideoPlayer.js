@@ -332,7 +332,7 @@ class VideoPlayer extends Component {
               <div id="noclickscreen" style={{height:"100%", width:"100%", position:"absolute", zIndex:"3"}}></div>
               <div id="player" style={{position:"absolute", width:"100%", height:"160%", top:"-30%"}}></div>
             </div>
-            <div id="topblinder" style={{backgroundColor:isFullscreen?"":"white", top:"145px", height:"25px", width:"100%", position:"absolute", zIndex:"3"}}></div>
+            <div id="topblinder" style={{backgroundColor:isFullscreen?"":"white", top:"137px", height:"33px", width:"100%", position:"absolute", zIndex:"3"}}></div>
             <div id="botblinder" style={{backgroundColor:isFullscreen?"":"white", height:"320px", width:"100%", top:height=="360"?"660px":"600px", position:"absolute", zIndex:"3"}}></div>
             <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>

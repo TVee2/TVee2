@@ -34,6 +34,9 @@ export default class Scheduler extends Component {
   }
 
   componentDidMount(){
+    window.onresize =  () => {
+      this.forceUpdate()
+    }
     this.getChannels()
   }
 
@@ -154,14 +157,11 @@ export default class Scheduler extends Component {
     .catch((err) => {})
   }
 
-
   render() {
     return (
       <div>
         <ManageHeader/>
-
-
-        <div style={{position:"absolute", left:"135px"}}>
+        <div style={{position:"absolute", top:window.innerWidth<575?"175px":"", left:window.innerWidth<575?"":"130px", margin:"10px"}}>
           <Route path={this.props.match.url + "/lists"} render={(props) => (
               <ManageLists/>
             )}
