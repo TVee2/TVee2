@@ -387,6 +387,20 @@ export default class TV extends Component {
     if(width<1000){
       smallwindow=true
     }
+
+    var botheight
+    if(this.state.height = "360"){
+      if(window.innerWidth<425){
+        botheight = "632px"
+      }else if(window.innerWidth<700){
+        botheight = "620px"
+      }else{
+        botheight = "650px"
+      }
+    }else{
+      botheight = "535px"
+    }
+
     return (
       <div>
         {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"72px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
@@ -442,7 +456,7 @@ export default class TV extends Component {
             comments={this.state.comments}
             channelId={this.props.match.params.channelId}
           />
-          <div style={{position:"absolute", width:"100%", maxWidth:"640px", display:window.innerWidth<700?"":"flex", zIndex:"5", margin:window.innerWidth<700?"0":"0 25px", top:this.state.height=="360"?(window.innerWidth<425?"632px":"620px"):"535px"}}>
+          <div style={{position:"absolute", width:"100%", maxWidth:"640px", display:window.innerWidth<700?"":"flex", zIndex:"5", margin:window.innerWidth<700?"0":"0 25px", top:botheight}}>
             {this.state.segment && this.state.segment.program?
               <div style={{margin:window.innerWidth<700?"0":"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
                 <div>Now Playing:</div>
