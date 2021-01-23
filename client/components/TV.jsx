@@ -52,6 +52,22 @@ export default class TV extends Component {
   }
 
   componentDidMount() {
+    // document.addEventListener("visibilitychange", () => {
+    //   if (document.visibilityState === 'visible') {
+    //     if(isMobile()){
+    //       //get channel
+    //       this.getChannel()
+    //     }
+    //   } else {
+    //     if(isMobile()){
+    //       //turn off socket
+    //       if(this.state.channel){
+    //         socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
+    //       }
+    //       socket.off()
+    //     }
+    //   }
+    // });
     this.getNewChannels()
     this.getAllChannels()
     this.getFavoriteChannels()
@@ -414,6 +430,8 @@ export default class TV extends Component {
             flickColor={this.state.flickColor}
             selectedFlick={this.state.selectedFlick}
             flickChange={this.flickChange}
+            socket={socket}
+            getChannel={this.getChannel}
           />
           <Chat
             smallwindow={smallwindow}

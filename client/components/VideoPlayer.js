@@ -5,6 +5,12 @@ import axios from 'axios'
 
 var Ytplayer = {player:null}
 
+var isMobile = () => {if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+    return true
+  }else{
+    return false
+  }
+}
 
 class VideoPlayer extends Component {
   constructor(props) {
@@ -70,7 +76,6 @@ class VideoPlayer extends Component {
       console.log("default player ready")
       event.target.loadVideoById(this.props.defaultSrc)
     }
-    console.log(this.props.defaultSrc)
     event.target.playVideo();
   }
 
@@ -92,6 +97,26 @@ class VideoPlayer extends Component {
   playvideo = () => {this.videoplayer.playVideo()}
 
   componentDidMount() {
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === 'visible') {
+        if(isMobile()){
+          //get channel
+          console.log("visible HEY")
+          this.channelChangeAppearanceUpdate()
+          this.props.getChannel()
+        }
+      } else {
+        if(isMobile()){
+          //turn off socket
+          console.log("not visible HEY")
+
+          if(this.state.channel){
+            this.props.socket.emit('roomleave', {channelId: this.props.channel.id, userId:this.props.user.id})
+          }
+          this.props.socket.off()
+        }
+      }
+    });
     window['__onGCastApiAvailable'] = (isAvailable) => {
       if (isAvailable) {
         this.setState({castAvailable:true})
