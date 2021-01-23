@@ -389,7 +389,8 @@ export default class TV extends Component {
     }
 
     var botheight
-    if(this.state.height = "360"){
+    if(this.state.height == 360){
+      //height is actually 480
       if(window.innerWidth<425){
         botheight = "632px"
       }else if(window.innerWidth<700){
@@ -398,7 +399,14 @@ export default class TV extends Component {
         botheight = "650px"
       }
     }else{
-      botheight = "535px"
+      //height is 360
+      if(window.innerWidth<425){
+        botheight = "523px"
+      }else if(window.innerWidth<700){
+        botheight = "488px"
+      }else{
+        botheight = "535px"
+      }
     }
 
     return (
