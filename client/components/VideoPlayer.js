@@ -232,7 +232,7 @@ class VideoPlayer extends Component {
     }
   }
 
-  switchPlayer = () => {console.log("switching player"); this.setState({isCasting:!this.state.isCasting})}
+  d = () => {console.log("switching player"); this.setState({isCasting:!this.state.isCasting})}
 
   upChannel= () => {
     this.channelChangeAppearanceUpdate()
@@ -362,7 +362,7 @@ class VideoPlayer extends Component {
               <div id="player" style={{position:"absolute", width:"100%", height:"160%", top:"-30%"}}></div>
             </div>
             <div id="topblinder" style={{backgroundColor:isFullscreen?"":"white", top:"137px", height:"33px", width:"100%", position:"absolute", zIndex:"3"}}></div>
-            <div id="botblinder" style={{backgroundColor:isFullscreen?"":"white", height:"320px", width:"100%", top:height=="360"?"660px":"600px", position:"absolute", zIndex:"3"}}></div>
+            <div id="botblinder" style={{backgroundColor:isFullscreen?"":"white", width:"100%", height:"320px", top:height=="360"?"660px":"600px", position:"absolute", zIndex:"3"}}></div>
             <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_channel.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis8, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
@@ -376,9 +376,9 @@ class VideoPlayer extends Component {
               controls={false}
               disableremoteplayback="true"
             />
-            <div style={{visibility:vis2, position:"absolute", top:"50%", transform: "translateY(-50%)"}}>
+            <div style={{width:"100%", visibility:vis2, position:"absolute", top:"50%", transform: "translateY(-50%)"}}>
               <div id="noclickscreen2" style={{height:"100%", width:"100%", position:"absolute", zIndex:"3"}}></div>
-              <div id="timefiller"></div>
+              <div id="timefiller" style={{width:"100%"}}></div>
             </div>
             <video
               style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis7, position:"absolute", top:"50%", transform: "translateY(-50%)"}}
@@ -395,7 +395,7 @@ class VideoPlayer extends Component {
               <div style={{display:"flex", backgroundColor:"black"}}>
                 {this.props.muted?<button className="videobutton mute" onClick={this.toggleMute}></button>:<button className="videobutton unmute" onClick={this.toggleMute}></button>}
                 <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
-                <CastButton socketError={this.props.socketError} segment={this.props.segment} switchPlayer={this.switchPlayer} progress={this.props.progress} src={this.props.src}/>
+                <CastButton socketError={this.props.socketError} segment={this.props.segment} d={this.d} progress={this.props.progress} src={this.props.src}/>
                 <button className = "videobutton upchannel" style={{imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.upChannel} ></button>
                 <button className = "videobutton downchannel" style={{imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.downChannel} ></button>   
                 <div style={{display:"flex"}}>

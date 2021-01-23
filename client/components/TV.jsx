@@ -442,9 +442,9 @@ export default class TV extends Component {
             comments={this.state.comments}
             channelId={this.props.match.params.channelId}
           />
-          <div style={{position:"absolute", width:"100%", maxWidth:"640px", display:window.innerWidth<700?"":"flex", zIndex:"5", margin:window.innerWidth<700?"0":"0 25px", top:this.state.height=="360"?"650px":"535px"}}>
+          <div style={{position:"absolute", width:"100%", maxWidth:"640px", display:window.innerWidth<700?"":"flex", zIndex:"5", margin:window.innerWidth<700?"0":"0 25px", top:this.state.height=="360"?(window.innerWidth<425?"632px":"620px"):"535px"}}>
             {this.state.segment && this.state.segment.program?
-              <div style={{margin:"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
+              <div style={{margin:window.innerWidth<700?"0":"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
                 <div>Now Playing:</div>
                 <div>{this.state.segment.program.title}</div>
                 <img src={this.state.segment.program.thumbnailUrl}></img>
