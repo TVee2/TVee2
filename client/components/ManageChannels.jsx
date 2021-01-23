@@ -466,8 +466,10 @@ export default class ManageChannels extends Component {
             <div style={{width:"200px", height:"100%", display:"inline-block"}}>{`${this.days[new Date().getDay()]}`}
               <div style={{position:"absolute"}}>
               {this.state.timeslots.today.map((timeslot) => {
+                var top = (timeslot.starttime - today.getTime())/60000
+                top<0?top=0:null
                 return (<div
-                  style={{position:"absolute", height:`${(timeslot.endtime-timeslot.starttime)/60000}px`, top:`${(timeslot.starttime - today.getTime())/60000}px`, width:"200px", backgroundColor:timeslot.program.color}}
+                  style={{position:"absolute", height:`${(timeslot.endtime-timeslot.starttime)/60000}px`, top:`${top}px`, width:"200px", backgroundColor:timeslot.program.color}}
                   id={`za${timeslot.id}`}
                   onMouseLeave={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
                   onMouseEnter={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
@@ -487,8 +489,10 @@ export default class ManageChannels extends Component {
             <div style={{width:"200px", height:"100%", display:"inline-block"}}>{`${this.days[new Date().getDay()+1]}`}
               <div style={{position:"absolute"}}>
               {this.state.timeslots.tomorrow.map((timeslot) => {
+                var top = (timeslot.starttime - tomorrow.getTime())/60000
+                top<0?top=0:null
                 return (<div
-                    style={{position:"absolute", height:`${(timeslot.endtime-timeslot.starttime)/60000}px`, top:`${(timeslot.starttime - tomorrow.getTime())/60000}px`, width:"200px", backgroundColor:timeslot.program.color}}
+                    style={{position:"absolute", height:`${(timeslot.endtime-timeslot.starttime)/60000}px`, top:`${top}px`, width:"200px", backgroundColor:timeslot.program.color}}
                     id={`za${timeslot.id}`}
                     onMouseLeave={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
                     onMouseEnter={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
