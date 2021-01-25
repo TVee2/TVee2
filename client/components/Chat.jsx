@@ -55,6 +55,7 @@ export default class App extends React.Component {
   }
 
   handleChatClick = () => {
+    this.props.getComments(this.props.channelId)
     this.setState({isCreateSelected:false, isListSelected:false, isChatSelected:true})
   }
 
@@ -114,7 +115,7 @@ export default class App extends React.Component {
                       <p><span>{tag}</span>: <span>{post.comment.content}</span></p>
                     </div>)
                   }else if(post.pixId){
-                    var tag = post.user.email.split("@")[0]
+                    var tag = post.user.username.toLowerCase()
                     return (<div className="comment-bar" style={{backgroundColor: post.user.color}} key={post.id} id={post.id}>
                       <p><span>{tag}</span>: <div style={{border:"3px double black", display:"inline-flex"}}><PixBlock pix={post.pix} dim={64} adgrab={`comment${post.id}`}/></div></p>
                     </div>)                   
