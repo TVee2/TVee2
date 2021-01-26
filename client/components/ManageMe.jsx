@@ -46,7 +46,8 @@ export default class ManageMe extends Component {
       activeTab: meTabData[0],
       user:{},
       showPlippiBar: false,
-      favorites:[]
+      favorites:[],
+      message:"",
     }
   }
 
@@ -95,6 +96,24 @@ export default class ManageMe extends Component {
     })
   }
 
+  passwordUpdate = () => {
+    var password = document.getElementById("password").value
+    var confirmpassword = document.getElementById("confirmpassword").value
+
+    if(password!==confirmpassword){
+      this.setState({message:"password and confirm password do not match"})
+      return
+    }
+
+    axios.post(`/api/users/resetme`, {password})
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      this.setState({message:err})
+    })
+  }
+
   render() {
     return (
       <div>
@@ -116,6 +135,14 @@ export default class ManageMe extends Component {
                 return <div>{channel.name}<img src={channel.thumbnailUrl}></img><button onClick={this.unfavorite.bind(this, channel.id)}>unfavorite</button></div>
               })}</div>
             </div>
+            <form onSubmit={this.passwordUpdate}>
+              <label htmlFor="password">Youtube ID:</label>
+              <input type="text" id="password" name="password"/><br/>
+              <label htmlFor="confirmpassword">Youtube ID:</label>
+              <input type="text" id="confirmpassword" name="confirmpassword"/><br/>
+              <input type="submit" value="Upadte Password" />
+            </form>
+            <div>{this.state.message}</div>
           </div>
           :null}
           {this.state.activeTab.key=="createpix"?<CreatePix navRelay={this.goToListTab}/>:null}

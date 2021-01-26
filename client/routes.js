@@ -15,6 +15,7 @@ import ManageChannels from './components/ManageChannels'
 import ManageMe from './components/ManageMe'
 import SingleUser from './components/SingleUser'
 import AdminDelete from './components/AdminDelete'
+import ResetPassword from './components/ResetPassword'
 import obj from './components/VideoPlayer'
 import axios from 'axios'
 var Ytplayer = obj.Ytplayer
@@ -88,6 +89,10 @@ class Routes extends Component {
             toggleParentStateMuted = {this.toggleParentStateMuted}
             user={this.props.user}
           />)}
+        />
+        <Route path="/reset/:token" render={(props) => (
+            <ResetPassword {...props}/>
+          )}
         />
         <Route path="/users/:id" render={(props) => (
             <SingleUser {...props} user={this.props.user}/>
