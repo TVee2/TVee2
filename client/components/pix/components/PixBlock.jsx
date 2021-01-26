@@ -77,7 +77,7 @@ class PixBlock extends React.Component {
 
   render(){
     if(!this.props.pix){
-      return <div>No Pix set as profile picture</div>
+      return <span></span>
     }
     var pix=this.props.pix
     var data= pix.img;

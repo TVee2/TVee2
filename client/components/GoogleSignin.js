@@ -11,7 +11,7 @@ class GoogleSignin extends React.Component {
     this.setState({clicked:true})
     history.push('/auth/google')
   }
-      // somehow this logs in as google
+
   render(){
     return (
       <div style={{margin:"15px"}}>

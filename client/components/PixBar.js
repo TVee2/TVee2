@@ -28,7 +28,7 @@ export default class Generic extends Component {
 
   render() {
     if(!this.state.pixList){
-      return
+      return (<div>Create some pix and they will show up down here!</div>)
     }
     return (
       <div>
