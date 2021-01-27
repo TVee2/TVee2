@@ -257,10 +257,6 @@ export default class ManageChannels extends Component {
     }
   }
 
-  resetForms = () => {
-
-  }
-
   requestChannelEdit = (obj) => {
     this.setState({disableChannelSelect:true})
 
@@ -331,6 +327,7 @@ export default class ManageChannels extends Component {
             <li>Channel description must be less than 1000 characters.</li><br/>
             <li>Youtube Video Id is visible in the youtube url when watching a video, the id follows the "v=", for example in
             "https://www.youtube.com/watch?v=Pfm8M3q-XXX" the video id is Pfm8M3q-XXX</li><br/>
+            <li>Make sure playlist is public and all items in playlist are videos, set to public, and accessible in the desired region.</li><br/>
             <li>Playlist youtube id is visibile in the url of the playlist page on youtube or when playing a playlist.  The id follows "list=", for example
             in "https://www.youtube.com/playlist?list=PLnEsh8867eks9qXCyR_vYfVjL3EppXXXX" the id is PLnEsh8867eks9qXCyR_vYfVjL3EppXXXX
             </li><br/>

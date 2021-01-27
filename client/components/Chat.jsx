@@ -98,9 +98,9 @@ export default class App extends React.Component {
       <Provider store={store}>
         <div style={{backgroundColor:"white", zIndex:"10", border: "1px solid black", visibility:visibility?"":"hidden", width:window.innerwidth<300?"95%":"300px", position:"absolute", left:smallwindow?"":"665px", right:smallwindow?"0px":"", display:smallwindow?"block":"inline-block", margin:smallwindow?"0px":"0 30px"}}>
           <div className="chat-navbar">
-            <button className="videobutton chat" onClick={this.handleChatClick}></button>
-            <button className="videobutton createpix" onClick={this.handleCreateClick}></button>
-            <button className="videobutton listpix" onClick={this.handleListClick}></button>
+            <button className="videobutton chat" style={{backgroundColor:this.state.isChatSelected?"papayawhip":"white"}} onClick={this.handleChatClick}></button>
+            <button className="videobutton createpix" style={{backgroundColor:this.state.isCreateSelected?"papayawhip":"white"}} onClick={this.handleCreateClick}></button>
+            <button className="videobutton listpix" style={{backgroundColor:this.state.isListSelected?"papayawhip":"white"}} onClick={this.handleListClick}></button>
           </div>
           {this.state.isChatSelected?<div>
             <div className="comment-container" id="commentcontainer" style={{height:"500px", overflow:"overlay", padding:"10px", backgroundColor:"ivory"}}>
@@ -125,7 +125,8 @@ export default class App extends React.Component {
             </div>
             {this.props.user.id
               ?<div>
-                {this.state.showPlippiBar?<button className="videobutton plippi" onClick={() => {this.setState({showPlippiBar:!this.state.showPlippiBar})}}/>:<button className="videobutton abcchat" onClick={() => {this.setState({showPlippiBar:!this.state.showPlippiBar})}}/>}
+                <button className="videobutton abcchat" style={{backgroundColor:this.state.showPlippiBar?"white":"papayawhip"}} onClick={() => {this.setState({showPlippiBar:!this.state.showPlippiBar})}}/>
+                <button className="videobutton plippi" style={{backgroundColor:this.state.showPlippiBar?"papayawhip":"white"}} onClick={() => {this.setState({showPlippiBar:!this.state.showPlippiBar})}}/>
                 {this.props.user.username.toUpperCase()}:
                 {!this.state.showPlippiBar?<div>
                   <form onSubmit={this.handleSubmit}  disabled={this.state.submitDisabled} className="center" style={{padding:"5px", display:"flex"}}>

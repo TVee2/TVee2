@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import axios from 'axios'
-import ManageHeader from './ManageHeader'
 import CreatePix from './pix/components/CreatePix'
 import {Provider} from 'react-redux'
 import PixBar from './PixBar'

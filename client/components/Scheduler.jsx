@@ -4,7 +4,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import io from 'socket.io-client'
 import {Link} from 'react-router-dom'
-import ManageHeader from './ManageHeader'
 import {withRouter, Route, Switch} from 'react-router-dom'
 import ManageVideos from './ManageVideos'
 import ManageLists from './ManageLists'
@@ -34,9 +33,6 @@ export default class Scheduler extends Component {
   }
 
   componentDidMount(){
-    window.onresize =  () => {
-      this.forceUpdate()
-    }
     this.getChannels()
   }
 
@@ -160,8 +156,7 @@ export default class Scheduler extends Component {
   render() {
     return (
       <div>
-        <ManageHeader/>
-        <div style={{position:"absolute", top:window.innerWidth<575?"175px":"", left:window.innerWidth<575?"":"130px", margin:"10px"}}>
+        <div style={{position:"absolute", margin:"10px"}}>
           <Route path={this.props.match.url + "/lists"} render={(props) => (
               <ManageLists/>
             )}

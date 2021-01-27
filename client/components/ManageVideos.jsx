@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import ManageHeader from './ManageHeader'
 
 export default class ManageVideos extends Component {
   // constructor() {

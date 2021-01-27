@@ -25,6 +25,8 @@ export const me = () => async dispatch => {
   try {
     const res = await axios.get('/auth/me/detailed')
     dispatch(getUser(res.data || defaultUser))
+    // history.push('/home')
+
   } catch (err) {
     console.error(err)
   }

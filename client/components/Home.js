@@ -86,6 +86,9 @@ export default class Home extends Component {
             return this.channelElem(channel)
           })}</div>
        </div>:null}
+       <br/><br/><br/>
+       <p>For trouble, commendables or inquires contact admin@tvee2.com</p>
+       <p>Copyright 2020-2021 TVee2</p>
       </div>
     )
   }

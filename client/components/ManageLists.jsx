@@ -1,10 +1,9 @@
 import React, {Component} from 'react'
-import ManageHeader from './ManageHeader'
 import axios from 'axios'
 
 var playlistTabData = [
   { name: 'View Playlists', key:"view", isActive: false },
-  { name: 'Import Playlist', key:"create", isActive: true },
+  // { name: 'Import Playlist', key:"create", isActive: true },
 ];
 
 class Tabs extends React.Component {
@@ -94,6 +93,9 @@ export default class ManageLists extends Component {
         :null}
         {this.state.activeTab.key=="view"?
           <div>
+            <h3>Playlist items will automatically update nightly to reflect changes to playlist over time.</h3>
+            <h5>So if a video or playlist is removed, added or changed on youtube, the playlist or video will be automatically updated the following night</h5>
+            <h5>If having trouble uploading a playlist or don't see some added items here, make sure playlist is public and all items in playlist are videos, set to public, and accessible in the desired region.</h5>
             {this.state.playlists.length?
               <div>
                 <div>Select a playlist</div>
@@ -104,14 +106,17 @@ export default class ManageLists extends Component {
                   })}
                 </select>
                 <br/><br/>
-                <div>Selected Playlist</div>
+                <h2 style={{textAlign:"left"}}>Selected Playlist</h2>
                 {this.state.playlists.map((playlist, i) => {
                   if(playlist.id != this.state.selectedPlaylistId){
                     return
                   }else{
-                    return <ul>Playlist {i+1} - {playlist.title}{playlist.playlistItems.map((v) => {
-                      return <div><img src={v.thumbnailUrl}></img>{v.title} - {new Date(v.duration * 1000).toISOString().substr(11, 8)}</div>
-                    })}</ul>
+                    return <div>
+                      <div>Youtube Playlist Id - <a href={`https://www.youtube.com/playlist?list=${playlist.youtubeId}`}>{playlist.youtubeId}</a></div>
+                      <ul>Playlist {i+1} - {playlist.title}{playlist.playlistItems.map((v) => {
+                        return <div><img src={v.thumbnailUrl}></img><div><a href={`https://www.youtube.com/watch?v=${v.youtubeId}`}>{`https://www.youtube.com/watch?v=${v.youtubeId}`}</a></div>{v.title} - {new Date(v.duration * 1000).toISOString().substr(11, 8)}</div>
+                      })}</ul>
+                    </div>
                   }
                 })}
               </div>

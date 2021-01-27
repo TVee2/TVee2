@@ -112,7 +112,6 @@ export default class CastButton extends Component {
     }
 
     if(!this.props.socketError && this.state.playerState=="IDLE" && this.state.isConnected && this.remotePlayer.mediaInfo && this.remotePlayer.mediaInfo.contentUrl!==window.location.origin+this.props.src) {
-      console.log("1casting")
       //media is loaded but local is different or null
       this.setState({castdebounce:true}, () => {
         this.castSrc()
@@ -122,8 +121,6 @@ export default class CastButton extends Component {
     if(!this.props.socketError && this.state.playerState=="IDLE" && this.state.isConnected && !this.remotePlayer.mediaInfo && this.props.src && this.props.src!=="no source") {
       //no media loaded, but there is local src
       this.setState({castdebounce:true}, () => {
-      console.log("2casting")
-
         this.castSrc()
       })
     }
