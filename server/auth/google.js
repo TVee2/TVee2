@@ -36,7 +36,7 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
       const firstName = profile.name.givenName
       const lastName = profile.name.familyName
       const fullName = profile.displayName
-      const username = email.split('@')[0]+'.gpix'
+      const username = email.split('@')[0]
 
       User.findOrCreate({
         where: {googleId},

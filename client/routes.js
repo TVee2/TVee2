@@ -16,6 +16,7 @@ import ManageMe from './components/ManageMe'
 import SingleUser from './components/SingleUser'
 import AdminDelete from './components/AdminDelete'
 import ResetPassword from './components/ResetPassword'
+import Forgot from './components/Forgot'
 import obj from './components/VideoPlayer'
 import axios from 'axios'
 var Ytplayer = obj.Ytplayer
@@ -45,9 +46,7 @@ class Routes extends Component {
       if(Ytplayer.player){
         Ytplayer.player.unMute()
       }
-
     }
-
     document.addEventListener('click', listener)
   }
 
@@ -92,6 +91,10 @@ class Routes extends Component {
         />
         <Route path="/reset/:token" render={(props) => (
             <ResetPassword {...props}/>
+          )}
+        />
+        <Route path="/forgot" render={(props) => (
+            <Forgot {...props}/>
           )}
         />
         <Route path="/users/:id" render={(props) => (

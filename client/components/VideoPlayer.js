@@ -101,15 +101,12 @@ class VideoPlayer extends Component {
       if (document.visibilityState === 'visible') {
         if(isMobile()){
           //get channel
-          console.log("visible HEY")
           this.channelChangeAppearanceUpdate()
           this.props.getChannel()
         }
       } else {
         if(isMobile()){
           //turn off socket
-          console.log("not visible HEY")
-
           if(this.state.channel){
             this.props.socket.emit('roomleave', {channelId: this.props.channel.id, userId:this.props.user.id})
           }
@@ -420,7 +417,7 @@ class VideoPlayer extends Component {
             </div>
           </div>
           <div style={{width:"100%", backgroundColor:"black"}}></div>
-          {this.state.relatedChannels.length?<div style={{position:"absolute", top:"180px", left:"1000px"}}><div>Related Channels</div>{this.state.relatedChannels.map((channel) => {return this.channelElem(channel)})}</div>:null}
+          {this.props.relatedChannels.length?<div style={{position:"absolute", top:"180px", left:"1000px"}}><div>Related Channels</div>{this.props.relatedChannels.map((channel) => {return this.channelElem(channel)})}</div>:null}
       </div>
     )
   }

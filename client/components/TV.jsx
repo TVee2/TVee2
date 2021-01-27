@@ -47,27 +47,12 @@ export default class TV extends Component {
       selectedNewChannelIndex:null,
       flickColor:"greenyellow",
       selectedFlick: "all",
+      relatedChannels:[],
     }
     this.interval=null
   }
 
   componentDidMount() {
-    // document.addEventListener("visibilitychange", () => {
-    //   if (document.visibilityState === 'visible') {
-    //     if(isMobile()){
-    //       //get channel
-    //       this.getChannel()
-    //     }
-    //   } else {
-    //     if(isMobile()){
-    //       //turn off socket
-    //       if(this.state.channel){
-    //         socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
-    //       }
-    //       socket.off()
-    //     }
-    //   }
-    // });
     this.getNewChannels()
     this.getAllChannels()
     this.getFavoriteChannels()
@@ -105,6 +90,16 @@ export default class TV extends Component {
         this.setState({vidWidth:null})
       }
     });
+  }
+
+  getRelatedChannels = () => {
+    if(!this.state.channel.id){
+      return
+    }
+    axios.get(`/api/channels/related/${this.state.channel.id}`)
+    .then((ret) => {
+      this.setState({relatedChannels:ret.data})
+    })
   }
 
   flickChange = (selector) => {
@@ -175,6 +170,7 @@ export default class TV extends Component {
       if(channel){
         var defaultSrc = channel.defaultProgram?channel.defaultProgram.youtubeId:""
         this.setState({channel, numViewers, noChannel:false, defaultSrc, showChannelId:true}, () => {
+          this.getRelatedChannels()
           this.getCurrentChannelIsFavorite()
           if(this.interval){
             clearTimeout(this.interval)
@@ -454,6 +450,7 @@ export default class TV extends Component {
             flickChange={this.flickChange}
             socket={socket}
             getChannel={this.getChannel}
+            relatedChannels={this.state.relatedChannels}
           />
           <Chat
             smallwindow={smallwindow}

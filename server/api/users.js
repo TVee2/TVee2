@@ -91,7 +91,7 @@ router.get('/', async (req, res, next) => {
     }
   ], function(err) {
     if (err) return next(err);
-    res.redirect('/forgot');
+    res.json({message:"email sent"})
   });
 })
 
