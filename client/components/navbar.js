@@ -41,8 +41,11 @@ class Navbar extends Component {
             {this.props.isLoggedIn ? (
               <div style={{margin:"0 14px"}}>
                 <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton browse" to="/tvbrowse"></NavLink>
-                <div style={{display:"inline-block"}}>
-                  <div className="headerButton manage" style={{backgroundColor:this.state.showManageHamburger?"papayawhip":"white"}} onClick={this.toggleCollapseManageHamburger}></div>
+                <div tabIndex="0"
+                onFocus={() => {this.setState({showManageHamburger:true}) } }
+                onBlur={() => {this.setState({showManageHamburger:false}) } }
+                style={{display:"inline-block", outline:"none"}}>
+                  <div className="headerButton manage" style={{backgroundColor:this.state.showManageHamburger?"papayawhip":"white"}}></div>
                   <div style={{margin:"-13px 8px", width:"100px", visibility:this.state.showManageHamburger?"":"hidden", position:"absolute", backgroundColor:"whitesmoke"}}>
                     <nav>
                       <div>
