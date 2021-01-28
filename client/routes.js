@@ -29,13 +29,11 @@ class Routes extends Component {
   constructor() {
     super()
 
-    this.state = {channels:[], showCover:true, chtimeslots:[], muted:true, dirty:false}
+    this.state = {channels:[], showCover:true, chtimeslots:[], muted:true, dirty:false, page: 1, pages:null}
   }
 
   componentDidMount() {
     this.props.loadInitialData()
-    this.getChannels()
-    this.getChannelsWTimeslots()
 
     var listener = () => {
       this.setState({muted: false, dirty: true}, () => {
@@ -48,20 +46,7 @@ class Routes extends Component {
       }
     }
     document.addEventListener('click', listener)
-  }
-
-  getChannels = () => {
-    axios.get('/api/channels')
-   .then((ret) => {
-      this.setState({channels:ret.data})
-    })
-  }
-
-  getChannelsWTimeslots = () => {
-    axios.get('/api/channels/timeslots')
-   .then((ret) => {
-      this.setState({chtimeslots:ret.data})
-    })
+    this.getChannelsPage()
   }
 
   removeCover = () => {
@@ -72,6 +57,37 @@ class Routes extends Component {
     this.setState({muted: !this.state.muted})
   }
 
+  getNextPage = () => {
+    this.setState({page:this.state.page+1}, () => {
+      this.getChannelsPage()
+    })
+  }
+
+  getFirstPage = () => {
+    this.setState({page:1}, () => {
+      this.getChannelsPage()
+    })
+  }
+
+  getPrevPage = () => {
+    this.setState({page:this.state.page-1}, () => {
+      this.getChannelsPage()
+    })
+  }
+
+  getLastPage = () => {
+    this.setState({page:this.state.pages}, () => {
+      this.getChannelsPage()
+    })
+  }
+
+  getChannelsPage = () => {
+    axios.get(`/api/channels/page/${this.state.page}`)
+    .then((res) => {
+      this.setState({channels:res.data.result, pages:res.data.pages})
+    })
+  }
+
   render() {
     const {isLoggedIn, isAdmin} = this.props
     return (
@@ -80,7 +96,7 @@ class Routes extends Component {
         <Route path="/home" component={Home} />
         <Route path="/entrance" component={Entrance} />
         <Route path="/tv/:channelId" render={(props) => (
-          <TV  {...props} channels={this.state.channels}
+          <TV  {...props}
             muted={this.state.muted}
             dirty={this.state.dirty}
             showCover={this.state.showCover}
@@ -102,7 +118,13 @@ class Routes extends Component {
           )}
         />
         <Route path="/tvbrowse" render={(props) => (
-            <ChannelBrowse channels={this.state.chtimeslots} getChannels={this.getChannelsWTimeslots}/>
+            <ChannelBrowse 
+            channels={this.state.channels}
+            getLastPage={this.getLastPage}
+            getPrevPage={this.getPrevPage}
+            getFirstPage={this.getFirstPage}
+            getNextPage={this.getNextPage}
+            page={this.state.page}/>
           )}
         />
         <Route path="/login" component={LoginSignup} />

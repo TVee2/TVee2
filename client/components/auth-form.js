@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
 import GoogleSignin from './GoogleSignin'
+import {Link} from 'react-router-dom'
 
 /**
  * COMPONENT
@@ -36,6 +37,7 @@ const AuthForm = props => {
         </div>
         {error && error.response && <div> {error.response.data} </div>}
       </form>
+      <Link to="/forgot">Forget your password?</Link>
       <GoogleSignin/>
     </div>
   )

@@ -27,6 +27,16 @@ class Navbar extends Component {
     this.setState({showManageHamburger:!this.state.showManageHamburger})
   }
 
+  onBlurHandler = (e) => {
+    if(!event.currentTarget.contains(event.relatedTarget)){
+      this.setState({showManageHamburger:false})
+    }
+  }
+
+  onFocusHandler = (e) => {
+    this.setState({showManageHamburger:true})
+  }
+
   render() {
     return (
       <div id="topBarContainer" style={{height:"72px", position:"absolute", zIndex:"13", backgroundColor:"white", width:"100%"}}>
@@ -41,9 +51,10 @@ class Navbar extends Component {
             {this.props.isLoggedIn ? (
               <div style={{margin:"0 14px"}}>
                 <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton browse" to="/tvbrowse"></NavLink>
+
                 <div tabIndex="0"
-                onFocus={() => {this.setState({showManageHamburger:true}) } }
-                onBlur={() => {this.setState({showManageHamburger:false}) } }
+                onFocus={this.onFocusHandler}
+                onBlur={this.onBlurHandler}
                 style={{display:"inline-block", outline:"none"}}>
                   <div className="headerButton manage" style={{backgroundColor:this.state.showManageHamburger?"papayawhip":"white"}}></div>
                   <div style={{margin:"-13px 8px", width:"100px", visibility:this.state.showManageHamburger?"":"hidden", position:"absolute", backgroundColor:"whitesmoke"}}>
@@ -63,6 +74,7 @@ class Navbar extends Component {
                     </nav>
                   </div>
                 </div>
+
                 {this.props.isAdmin?<NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton admin" to="/admin"></NavLink>:null}
                 <div style={{display:"inline-block"}}>
                   <a className="headerButton logout" href="#" onClick={this.props.handleClick}></a>

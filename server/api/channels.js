@@ -66,6 +66,38 @@ router
   })
 })
 
+.get('/page/:page', (req, res, next) => {
+  let limit = 2
+  let offset = 0
+  Channel.findAndCountAll({where: {userId: req.user.id}}).then(data => {
+    let page = req.params.page
+    let pages = Math.ceil(data.count / limit)
+    offset = limit * (page - 1)
+    var now = new Date().getTime()
+    Channel.findAll({
+      order: [['id', 'ASC'], [Timeslot, 'starttime', 'ASC']],
+      include: {model:Timeslot, include:{model:Program}, where:{endtime: {[Op.gt]: now}, starttime: {[Op.lt]: now+(1000*60*60*3)}}},
+      limit: limit,
+      offset: offset,
+    })
+    .then(channels => {
+      res
+        .status(200)
+        .json({
+          result: channels,
+          count: data.count,
+          limit: channels.length,
+          page: Number(req.params.page),
+          pages: pages
+        })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).send(err)
+    })
+  })
+})
+
 .get('/editable', (req, res, next) => {
   Channel.findAll({
     where:{userId:req.user.id},
@@ -112,7 +144,6 @@ router
     res.status(200).json({message:"added to favorites"})
   })
   .catch((err) => {
-    console.log(err)
     res.status(500).json(err);
   })
 })

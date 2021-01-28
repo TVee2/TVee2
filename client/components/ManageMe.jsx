@@ -134,10 +134,12 @@ export default class ManageMe extends Component {
                 return <div>{channel.name}<img src={channel.thumbnailUrl}></img><button onClick={this.unfavorite.bind(this, channel.id)}>unfavorite</button></div>
               })}</div>
             </div>
+            <br/><br/>
+            <div>Change your password</div>
             <form onSubmit={this.passwordUpdate}>
-              <label htmlFor="password">Youtube ID:</label>
+              <label htmlFor="password">New Password:</label>
               <input type="text" id="password" name="password"/><br/>
-              <label htmlFor="confirmpassword">Youtube ID:</label>
+              <label htmlFor="confirmpassword">Confirm Password:</label>
               <input type="text" id="confirmpassword" name="confirmpassword"/><br/>
               <input type="submit" value="Upadte Password" />
             </form>

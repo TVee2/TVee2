@@ -3,8 +3,8 @@ import axios from 'axios'
 import {Link} from 'react-router-dom'
 
 export default class ChannelBrowse extends Component {
-  componentDidMount(){
-    this.props.getChannels()
+  constructor(){
+    super()
   }
 
   getNext30 = () => {
@@ -35,9 +35,12 @@ export default class ChannelBrowse extends Component {
     var elem = document.getElementById("scheduleitem0")
     var winwidth = window.innerWidth
     var scaler = winwidth*10 
-
     return (
       <div>
+        <button onClick={this.props.getFirstPage}>First</button>
+        <button onClick={this.props.getPrevPage}>Prev</button>
+        <button onClick={this.props.getNextPage}>Next</button>
+        <button onClick={this.props.getLastPage}>Last</button>
         {this.props.channels.map((channel, i) => {
           return (
             <div>
@@ -48,6 +51,8 @@ export default class ChannelBrowse extends Component {
                 var minutes = time.getMinutes()
                 return (<span style={{position:'absolute', left:`${winwidth*(item.time-now)/(3*60*60*1000)}px`}}>{`${hours}:${minutes}`}</span>)
               })}
+
+
             <div id={`scheduleitem${i}`} style={{backgroundColor:"lightblue", margin:"20px 0", height:"100px", width:"100%"}}>
               {channel.timeslots.map((timeslot, i) => {
                 if(i==0){
@@ -83,6 +88,10 @@ export default class ChannelBrowse extends Component {
           </div>
           )
         })}
+        <button onClick={this.props.getFirstPage}>First</button>
+        <button onClick={this.props.getPrevPage}>Prev</button>
+        <button onClick={this.props.getNextPage}>Next</button>
+        <button onClick={this.props.getLastPage}>Last</button>
       </div>
     )
   }

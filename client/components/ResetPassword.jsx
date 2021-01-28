@@ -1,17 +1,23 @@
 import React, {Component} from 'react'
+import axios from 'axios'
+import history from '../history'
 
 export default class ResetPassword extends Component {
   constructor() {
     super()
 
-    this.state = {user:null, message:""}
+    this.state = {userId:null, message:""}
   }
 
   componentDidMount() {
     axios.get(`/api/users/reset/${this.props.match.params.token}`)
     .then((res) => {
-      this.setState({user:res.data})
+      if(res.data.message){
+        this.setState({message:res.data.message})
+      }
+      this.setState({user:res.data.id})
     })
+    .catch((err) => {console.log(err)})
   }
 
   passwordUpdate = (e) => {
@@ -19,13 +25,13 @@ export default class ResetPassword extends Component {
     var confirmpassword = document.getElementById("confirmpassword").value
 
     if(password!==confirmpassword){
-      this.setState({message:"password and confirm password do not match"})
+      this.setState({message:"Password and confirm password do not match."})
       return
     }
 
     axios.post(`/api/users/reset/${this.props.match.params.token}`, {password})
     .then((res) => {
-      console.log(res)
+      this.setState({message:"Password has been updated!"})
     })
     .catch((err) => {
       this.setState({message:err})
@@ -37,11 +43,11 @@ export default class ResetPassword extends Component {
       <div>
         {this.state.user?
           <form onSubmit={this.passwordUpdate}>
-            <label htmlFor="password">Youtube ID:</label>
-            <input type="text" id="password" name="password"/><br/>
-            <label htmlFor="confirmpassword">Youtube ID:</label>
-            <input type="text" id="confirmpassword" name="confirmpassword"/><br/>
-            <input type="submit" value="Upadte Password" />
+            <label htmlFor="password">New Password</label>
+            <input type="password" id="password" name="password"/><br/>
+            <label htmlFor="confirmpassword">Confirm Password</label>
+            <input type="password" id="confirmpassword" name="confirmpassword"/><br/>
+            <input type="submit" value="Update Password" />
           </form>       
         :null}
         {this.state.message?<div>{this.state.message}</div>:null}
