@@ -67,7 +67,7 @@ router
 })
 
 .get('/page/:page', (req, res, next) => {
-  let limit = 2
+  let limit = 15
   let offset = 0
   Channel.findAndCountAll({where: {userId: req.user.id}}).then(data => {
     let page = req.params.page

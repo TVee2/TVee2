@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import axios from 'axios'
 import {Link} from 'react-router-dom'
+import history from '../history'
 
 export default class ChannelBrowse extends Component {
   constructor(){
@@ -41,10 +42,14 @@ export default class ChannelBrowse extends Component {
         <button onClick={this.props.getPrevPage}>Prev</button>
         <button onClick={this.props.getNextPage}>Next</button>
         <button onClick={this.props.getLastPage}>Last</button>
+        <br/><br/><br/>
         {this.props.channels.map((channel, i) => {
           return (
             <div>
-              <div><Link to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link></div>
+              <div style={{display:"flex"}}>
+                <div style={{margin:"0 8px"}}><Link to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link></div>
+                <button onClick={() => {history.push(`/tv/${channel.id}`)}}>GO TO CHANNEL</button>
+              </div>
               {this.getNext30().map((item) => {
                 var time = new Date(item.time)
                 var hours = time.getHours()
