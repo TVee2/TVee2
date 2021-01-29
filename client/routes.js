@@ -17,6 +17,7 @@ import SingleUser from './components/SingleUser'
 import AdminDelete from './components/AdminDelete'
 import ResetPassword from './components/ResetPassword'
 import Forgot from './components/Forgot'
+import Tutorial from './components/Tutorial'
 import obj from './components/VideoPlayer'
 import axios from 'axios'
 var Ytplayer = obj.Ytplayer
@@ -41,7 +42,7 @@ class Routes extends Component {
       })
 
       this.removeCover()
-      if(Ytplayer.player){
+      if(Ytplayer.playe && Ytplayer.player.unMute){
         Ytplayer.player.unMute()
       }
     }
@@ -125,6 +126,10 @@ class Routes extends Component {
             getFirstPage={this.getFirstPage}
             getNextPage={this.getNextPage}
             page={this.state.page}/>
+          )}
+        />
+        <Route path="/howto" render={(props) => (
+            <Tutorial/>
           )}
         />
         <Route path="/login" component={LoginSignup} />

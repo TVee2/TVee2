@@ -151,42 +151,54 @@ router.get('/', async (req, res, next) => {
 
 
 
-.put('/lock/:id', needsAdmin, async (req, res, next) => {
+.put('/lock/:id', needsSuperAdmin, async (req, res, next) => {
   User.findByPk(req.params.id)
   .then((user) => {
       user.locked = true
       user.save()
+      .then(() => {
+        res.json({message:"ok"})
+      })
   })
 })
 
-.put('/unlock/:id', needsAdmin, async (req, res, next) => {
+.put('/unlock/:id', needsSuperAdmin, async (req, res, next) => {
   User.findByPk(req.params.id)
   .then((user) => {
       user.locked = false
       user.save()
+      .then(() => {
+        res.json({message:"ok"})
+      })
   })
 })
 
 .put('/elevate/:id', needsSuperAdmin, async (req, res, next) => {
   if(!req.user.superAdmin){
-    return res.json({message:"operation disallowed"})
+    return res.json({message:"forbidden"})
   }else{
     User.findByPk(req.params.id)
     .then((user) => {
       user.admin = true
       user.save()
+      .then(() => {
+        res.json({message:"ok"})
+      })
     })
   }
 })
 
 .put('/demote/:id', needsSuperAdmin, async (req, res, next) => {
   if(!req.user.superAdmin){
-    return res.json({message:"operation disallowed"})
+    return res.json({message:"forbidden"})
   }else{
     User.findByPk(req.params.id)
     .then((user) => {
       user.admin = false
       user.save()
+      .then(() => {
+        res.json({message:"ok"})
+      })
     })
   }
 })

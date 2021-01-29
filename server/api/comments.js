@@ -74,7 +74,7 @@ router
     where: {id: req.params.id}
   })
   .then((post) => {
-    if(!req.user.admin || post.userId != req.user.id){
+    if(!req.user.admin && post.userId != req.user.id){
       throw new Error("forbidden")
     }
     if (post) {

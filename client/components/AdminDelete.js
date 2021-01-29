@@ -74,21 +74,21 @@ export default class AdminDelete extends Component {
     })
   }
 
-  deleteChannel = () => {
-    axios.delete(`/api/channels/:${id}`)
+  deleteChannel = (id) => {
+    axios.delete(`/api/channels/${id}`)
     .then((res) => {
       this.getChannels()
     })
   }
 
-  deactivateChannel = () => {
+  deactivateChannel = (id) => {
     axios.post(`/api/channels/deactivate/${id}`)
     .then((res) => {
       this.getChannels()
     })
   }
 
-  activateChannel = () => {
+  activateChannel = (id) => {
     axios.post(`/api/channels/activate/${id}`)
     .then((res) => {
       this.getChannels()
@@ -181,27 +181,28 @@ export default class AdminDelete extends Component {
       <div style={{margin:"25px"}}>
         <h4>Channels</h4>
         {channels.map((channel) => {return <div>{channel.id}{channel.name}
-          {channel.active?<button onClick={this.deactivateChannel} style={{fontSize:"10px"}}>deactivate</button>:<button onClick={this.activateChannel} style={{fontSize:"10px"}}>deactivate</button>}
-          <button onClick={this.deleteChannel} style={{fontSize:"10px"}}>delete</button>
+          {channel.active?<button onClick={this.deactivateChannel.bind(this, channel.id)} style={{fontSize:"10px"}}>deactivate</button>:<button onClick={this.activateChannel.bind(this, channel.id)} style={{fontSize:"10px"}}>activate</button>}
+          <button onClick={this.deleteChannel.bind(this, channel.id)} style={{fontSize:"10px"}}>delete</button>
         </div>})}
         <h4>Users</h4>
         {users.map((user) => {
-          return <div>{user.id}{user.name}
-          {user.locked?<button onClick={this.unlockUser} style={{fontSize:"10px"}}>unlock</button>:<button onClick={this.lockUser} style={{fontSize:"10px"}}>lock</button>}
-          {this.props.user.superAdmin?(user.admin?<button onClick={this.demoteUser} style={{fontSize:"10px"}}>de-elevate</button>:<button onClick={this.promoteUser} style={{fontSize:"10px"}}>elevate</button>):null}
-          <button style={{fontSize:"10px"}} onClick={this.deleteUser}>delete</button></div>
+          return <div>{user.id} - {user.username}
+          {user.locked?<button onClick={this.unlockUser.bind(this, user.id)} style={{fontSize:"10px"}}>unlock</button>:<button onClick={this.lockUser.bind(this, user.id)} style={{fontSize:"10px"}}>lock</button>}
+          {this.props.user.superAdmin?(user.admin?<button onClick={this.demoteUser.bind(this, user.id)} style={{fontSize:"10px"}}>de-elevate</button>:<button onClick={this.promoteUser.bind(this, user.id)} style={{fontSize:"10px"}}>elevate</button>):null}
+          <button style={{fontSize:"10px"}} onClick={this.deleteUser.bind(this, user.id)}>delete</button></div>
         })}
         <h4>Pix</h4>
-        {pix.map((pix) => {return <span>{pix.id}<PixBlock pix={pix} dim={56}/><button onClick={this.deletePix} style={{fontSize:"10px"}}>delete</button></span>})}
+        {pix.map((pix) => {return <span>{pix.id}<PixBlock pix={pix} dim={56}/><button onClick={this.deletePix.bind(this, pix.id)} style={{fontSize:"10px"}}>delete</button></span>})}
         <h4>Comments</h4>
-        {comments.map((comment) => {return <div>{comment.id}<button onClick={this.deleteComment} style={{fontSize:"10px"}}>delete</button></div>})}
+        {comments.map((comment) => {return <div>{comment.id} - {comment.content}<button onClick={this.deleteComment.bind(this, comment.id)} style={{fontSize:"10px"}}>delete</button></div>})}
         <h4>Playlists</h4>
-        {playlists.map((playlist) => {return <div>{playlist.id}{playlist.name}<button onClick={this.deletePlaylist} style={{fontSize:"10px"}}>delete</button></div>})}
+        {playlists.map((playlist) => {return <div>{playlist.id} - {playlist.title}<button onClick={this.deletePlaylist.bind(this, playlist.id)} style={{fontSize:"10px"}}>delete</button></div>})}
         <h4>Programs</h4>
-        {programs.map((program) => {return <span>{program.id}<button onClick={this.deleteProgram} style={{fontSize:"10px"}}>delete</button></span>})}
+        {programs.map((program) => {return <div>{program.id} - {program.title}<button onClick={this.deleteProgram.bind(this, program.id)} style={{fontSize:"10px"}}>delete</button></div>})}
         <h4>Timeslots</h4>
-        {timeslots.map((timeslot) => {return <span>{timeslot.id}<button onClick={this.deleteTimeslot} style={{fontSize:"10px"}}>delete</button></span>})}
       </div>
     )
   }
 }
+
+        // {timeslots.map((timeslot) => {return <span>{timeslot.id}<button onClick={this.deleteTimeslot.bind(this, timeslot.id)} style={{fontSize:"10px"}}>delete</button></span>})}

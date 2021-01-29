@@ -3,7 +3,7 @@ var CronJob = require('cron').CronJob
 const {User, Segment, Schedule, Program, Channel, Timeslot, Playlist, PlaylistItem, ChannelVisitLog} = require('../db/models')
 const {Op} = require('sequelize')
 
-const turnOnChannelEmitter = require('../channelEmitter')
+const { turnOnChannelEmitter } = require('../channelEmitter')
 const {seedNext24HrTimeslots, seedNext2hrSegments, verifyAndUpdatePlaylists} = require('../scheduleSeeders')
 const {uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist} = require('../api/crudHelpers')
 

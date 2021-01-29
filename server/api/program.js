@@ -35,7 +35,7 @@ router.get('/', (req, res) => {
     where: {id: req.params.id}
   })
   .then((program) => {
-    if(!req.user.admin || program.userId != req.user.id){
+    if(!req.user.admin && program.userId != req.user.id){
       throw new Error("forbidden")
     }
     if (program) {

@@ -272,15 +272,7 @@ form div {
 }
 
 .question{
-  height: 20px;
-  width: 20px;
-  position:absolute;
-  background-color:white;
-  right:0px;
-  border-radius: 2px;
   background-image: url('./icons/question.png');
-  background-size: cover;
-  margin:10px;
 }
 
 .extendPage{

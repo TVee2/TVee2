@@ -28,7 +28,7 @@ class Navbar extends Component {
   }
 
   onBlurHandler = (e) => {
-    if(!event.currentTarget.contains(event.relatedTarget)){
+    if(!e.currentTarget.contains(e.relatedTarget)){
       this.setState({showManageHamburger:false})
     }
   }
@@ -62,10 +62,10 @@ class Navbar extends Component {
                       <div>
                         {/* The navbar will show these NavLinks after you log in */}
                         <div style={{margin:"1em"}}>
-                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/lists">Playlists</NavLink>
+                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/channels">Channels</NavLink>
                         </div>
                         <div style={{margin:"1em"}}>
-                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/channels">Channels</NavLink>
+                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/lists">Playlists</NavLink>
                         </div>
                         <div style={{margin:"1em"}}>
                           <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/me">Me</NavLink>
@@ -74,6 +74,7 @@ class Navbar extends Component {
                     </nav>
                   </div>
                 </div>
+                <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton question" to="/howto"></NavLink>
 
                 {this.props.isAdmin?<NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton admin" to="/admin"></NavLink>:null}
                 <div style={{display:"inline-block"}}>

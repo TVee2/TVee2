@@ -181,7 +181,7 @@ router
     where: {id: req.params.id}
   })
   .then((timeslot) => {
-    if(!req.user.admin || timeslot.userId != req.user.id){
+    if(!req.user.admin && timeslot.userId != req.user.id){
       throw new Error("forbidden")
     }
     if (timeslot) {

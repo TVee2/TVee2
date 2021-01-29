@@ -70,7 +70,7 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
   var item_arr = []
   for(var i=0;i<items.length;i++){
     let item = items[i]
-    if(item.embeddable){    
+    if(item.embeddable && parseInt(item.duration) > 25){    
       let {id, title, thumbnailUrl, duration, width, height, youtubeId} = item
       var program = await Program.findOrCreate({where: {title, thumbnailUrl, width, height, duration, youtubeId}})
       if(Array.isArray(program)){
@@ -95,6 +95,10 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
   console.log("channelid", channelId, "playlistarr length", item_arr.length)
 
   while(timecounter < (now+(60*60*24))) {
+    if(!item_arr.length){
+      console.log("no videos in playlist or items are less than 25 seconds")
+      break
+    }
     var {title, thumbnailUrl, duration, youtubeId, position} = item_arr[j].item
     duration = parseInt(duration)
     if((timecounter+duration)>now){

@@ -54,7 +54,7 @@ router.get('/', async (req, res, next) => {
     where: {id: req.params.id}
   })
   .then((playlist) => {
-    if(!req.user.admin || playlist.userId != req.user.id){
+    if(!req.user.admin && playlist.userId != req.user.id){
       throw new Error("forbidden")
     }
     if (playlist) {

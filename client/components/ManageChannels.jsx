@@ -51,6 +51,8 @@ export default class ManageChannels extends Component {
       showPlaceholderEdit:false,
       showPlaylistIdEdit:false,
       showYoutubeChannelIdEdit:false,
+      reseedMessage:"",
+      activateMessage:"",
     }
 
     this.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -86,6 +88,7 @@ export default class ManageChannels extends Component {
    .then((ret) => {
       if(ret.data.length){      
         this.setState({channels:ret.data, selectedChannelId:ret.data[0].id}, () => {
+          this.getChannel(this.state.selectedChannelId)
           this.getChannelSchedule(this.state.selectedChannelId)
         })
       }
@@ -96,10 +99,10 @@ export default class ManageChannels extends Component {
     axios.get(`/api/channels/${id}`)
    .then((ret) => {
       var channel = ret.data.channel
-      this.setState({selectedChannel:channel}, () => {      
+      this.setState({selectedChannel:channel}, () => {
         document.getElementById("channelname")?document.getElementById("channelname").value=channel.name:null
         document.getElementById("channeldescription")?document.getElementById("channeldescription").value=channel.description:null
-        document.getElementById("defaultvideoid")?document.getElementById("defaultvideoid").value=channel.program.youtubeId:null
+        document.getElementById("defaultvideoid")?document.getElementById("defaultvideoid").value=(channel.defaultProgram?channel.defaultProgram.youtubeId:null):null
         document.getElementById("playlistid")?document.getElementById("playlistid").value=channel.playlist.playlistId:null
         document.getElementById("youtubeChannelId")?document.getElementById("youtubeChannelId").value=channel.playlist.youtubeChannelId:null
         if(document.getElementById("htag1")){
@@ -162,26 +165,6 @@ export default class ManageChannels extends Component {
         console.log("succeeded")
       })
     }
-  }
-
-  channelDeactivate = () => {
-    this.setState({disableChannelSelect:true})
-
-    axios.put('/api/channels/deactivate/${this.state.selectedChannel.id}')
-    .then((channel) => {
-      this.setState({disableChannelSelect:false})
-      this.getChannel(this.state.selectedChannel.id)
-    })
-  }
-
-  channelActivate = () => {
-    this.setState({disableChannelSelect:true})
-
-    axios.put('/api/channels/activate/${this.state.selectedChannel.id}')
-    .then((channel) => {
-      this.setState({disableChannelSelect:false})
-      this.getChannel(this.state.selectedChannel.id)
-    })
   }
 
   channelSubmit = (e) => {
@@ -307,6 +290,33 @@ export default class ManageChannels extends Component {
     this.setState({selectedRadio:e.target.value})
   }
 
+  channelRefreshAndReseed = () => {
+    axios.post('/api/channels/refreshandreseed', {channelId:this.state.selectedChannel.id})
+    .then((res) => {
+      this.setState({reseedMessage:"channel has been refreshed"})
+    })
+  }
+
+  channelDeactivate = () => {
+    this.setState({disableChannelSelect:true})
+
+    axios.post(`/api/channels/deactivate/${this.state.selectedChannel.id}`)
+    .then((channel) => {
+      this.setState({disableChannelSelect:false, activateMessage:"channel has been deactivated"})
+      this.getChannel(this.state.selectedChannel.id)
+    })
+  }
+
+  channelActivate = () => {
+    this.setState({disableChannelSelect:true})
+
+    axios.post(`/api/channels/activate/${this.state.selectedChannel.id}`)
+    .then((channel) => {
+      this.setState({disableChannelSelect:false, activateMessage:"channel has been activated"})
+      this.getChannel(this.state.selectedChannel.id)
+    })
+  }
+
   render() {
     var today = new Date()
     var tomorrow = new Date()
@@ -321,7 +331,7 @@ export default class ManageChannels extends Component {
         <h1 style={{textAlign:"left"}}>Manage Channels</h1>
         <Tabs activeTab={this.state.activeTab} changeTab={this.handleTabClick} />
         {this.state.activeTab.key=="create"?
-        <div>
+        <div style={{margin:"30px"}}>
           <ul>
             <li>Channel names must be 7 characters or less and contain only alphanumeric characters.</li><br/>
             <li>Channel description must be less than 1000 characters.</li><br/>
@@ -377,7 +387,7 @@ export default class ManageChannels extends Component {
           <select disabled={this.state.disableChannelSelect} id="channel" defaultValue={'DEFAULT'} onChange={this.onChannelChange}>
             <option disabled value='DEFAULT'> -- select an option -- </option>
             {this.state.channels.map(ch => {
-              return <option value={`${ch.id}`}>{ch.id} - {ch.name}</option>
+              return <option key={`chopt${ch.id}`} value={`${ch.id}`}>{ch.id} - {ch.name}</option>
             })}
           </select>
           <br/><br/>
@@ -413,7 +423,7 @@ export default class ManageChannels extends Component {
               <input type="submit" value="submit" />
             </form>
             </div>:null}
-            <div>Tags - {channel && channel.hashtags && channel.hashtags.length?channel.hashtags.map((h) => {return <div>{h.tag}</div>}):"none"}</div>
+            <div>Tags - {channel && channel.hashtags && channel.hashtags.length?channel.hashtags.map((h) => {return <div key={`hash${h.tag.id}`}>{h.tag}</div>}):"none"}</div>
             <button onClick={this.toggleShowHashtagEdit}>Edit</button>
             {this.state.showHashtagEdit?<div><div>Edit tags</div>
             <form onSubmit={this.changeHashtags}>
@@ -441,9 +451,11 @@ export default class ManageChannels extends Component {
           <div>DEACTIVATE CHANNEL <button onClick={this.channelDeactivate}>SUBMIT</button></div>:
           <div>ACTIVATE CHANNEL <button onClick={this.channelActivate}>SUBMIT</button></div>
           }
+          <div style={{color:"red"}}>{this.state.activateMessage}</div>
           <div>DELETE THIS CHANNEL <button onClick={this.deleteChannel}>DELETE</button></div>
           <div>DELETE FUTURE TIMESLOTS AND RESEED WITH CURRENT PLAYLIST
-            <button>SUBMIT</button>
+            <button onClick={this.channelRefreshAndReseed}>SUBMIT</button>
+            <div style={{color:"red"}}>{this.state.reseedMessage}</div>
             (if playlist id changed this will delete all future timeslots and seed new timeslots from updated playlist, otherwise schedule will update nightly)
           </div>
           <br/><br/>
@@ -451,12 +463,11 @@ export default class ManageChannels extends Component {
 
           <br /><br />
 
-
           <div style={{height:"1440px", width:"600px"}}>
             <div style={{width:"60px", display:"inline-block"}}>
               <div style={{position:"absolute"}}>
                 {Array.from(new Array(48)).map((x, i) => {
-                  return <div style={{position:"absolute", top:`${i*30}px`}}>{`${Math.floor(i/2)}:${(i%2)*30}`}</div>
+                  return <div key={`tsa${i}`} style={{position:"absolute", top:`${i*30}px`}}>{`${Math.floor(i/2)}:${(i%2)*30}`}</div>
                 })}
               </div>
             </div>
@@ -466,6 +477,7 @@ export default class ManageChannels extends Component {
                 var top = (timeslot.starttime - today.getTime())/60000
                 top<0?top=0:null
                 return (<div
+                  key={`tsb${timeslot.id}`}
                   style={{position:"absolute", height:`${(timeslot.endtime-timeslot.starttime)/60000}px`, top:`${top}px`, width:"200px", backgroundColor:timeslot.program.color}}
                   id={`za${timeslot.id}`}
                   onMouseLeave={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
@@ -489,6 +501,7 @@ export default class ManageChannels extends Component {
                 var top = (timeslot.starttime - tomorrow.getTime())/60000
                 top<0?top=0:null
                 return (<div
+                    key={`tsc${timeslot.id}`}
                     style={{position:"absolute", height:`${(timeslot.endtime-timeslot.starttime)/60000}px`, top:`${top}px`, width:"200px", backgroundColor:timeslot.program.color}}
                     id={`za${timeslot.id}`}
                     onMouseLeave={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}
@@ -509,6 +522,11 @@ export default class ManageChannels extends Component {
           </div>
 
           <br /><br />
+          <br /><br />
+          <br /><br />
+          <br /><br />
+          <br /><br />
+
         </div>:null}
         </div>
         :null}

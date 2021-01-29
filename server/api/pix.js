@@ -130,7 +130,7 @@ module.exports = require('express')
       where: {id: req.params.id}
     })
     .then((pix) => {
-      if(!req.user.admin || pix.userId != req.user.id){
+      if(!req.user.admin && pix.userId != req.user.id){
         throw new Error("forbidden")
       }
       if (pix) {

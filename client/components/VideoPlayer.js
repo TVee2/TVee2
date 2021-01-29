@@ -140,20 +140,6 @@ class VideoPlayer extends Component {
     
     this.getRelatedChannels()
 
-    // var listener = () => {
-    //   if (!this.state.dirty && this.videoplayer.unMute) {
-    //     this.props.removeCover()
-    //     this.setState({muted: false, dirty: true}, () => {
-    //       console.log('unmute')
-    //       this.toggleMute()
-    //     })
-    //   } else if(this.videoplayer.unMute){
-    //     document.removeEventListener('click', listener)
-    //   }
-    // }
-
-    // document.addEventListener('click', listener)
-    
     vid.onplay = () => {
       console.log("playing")
       this.setState({playing:true, fill_time:false, init_loading:false})
@@ -169,15 +155,14 @@ class VideoPlayer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(this.state.debounce){return}
-    if(this.state.isCasting){return}
+    if(this.state.debounce){console.log("early return debounce"); return}
+    if(this.state.isCasting){console.log("early return casting"); return}
 
     if(prevProps.socketError && !this.props.socketError){
       this.setState({init_loading:true})
     }
 
     if(this.props.src==="no source" && (!this.state.fill_time || this.state.init_loading && this.props.emitterChannelId == this.props.match.params.channelId)){
-      console.log("no source")
       this.setState({fill_time:true, init_loading:false})
     }
 

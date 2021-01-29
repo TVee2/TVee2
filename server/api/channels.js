@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const {User, Channel, Playlist, Timeslot, Segment, PlaylistItem, Program, Hashtag} = require('../db/models')
 const db = require('../db')
-const turnOnChannelEmitter = require('../channelEmitter')
+const { turnOnChannelEmitter, turnOffChannelEmitter } = require('../channelEmitter')
 const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders')
 const {Op} = require("sequelize");
 const roomVisitors = require('../socket/index.js').roomVisitors()
@@ -42,6 +42,7 @@ router
   Channel.findAll({
     include: [
       {model: User},
+      {model: Hashtag},
       {model: Playlist},
       {model: Program, as: "defaultProgram"},
     ],
@@ -69,12 +70,13 @@ router
 .get('/page/:page', (req, res, next) => {
   let limit = 15
   let offset = 0
-  Channel.findAndCountAll({where: {userId: req.user.id}}).then(data => {
+  Channel.findAndCountAll({where:{active:true}}).then(data => {
     let page = req.params.page
     let pages = Math.ceil(data.count / limit)
     offset = limit * (page - 1)
     var now = new Date().getTime()
     Channel.findAll({
+      where:{active:true},
       order: [['id', 'ASC'], [Timeslot, 'starttime', 'ASC']],
       include: {model:Timeslot, include:{model:Program}, where:{endtime: {[Op.gt]: now}, starttime: {[Op.lt]: now+(1000*60*60*3)}}},
       limit: limit,
@@ -259,6 +261,14 @@ router
   res.json({message: "initialized channel"})
 })
 
+.post('/refreshandreseed', async (req, res, next) => {
+  var {channelId} = req.body
+  await Segment.destroy({where:{channelId}})
+  await Timeslot.destroy({where:{channelId}})
+  await seedNext24HrTimeslots(channelId, true)
+  res.json({message: "channel refreshed"})
+})
+
 .get('/new', (req, res, next) => {
   //get channels by created at descending, maybe that have been around for at least a day
   Channel.findAll({
@@ -426,8 +436,6 @@ router
 })
 
 .get('/isfavorite/:id', (req, res, next) => {
-  res.set('Cache-Control', 'no-store')
-
   // //
   // //get channels that user has starred
   // //
@@ -522,17 +530,18 @@ router
     where: {id: req.params.id}
   })
   .then((channel) => {
-    if(!req.user.admin || channel.userId != req.user.id){
+    if((!req.user.admin && !req.user.superadmin) && channel.userId != req.user.id){
       throw new Error("forbidden")
     }
     if (channel) {
+      turnOffChannelEmitter(channel)
       return channel.destroy()
     } else {
       throw new Error('No channel found with matching id.')
     }
   })
-  .then((channels) => {
-    res.status(200).json(channels)
+  .then((ch) => {
+    res.status(200).json(ch)
     return
   })
   .catch((err) => {
@@ -541,7 +550,7 @@ router
   })
 })
 
-.put('/activate/:id', (req, res, next)=>{
+.post('/activate/:id', (req, res, next)=>{
   Channel.findOne({
     where: {id: req.params.id}
   })
@@ -554,7 +563,7 @@ router
   })
 })
 
-.put('/deactivate/:id', (req, res, next)=>{
+.post('/deactivate/:id', (req, res, next)=>{
   Channel.findOne({
     where: {id: req.params.id}
   })

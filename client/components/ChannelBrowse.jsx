@@ -57,13 +57,14 @@ export default class ChannelBrowse extends Component {
                 return (<span style={{position:'absolute', left:`${winwidth*(item.time-now)/(3*60*60*1000)}px`}}>{`${hours}:${minutes}`}</span>)
               })}
 
-
             <div id={`scheduleitem${i}`} style={{backgroundColor:"lightblue", margin:"20px 0", height:"100px", width:"100%"}}>
               {channel.timeslots.map((timeslot, i) => {
                 if(i==0){
                   var left = winwidth * (timeslot.starttime - now) / (3*60*60*1000)
                   var width = (winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000)) + left
-                  left = 0
+                  if(left<0){
+                    left = 0
+                  }
                 }else{
                   var left = winwidth * (timeslot.starttime - now) / (3*60*60*1000)
                   var width = (winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000))

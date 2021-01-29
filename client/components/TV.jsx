@@ -469,7 +469,11 @@ export default class TV extends Component {
                 <img src={this.state.segment.program.thumbnailUrl}></img>
                 <div><a href={`https://www.youtube.com/watch?v=${this.state.segment.program.youtubeId}`}>{`youtube.com/watch?v=${this.state.segment.program.youtubeId}`}</a></div>
               </div>
-            :null}
+            :
+              <div style={{margin:window.innerWidth<700?"0":"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
+                <div style={{margin:"10px"}}>No current channel programming</div>
+              </div>
+            }
             {this.state.channel?
               <div style={{margin:window.innerWidth<700?"0":"0 0 0 4px", maxWidth:"640px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"magenta", width:window.innerWidth<700?"100%":"316px"}}>
                 {this.state.channel?<div style={{margin:"10px"}}>{this.state.channel.name.toUpperCase()}</div>:null}
