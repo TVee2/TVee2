@@ -98,6 +98,9 @@ export default class ChannelBrowse extends Component {
         <button onClick={this.props.getPrevPage}>Prev</button>
         <button onClick={this.props.getNextPage}>Next</button>
         <button onClick={this.props.getLastPage}>Last</button>
+        <br/><br/>
+        <br/><br/>
+        <br/><br/>
       </div>
     )
   }
