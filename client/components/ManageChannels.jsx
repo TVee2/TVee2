@@ -45,7 +45,7 @@ export default class ManageChannels extends Component {
       selectedRadio: null,
       selectedChannel:null,
       disableChannelSelect:false,
-
+      debounceChannelSubmit:false,
       showChannelDescriptionEdit:false,
       showHashtagEdit:false,
       showPlaceholderEdit:false,
@@ -100,11 +100,11 @@ export default class ManageChannels extends Component {
    .then((ret) => {
       var channel = ret.data.channel
       this.setState({selectedChannel:channel}, () => {
-        document.getElementById("channelname")?document.getElementById("channelname").value=channel.name:null
+        // document.getElementById("channelname")?document.getElementById("channelname").value=channel.name:null
         document.getElementById("channeldescription")?document.getElementById("channeldescription").value=channel.description:null
         document.getElementById("defaultvideoid")?document.getElementById("defaultvideoid").value=(channel.defaultProgram?channel.defaultProgram.youtubeId:null):null
-        document.getElementById("playlistid")?document.getElementById("playlistid").value=channel.playlist.playlistId:null
-        document.getElementById("youtubeChannelId")?document.getElementById("youtubeChannelId").value=channel.playlist.youtubeChannelId:null
+        // document.getElementById("playlistid")?document.getElementById("playlistid").value=channel.playlist.playlistId:null
+        // document.getElementById("youtubeChannelId")?document.getElementById("youtubeChannelId").value=channel.playlist.youtubeChannelId:null
         if(document.getElementById("htag1")){
           channel.hashtags[0]?document.getElementById("htag1").value = channel.hashtags[0].tag:document.getElementById("htag2").value = ""
         }
@@ -169,6 +169,9 @@ export default class ManageChannels extends Component {
 
   channelSubmit = (e) => {
     e.preventDefault()
+    if(this.state.debounceChannelSubmit){
+      return
+    }
     var name = document.getElementById("channelname").value
     var description = document.getElementById("channeldescription").value
     var defaultVideoId = document.getElementById("defaultvideoid").value
@@ -186,8 +189,7 @@ export default class ManageChannels extends Component {
     var htag4 = document.getElementById("htag4").value
 
     var hashtags = [htag1, htag2, htag3, htag4]
-
-    if(name.length==0 || (playlistId && playlistId.length==0) || (youtubeChannelId && youtubeChannelId.length==0)){
+    if(name.length==0 || (playlistId.length==0) || (youtubeChannelId && youtubeChannelId.length==0)){
       this.setState({channelSubmitMessage:"name and playlistid or youtubeChannelId are required"})
     }else if(name.length > 7){
       this.setState({channelSubmitMessage:"name cannot be more than 7 characters"})
@@ -198,10 +200,10 @@ export default class ManageChannels extends Component {
     }else if(htag1.length>15 || htag2.length>15 || htag3.length>15 || htag4.length>15){
       this.setState({channelSubmitMessage:"hashtags cannot be more than 15 characters"})
     }else{
-      this.setState({channelSubmitMessage:"working..."})
+      this.setState({channelSubmitMessage:"working...", debounceChannelSubmit:true})
       axios.post('/api/channels', {name, description, defaultVideoId, youtubeChannelId, playlistId, hashtags})
       .then(() => {
-        this.setState({channelSubmitMessage:""})
+        this.setState({channelSubmitMessage:"", debounceChannelSubmit:false})
         document.getElementById("channelname").value=""
         document.getElementById("channeldescription").value=""
         document.getElementById("defaultvideoid").value=""

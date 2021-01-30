@@ -13,6 +13,7 @@ async function seedNext2hrSegments(channelId){
 
   var arr = []
   let timeslot
+  let new_time
   for(var j = 0;j<timeslots.length;j++){
     timeslot = timeslots[j]
     if(timeslot.endtime < now){
@@ -22,13 +23,9 @@ async function seedNext2hrSegments(channelId){
       continue
     }
     arr = []
-    let segment
-    let tkey
-    let new_time
     for(let i=0;i<Math.ceil((timeslot.endtime - timeslot.starttime)/1000);i++){
       new_time = Math.floor((timeslot.starttime/1000) + i)
-      tkey = timeslot.channelId + '' + new_time
-      arr.push({tkey, time:new_time, progress:i, programId:timeslot.programId, timeslotId: timeslot.id, channelId:timeslot.channelId})
+      arr.push({tkey:`${timeslot.channelId} ${new_time}`, time:new_time, progress:i, programId:timeslot.programId, timeslotId: timeslot.id, channelId:timeslot.channelId})
     }
     console.log(`timeslot ${timeslot.id} - seeding ${arr.length} segments`)
     await Segment.bulkCreate(arr, { ignoreDuplicates: true })
@@ -69,14 +66,12 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
   //seed programs for all timeslot items
   var item_arr = []
   for(var i=0;i<items.length;i++){
-    let item = items[i]
-    if(item.embeddable && parseInt(item.duration) > 25){    
-      let {id, title, thumbnailUrl, duration, width, height, youtubeId} = item
-      var program = await Program.findOrCreate({where: {title, thumbnailUrl, width, height, duration, youtubeId}})
+    if(items[i].embeddable && parseInt(items[i].duration) > 25){
+      var program = await Program.findOrCreate({where: {title:items[i].title, thumbnailUrl:items[i].thumbnailUrl, width:items[i].width, height:items[i].height, duration:items[i].duration, youtubeId:items[i].youtubeId}})
       if(Array.isArray(program)){
         program = program[0]
       }
-      item_arr.push({item, program})
+      item_arr.push({item:items[i], program})
     }
   }
 
