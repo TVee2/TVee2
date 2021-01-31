@@ -25,7 +25,7 @@ async function seedNext2hrSegments(channelId){
     arr = []
     for(let i=0;i<Math.ceil((timeslot.endtime - timeslot.starttime)/1000);i++){
       new_time = Math.floor((timeslot.starttime/1000) + i)
-      arr.push({tkey:`${timeslot.channelId} ${new_time}`, time:new_time, progress:i, programId:timeslot.programId, timeslotId: timeslot.id, channelId:timeslot.channelId})
+      arr.push({tkey:`${timeslot.channelId}${new_time}`, time:new_time, progress:i, programId:timeslot.programId, timeslotId: timeslot.id, channelId:timeslot.channelId})
     }
     console.log(`timeslot ${timeslot.id} - seeding ${arr.length} segments`)
     await Segment.bulkCreate(arr, { ignoreDuplicates: true })

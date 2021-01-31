@@ -44,7 +44,7 @@ Pix.belongsTo(User)
 User.belongsTo(Pix, {as: 'profilePix', constraints:false})
 User.hasMany(Pix, {as: 'creations', onDelete: 'cascade', hooks:true})
 
-Channel.belongsToMany(User, {through: 'userfavchannel'})
+Channel.belongsToMany(User, {as:"favoriter", through: 'userfavchannel'})
 User.belongsToMany(Channel, {as:"favoriteChannels", through: 'userfavchannel'})
 
 Channel.belongsTo(User)
