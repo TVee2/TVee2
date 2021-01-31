@@ -42,7 +42,7 @@ class Routes extends Component {
       })
 
       this.removeCover()
-      if(Ytplayer.playe && Ytplayer.player.unMute){
+      if(Ytplayer.player && Ytplayer.player.unMute){
         Ytplayer.player.unMute()
       }
     }
