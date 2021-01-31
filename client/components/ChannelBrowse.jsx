@@ -45,8 +45,8 @@ export default class ChannelBrowse extends Component {
         <br/><br/><br/>
         {this.props.channels.map((channel, i) => {
           return (
-            <div>
-              <div style={{display:"flex"}}>
+            <div style={{border:"dashed black 2px", margin:"15px 0"}}>
+              <div style={{display:"flex", margin:"10px 0 2px 0"}}>
                 <div style={{margin:"0 8px"}}><Link to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link></div>
                 <button onClick={() => {history.push(`/tv/${channel.id}`)}}>GO TO CHANNEL</button>
               </div>
@@ -57,7 +57,7 @@ export default class ChannelBrowse extends Component {
                 return (<span style={{position:'absolute', left:`${winwidth*(item.time-now)/(3*60*60*1000)}px`}}>{`${hours}:${minutes}`}</span>)
               })}
 
-            <div id={`scheduleitem${i}`} style={{backgroundColor:"lightblue", margin:"20px 0", height:"100px", width:"100%"}}>
+            <div id={`scheduleitem${i}`} style={{backgroundColor:"lightblue", margin:"20px 0 10px 0", height:"100px", width:"100%"}}>
               {channel.timeslots.map((timeslot, i) => {
                 if(i==0){
                   var left = winwidth * (timeslot.starttime - now) / (3*60*60*1000)

@@ -402,7 +402,7 @@ class VideoPlayer extends Component {
             </div>
           </div>
           <div style={{width:"100%", backgroundColor:"black"}}></div>
-          {this.props.relatedChannels.length?<div style={{position:"absolute", top:"180px", left:"1000px"}}><div>Related Channels</div>{this.props.relatedChannels.map((channel) => {return this.channelElem(channel)})}</div>:null}
+          {this.props.relatedChannels.length && !isMobile()?<div style={{position:"absolute", top:"180px", left:"1000px"}}><div>Related Channels</div>{this.props.relatedChannels.map((channel) => {return this.channelElem(channel)})}</div>:null}
       </div>
     )
   }

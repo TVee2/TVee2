@@ -476,12 +476,18 @@ export default class TV extends Component {
             }
             {this.state.channel?
               <div style={{margin:window.innerWidth<700?"0":"0 0 0 4px", maxWidth:"640px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"magenta", width:window.innerWidth<700?"100%":"316px"}}>
+                <div>This Playlist:</div>
+                <div>{this.state.channel.playlist.title}</div>
+                <img src={this.state.channel.playlist.thumbnailUrl}></img>
+                <div style={{overflow:"hidden"}}><a href={`https://www.youtube.com/playlist?list=${this.state.channel.playlist.youtubeId}`}>{`youtube.com/playlist?list=${this.state.channel.playlist.youtubeId}`}</a></div>
+              </div>
+            :null}
+              <div>
                 {this.state.channel?<div style={{margin:"10px"}}>{this.state.channel.name.toUpperCase()}</div>:null}
                 {this.state.channel&&this.state.channel.description?<div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>:null}
                 {this.state.channel&&this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Tags: {this.state.channel.hashtags.map((h) => {return <span style={{border:"solid black 2px"}}> {`${h.tag}`} </span>})}</div>:null}
                 {this.state.channel?<Link to={`/users/${this.state.channel.user.id}`} style={{margin:"10px"}}>By: {this.state.channel.user.username}</Link>:null}
               </div>
-            :null}
           </div>
         </div>
       </div>
