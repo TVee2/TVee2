@@ -11,45 +11,50 @@ const Post = require('./post')
 const Hashtag = require('./hashtag')
 const ChannelVisitLog = require('./channelVisitLog')
 
-Timeslot.belongsTo(Program, {onDelete: 'cascade', hooks:true})
-Timeslot.belongsTo(Channel, {onDelete: 'cascade', hooks:true})
-
+Timeslot.belongsTo(Program)
 Segment.belongsTo(Program)
-Segment.belongsTo(Timeslot, {onDelete: 'cascade', hooks:true})
-Segment.belongsTo(Channel, {onDelete: 'cascade', hooks:true, constraints:false})
 
-Comment.belongsTo(User, {onDelete: 'cascade', hooks:true})
-Comment.belongsTo(Channel, {onDelete: 'cascade', hooks:true})
+Segment.belongsTo(Channel, {constraints:false})
+Channel.hasMany(Segment)
 
-Channel.hasMany(Segment, {onDelete:'cascade', hooks:true})
-Channel.hasMany(Timeslot, {onDelete:'cascade', hooks:true})
-Channel.belongsTo(User, {onDelete: 'cascade', hooks:true})
+Timeslot.belongsTo(Channel)
+Channel.hasMany(Timeslot, {onDelete: 'cascade', hooks:true})
+
+Segment.belongsTo(Timeslot)
+Timeslot.hasMany(Segment)
+
 Channel.belongsTo(Playlist)
+
 Channel.belongsTo(Program, {as:'defaultProgram', constraints:false})
 
 Channel.belongsToMany(Hashtag, {through: 'channelhashtags'})
 Hashtag.belongsToMany(Channel, {through: 'channelhashtags'})
 
-Playlist.hasMany(PlaylistItem, {onDelete:'cascade', hooks:true})
-Playlist.belongsTo(User, {onDelete: 'cascade', hooks:true})
+Playlist.hasMany(PlaylistItem, {onDelete: 'cascade', hooks:true})
+
+Playlist.belongsTo(User)
+User.hasMany(Playlist, {onDelete: 'cascade', hooks:true})
 
 Program.belongsTo(PlaylistItem)
-PlaylistItem.belongsTo(Playlist, {onDelete: 'cascade', hooks:true})
+PlaylistItem.belongsTo(Playlist)
 
-Pix.belongsTo(User, {onDelete: 'cascade', hooks:true})
 Program.belongsTo(User)
-User.hasMany(Pix, {as: 'creations' , onDelete:'cascade', hooks:true})
+
+Pix.belongsTo(User)
 User.belongsTo(Pix, {as: 'profilePix', constraints:false})
+User.hasMany(Pix, {as: 'creations', onDelete: 'cascade', hooks:true})
 
 Channel.belongsToMany(User, {through: 'userfavchannel'})
 User.belongsToMany(Channel, {as:"favoriteChannels", through: 'userfavchannel'})
 
-User.hasMany(Channel, {onDelete:'cascade', hooks:true})
+Channel.belongsTo(User)
+User.hasMany(Channel, {onDelete: 'cascade', hooks:true})
 
-Post.belongsTo(Pix, {onDelete: 'cascade', hooks:true})
-Post.belongsTo(Comment, {onDelete: 'cascade', hooks:true})
-Post.belongsTo(User, {onDelete: 'cascade', hooks:true})
-Post.belongsTo(Channel, {onDelete: 'cascade', hooks:true})
+Post.belongsTo(Pix)
+Post.belongsTo(Comment)
+Post.belongsTo(User)
+Post.belongsTo(Channel)
+Channel.hasMany(Post, {onDelete: 'cascade', hooks:true})
 
 ChannelVisitLog.belongsTo(User)
 ChannelVisitLog.belongsTo(Channel)

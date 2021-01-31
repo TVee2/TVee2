@@ -169,9 +169,9 @@ export default class ManageChannels extends Component {
 
   channelSubmit = (e) => {
     e.preventDefault()
-    if(this.state.debounceChannelSubmit){
-      return
-    }
+    // if(this.state.debounceChannelSubmit){
+    //   return
+    // }
     var name = document.getElementById("channelname").value
     var description = document.getElementById("channeldescription").value
     var defaultVideoId = document.getElementById("defaultvideoid").value

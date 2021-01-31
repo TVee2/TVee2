@@ -525,7 +525,7 @@ router
   }
 })
 
-.delete('/:id', (req, res, next) => {
+.delete('/:id', async (req, res, next) => {
   Channel.findOne({
     where: {id: req.params.id}
   })
@@ -535,13 +535,15 @@ router
     }
     if (channel) {
       turnOffChannelEmitter(channel)
+      debugger
+      console.log("test")
       return channel.destroy()
     } else {
       throw new Error('No channel found with matching id.')
     }
   })
-  .then((ch) => {
-    res.status(200).json(ch)
+  .then((ret) => {
+    res.status(200).json(ret)
     return
   })
   .catch((err) => {
