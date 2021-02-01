@@ -6,6 +6,7 @@ import axios from 'axios'
 var Ytplayer = {player:null}
 
 var isMobile = () => {if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+  console.log("return true on ismobile")
     return true
   }else{
     return false
