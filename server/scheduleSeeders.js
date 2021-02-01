@@ -65,7 +65,7 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
 
   //seed programs for all timeslot items
   var item_arr = []
-  var durmax = 0
+  var durmax = 25
   for(var i=0;i<items.length;i++){
     if(items[i].embeddable && parseInt(items[i].duration) > durmax){
       var program = await Program.findOrCreate({where: {title:items[i].title, thumbnailUrl:items[i].thumbnailUrl, width:items[i].width, height:items[i].height, duration:items[i].duration, youtubeId:items[i].youtubeId}})

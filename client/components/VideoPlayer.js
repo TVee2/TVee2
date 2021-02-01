@@ -6,7 +6,6 @@ import axios from 'axios'
 var Ytplayer = {player:null}
 
 var isMobile = () => {if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-  console.log("return true on ismobile")
     return true
   }else{
     return false
@@ -30,6 +29,7 @@ class VideoPlayer extends Component {
       controlChannelOnChange:"",
       vidStatus:null,
       relatedChannels:[],
+      isMobileNotVisible:false
     }
     this.videoplayer=null
     this.defaultVideoPlayer=null
@@ -101,12 +101,15 @@ class VideoPlayer extends Component {
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === 'visible') {
         if(isMobile()){
+          this.setState({isMobileNotVisible:false})
+
           //get channel
           this.channelChangeAppearanceUpdate()
           this.props.getChannel()
         }
       } else {
         if(isMobile()){
+          this.setState({isMobileNotVisible:true})
           //turn off socket
           if(this.state.channel){
             this.props.socket.emit('roomleave', {channelId: this.props.channel.id, userId:this.props.user.id})
@@ -158,7 +161,6 @@ class VideoPlayer extends Component {
   componentDidUpdate(prevProps, prevState) {
     if(this.state.debounce){console.log("early return debounce"); return}
     if(this.state.isCasting){console.log("early return casting"); return}
-
     if(prevProps.socketError && !this.props.socketError){
       this.setState({init_loading:true})
     }
@@ -191,7 +193,7 @@ class VideoPlayer extends Component {
       }
     }
 
-    if(this.props.src !== prevProps.src) {
+    if(this.props.src !== prevProps.src && !this.state.isMobileNotVisible) {
       if(this.props.isYoutubeId){
         if(this.videoplayer&&this.videoplayer.loadVideoById){
           console.log("trying to play", this.props.src)
@@ -266,7 +268,6 @@ class VideoPlayer extends Component {
   }
 
   toggleMute = () => {
-    console.log(this.props.muted)
     this.props.muted?this.videoplayer.unMute():this.videoplayer.mute()
     this.props.toggleParentStateMuted()
   }
