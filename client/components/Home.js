@@ -50,7 +50,7 @@ export default class Home extends Component {
   }
 
   channelElem = (channel) => {return (
-    <div style={{height:"200px", width:"200px", margin:"10px", cursor:"pointer", border:"solid black 2px", padding:"5px"}} onClick={this.goToChannel.bind(this, channel.id)}>
+    <div style={{height:"150px", width:"150px", margin:"10px", cursor:"pointer", border:"solid black 2px", padding:"5px"}} onClick={this.goToChannel.bind(this, channel.id)}>
       <Link to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link>
       <img style={{margin:"10px", maxWidth:"120px", maxHeight:"120px"}} src={channel.thumbnailUrl}></img>
     </div>
@@ -61,28 +61,28 @@ export default class Home extends Component {
       <div>
         {this.state.favoriteChannels.length?<div>
           <div>Favorite Channels</div>
-          <div style={{display:"flex"}}>{this.state.favoriteChannels.map((channel) => {
+          <div style={{display:"flex", flexWrap:"wrap"}}>{this.state.favoriteChannels.map((channel) => {
             return this.channelElem(channel)
           })}</div>
         </div>:null}
 
         {this.state.activeChannels.length?<div>
           <div>Most Active Channels</div>
-          <div style={{display:"flex"}}>{this.state.activeChannels.map((channel) => {
+          <div style={{display:"flex", flexWrap:"wrap"}}>{this.state.activeChannels.map((channel) => {
             return this.channelElem(channel)
           })}</div>
         </div>:null}
 
         {this.state.newChannels.length?<div>          
           <div>New Channels</div>
-          <div style={{display:"flex"}}>{this.state.newChannels.map((channel) => {
+          <div style={{display:"flex", flexWrap:"wrap"}}>{this.state.newChannels.map((channel) => {
             return this.channelElem(channel)
           })}</div>
         </div>:null}
 
         {this.state.recommendedChannels.length?<div>
           <div>You Might Like:</div>
-          <div style={{display:"flex"}}>{this.state.recommendedChannels.map((channel) => {
+          <div style={{display:"flex", flexWrap:"wrap"}}>{this.state.recommendedChannels.map((channel) => {
             return this.channelElem(channel)
           })}</div>
        </div>:null}

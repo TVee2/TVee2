@@ -30,7 +30,7 @@ class Routes extends Component {
   constructor() {
     super()
 
-    this.state = {channels:[], showCover:true, chtimeslots:[], muted:true, dirty:false, page: 1, pages:null}
+    this.state = {channels:[], showCover:true, chtimeslots:[], muted:true, dirty:false, page: 1, pages:null, debounceGetChannels:false,}
   }
 
   componentDidMount() {
@@ -83,9 +83,10 @@ class Routes extends Component {
   }
 
   getChannelsPage = () => {
+    this.setState({debounceGetChannels:true})
     axios.get(`/api/channels/page/${this.state.page}`)
     .then((res) => {
-      this.setState({channels:res.data.result, pages:res.data.pages})
+      this.setState({channels:res.data.result, pages:res.data.pages, debounceGetChannels:false})
     })
   }
 
@@ -119,13 +120,16 @@ class Routes extends Component {
           )}
         />
         <Route path="/tvbrowse" render={(props) => (
-            <ChannelBrowse 
-            channels={this.state.channels}
-            getLastPage={this.getLastPage}
-            getPrevPage={this.getPrevPage}
-            getFirstPage={this.getFirstPage}
-            getNextPage={this.getNextPage}
-            page={this.state.page}/>
+            <ChannelBrowse
+              getChannelsPage={this.getChannelsPage}
+              channels={this.state.channels}
+              getLastPage={this.getLastPage}
+              getPrevPage={this.getPrevPage}
+              getFirstPage={this.getFirstPage}
+              getNextPage={this.getNextPage}
+              page={this.state.page}
+              pages={this.state.pages}
+            />
           )}
         />
         <Route path="/howto" render={(props) => (

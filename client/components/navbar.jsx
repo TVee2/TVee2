@@ -16,7 +16,11 @@ class Navbar extends Component {
   }
 
   componentDidMount(){
-    window.addEventListener('resize', this.updateSize)
+    // window.addEventListener('resize', this.updateSize)
+  }
+
+  componentWillUnmount(){
+    window.removeEventListener('resize', this.updateSize)   
   }
 
   updateSize = () => {
@@ -49,7 +53,7 @@ class Navbar extends Component {
             </div>
 
             {this.props.isLoggedIn ? (
-              <div style={{margin:"0 14px"}}>
+              <div style={{margin:"0 14px 0 0"}}>
                 <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton browse" to="/tvbrowse"></NavLink>
 
                 <div tabIndex="0"

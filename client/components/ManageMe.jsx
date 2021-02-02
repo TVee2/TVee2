@@ -77,7 +77,7 @@ export default class ManageMe extends Component {
     this.setState({activeTab:meTabData[2]})
   }
 
-  goToListTab = () => {
+  goToCreateTab = () => {
     this.setState({activeTab:meTabData[1]})
   }
 
@@ -106,7 +106,6 @@ export default class ManageMe extends Component {
 
     axios.post(`/api/users/resetme`, {password})
     .then((res) => {
-      console.log(res)
     })
     .catch((err) => {
       this.setState({message:err})

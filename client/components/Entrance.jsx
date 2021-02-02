@@ -184,6 +184,8 @@ _/|_/|_/|__  _/_/|_/|__~__/_/|_/|_/|_/|_/|_
 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
       `,
     ]
+
+    this.listeners = []
   }
 
   sleep = (ms) => {
@@ -195,19 +197,27 @@ _/|_/|_/|__  _/_/|_/|__~__/_/|_/|_/|_/|_/|_
     let interval = 600
     var pre = document.getElementById("pre")
     var post = document.getElementById("post")
-    post.innerHTML = "Initializing..."; this.forceUpdate();
+    post.innerHTML = "Initializing...";
+    this.forceUpdate();
     while(i<this.frames.length){
       var func = (x) => {pre.innerHTML = this.frames[x]; this.forceUpdate(); }
-      setTimeout(func.bind(this, i), i*interval)
+      this.listeners.push(setTimeout(func.bind(this, i), i*interval))
+
       i++
     }
 
-    setTimeout(() => {post.innerHTML = "Click anywhere to continue."; this.forceUpdate();}, this.frames.length*interval)
+    this.listeners.push(setTimeout(() => {post.innerHTML = "Click anywhere to continue."; this.forceUpdate();}, this.frames.length*interval))
+  }
+
+  componentWillUnmount(){
+    this.listeners.map(l=>{
+      clearTimeout(l)
+    })
   }
 
   render() {
     return (
-      <div style={{ left:"-2px", width: '102%', position:"absolute", height:"790px", top:"169px", padding:"15px", gridColumn:"1", gridRow:"1", zIndex:"10", backgroundColor:"white"}}>
+      <div style={{ left:"-2px", width: '102%', position:"absolute", height:"790px", padding:"15px", gridColumn:"1", gridRow:"1", zIndex:"10", backgroundColor:"white"}}>
         <pre id="pre"></pre>
         <pre id="post"></pre>
       </div>

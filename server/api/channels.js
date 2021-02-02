@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {User, Channel, Playlist, Timeslot, Segment, PlaylistItem, Program, Hashtag} = require('../db/models')
+const {User, Channel, Playlist, Timeslot, Segment, PlaylistItem, Program, Hashtag, Pix} = require('../db/models')
 const db = require('../db')
 const { turnOnChannelEmitter, turnOffChannelEmitter } = require('../channelEmitter')
 const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders')
@@ -68,13 +68,18 @@ router
 })
 
 .get('/page/:page', (req, res, next) => {
-  let limit = 15
+  let limit = 10
   let offset = 0
-  Channel.findAndCountAll({where:{active:true}}).then(data => {
+  var now = new Date().getTime()
+  Channel.findAndCountAll({
+    distinct:true, 
+    where:{active:true},
+    order: [['id', 'ASC'], [Timeslot, 'starttime', 'ASC']],
+    include: {model:Timeslot, include:{model:Program}, where:{endtime: {[Op.gt]: now}, starttime: {[Op.lt]: now+(1000*60*60*3)}}},
+  }).then(data => {
     let page = req.params.page
     let pages = Math.ceil(data.count / limit)
     offset = limit * (page - 1)
-    var now = new Date().getTime()
     Channel.findAll({
       where:{active:true},
       order: [['id', 'ASC'], [Timeslot, 'starttime', 'ASC']],
@@ -467,7 +472,7 @@ router
   var numViewers = roomVisitors[req.params.id]?(roomVisitors[req.params.id].length+1):1
   Channel.findOne({
     where: {id: req.params.id},
-    include: [{model: User}, {model:Hashtag}, {model:Playlist}, {model:Program, as: 'defaultProgram'}],
+    include: [{model: User, include:[{model:Pix, as:'profilePix'}]}, {model:Hashtag}, {model:Playlist}, {model:Program, as: 'defaultProgram'}],
   })
   .then((channel) => {
     res.status(200).json({channel, numViewers})

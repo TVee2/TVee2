@@ -8,6 +8,15 @@ export default class ChannelBrowse extends Component {
     super()
   }
 
+  componentDidMount(){
+    this.props.getChannelsPage()
+    window.addEventListener('resize', this.updateSize)
+  }
+
+  componentWillUnmount(){
+    window.removeEventListener('resize', this.updateSize)   
+  }
+
   getNext30 = () => {
     var now = new Date()
     var minutes = now.getMinutes()
@@ -38,12 +47,13 @@ export default class ChannelBrowse extends Component {
     var scaler = winwidth*10 
     return (
       <div>
-        <button onClick={this.props.getFirstPage}>First</button>
-        <button onClick={this.props.getPrevPage}>Prev</button>
-        <button onClick={this.props.getNextPage}>Next</button>
-        <button onClick={this.props.getLastPage}>Last</button>
-        <br/><br/><br/>
+        {this.props.page!==1?<button onClick={this.props.getFirstPage}>First</button>:null}
+        {this.props.page!==1?<button onClick={this.props.getPrevPage}>Prev</button>:null}
+        {this.props.page!==this.props.pages?<button onClick={this.props.getNextPage}>Next</button>:null}
+        {this.props.page!==this.props.pages?<button onClick={this.props.getLastPage}>Last</button>:null}
+        <br/>
         {this.props.channels.map((channel, i) => {
+          var widthAccumulator = 0
           return (
             <div style={{border:"dashed black 2px", margin:"15px 0"}}>
               <div style={{display:"flex", margin:"10px 0 2px 0"}}>
@@ -58,7 +68,8 @@ export default class ChannelBrowse extends Component {
               })}
 
             <div id={`scheduleitem${i}`} style={{backgroundColor:"lightblue", margin:"20px 0 10px 0", height:"100px", width:"100%"}}>
-              {channel.timeslots.map((timeslot, i) => {
+              {
+               channel.timeslots.map((timeslot, i) => {
                 if(i==0){
                   var left = winwidth * (timeslot.starttime - now) / (3*60*60*1000)
                   var width = (winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000)) + left
@@ -68,6 +79,10 @@ export default class ChannelBrowse extends Component {
                 }else{
                   var left = winwidth * (timeslot.starttime - now) / (3*60*60*1000)
                   var width = (winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000))
+                  widthAccumulator+=width
+                  if(widthAccumulator>window.innerWidth){
+                    width=window.innerWidth-left
+                  }
                 }
                 return (<div
                   id={`za${timeslot.id}`}
@@ -94,10 +109,10 @@ export default class ChannelBrowse extends Component {
           </div>
           )
         })}
-        <button onClick={this.props.getFirstPage}>First</button>
-        <button onClick={this.props.getPrevPage}>Prev</button>
-        <button onClick={this.props.getNextPage}>Next</button>
-        <button onClick={this.props.getLastPage}>Last</button>
+        {this.props.page!==1?<button onClick={this.props.getFirstPage}>First</button>:null}
+        {this.props.page!==1?<button onClick={this.props.getPrevPage}>Prev</button>:null}
+        {this.props.page!==this.props.pages?<button onClick={this.props.getNextPage}>Next</button>:null}
+        {this.props.page!==this.props.pages?<button onClick={this.props.getLastPage}>Last</button>:null}
         <br/><br/>
         <br/><br/>
         <br/><br/>

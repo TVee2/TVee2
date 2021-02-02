@@ -71,26 +71,38 @@ export default class TV extends Component {
       }
       this.setState({vidWidth:width})
     }
-    window.addEventListener("resize", () => {
-      if(window.innerWidth>=1000){
-        this.setState({collapse:false})
-      }
-      if(window.innerWidth<1000 || screen.width<1000){
-        this.setState({collapse:true})
-      }
-      if(window.innerWidth<=640 || screen.width<=640){
-        var width
-        if(window.innerWidth < screen.width){
-          width=window.innerWidth
-        }else{
-          width=screen.width
-        }
-        this.setState({vidWidth:width})
-      }else{
-        this.setState({vidWidth:null})
-      }
-    });
+
+    window.addEventListener("resize", this.resizeListener, false)
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.resizeListener, false)
+    if(this.state.channel){
+      socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
+    }
+    socket.off()
+  }
+
+  resizeListener = () => {
+    if(window.innerWidth>=1000){
+      this.setState({collapse:false})
+    }
+    if(window.innerWidth<1000 || screen.width<1000){
+      this.setState({collapse:true})
+    }
+    if(window.innerWidth<=640 || screen.width<=640){
+      var width
+      if(window.innerWidth < screen.width){
+        width=window.innerWidth
+      }else{
+        width=screen.width
+      }
+      this.setState({vidWidth:width})
+    }else{
+      this.setState({vidWidth:null})
+    }   
+  }
+
 
   getRelatedChannels = () => {
     if(!this.state.channel.id){
@@ -142,13 +154,6 @@ export default class TV extends Component {
     .then((res) => {
       this.setState({newChannels:res.data})
     })
-  }
-
-  componentWillUnmount() {
-    if(this.state.channel){
-      socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
-    }
-    socket.off()
   }
 
   getCurrentChannelIsFavorite = () => {
@@ -385,8 +390,10 @@ export default class TV extends Component {
     }
 
     var botheight
+    var height
     if(this.state.height == 360){
       //height is actually 480
+      height = "480px"
       if(window.innerWidth<425){
         botheight = "632px"
       }else if(window.innerWidth<700){
@@ -396,6 +403,7 @@ export default class TV extends Component {
       }
     }else{
       //height is 360
+      height = "360px"
       if(window.innerWidth<425){
         botheight = "523px"
       }else if(window.innerWidth<700){
@@ -409,49 +417,6 @@ export default class TV extends Component {
       <div>
         {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"72px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
         <div>
-          <VideoPlayer
-            channel={this.state.channel}
-            noChannel={this.state.noChannel}
-            showCover={this.props.showCover}
-            removeCover={this.props.removeCover}
-            dirty={this.props.dirty}
-            muted={this.props.muted}
-            toggleParentStateMuted={this.props.toggleParentStateMuted}
-            vidWidth={this.state.vidWidth}
-            match={this.props.match}
-            src={this.state.src}
-            defaultSrc={this.state.defaultSrc}
-            isYoutubeId={this.state.isYoutubeId}
-            progress={this.state.progress}
-            socketError={this.state.socket_error}
-            mute={this.state.mute}
-            loop={this.state.loop}
-            segment={this.state.segment}
-            emitterChannelId={this.state.emitterChannelId}
-            incrementChannel={this.incrementChannel}
-            decrementChannel={this.decrementChannel}
-            changeChannel={this.changeChannel}
-            numViewers={this.state.numViewers}
-            isFavorite={this.state.isFavorite}
-            addFavorite={this.addFavorite}
-            removeFavorite={this.removeFavorite}
-            segment={this.state.segment}
-            showChannelId={this.state.showChannelId}
-            allChannels={this.state.allChannels}
-            favoriteChannels={this.state.favoriteChannels}
-            hotChannels={this.state.hotChannels}
-            newChannels={this.state.newChannels}
-            selectedAllIndex={this.state.selectedAllIndex}
-            selectedFavoriteIndex={this.state.selectedFavoriteIndex}
-            selectedHotChannelIndex={this.state.selectedHotChannelIndex}
-            selectedNewChannelIndex={this.state.selectedNewChannelIndex}
-            flickColor={this.state.flickColor}
-            selectedFlick={this.state.selectedFlick}
-            flickChange={this.flickChange}
-            socket={socket}
-            getChannel={this.getChannel}
-            relatedChannels={this.state.relatedChannels}
-          />
           <Chat
             smallwindow={smallwindow}
             showChat={this.state.showChat}
@@ -461,33 +426,87 @@ export default class TV extends Component {
             comments={this.state.comments}
             channelId={this.props.match.params.channelId}
           />
-          <div style={{position:"absolute", width:"100%", maxWidth:"640px", display:window.innerWidth<700?"":"flex", zIndex:"5", margin:window.innerWidth<700?"0":"0 25px", top:botheight}}>
-            {this.state.segment && this.state.segment.program?
-              <div style={{margin:window.innerWidth<700?"0":"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
-                <div>Now Playing:</div>
-                <div>{this.state.segment.program.title}</div>
-                <img src={this.state.segment.program.thumbnailUrl}></img>
-                <div><a href={`https://www.youtube.com/watch?v=${this.state.segment.program.youtubeId}`}>{`youtube.com/watch?v=${this.state.segment.program.youtubeId}`}</a></div>
-              </div>
-            :
-              <div style={{margin:window.innerWidth<700?"0":"0 4px 0 0", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
-                <div style={{margin:"10px"}}>No current channel programming</div>
-              </div>
-            }
-            {this.state.channel?
-              <div style={{margin:window.innerWidth<700?"0":"0 0 0 4px", maxWidth:"640px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"magenta", width:window.innerWidth<700?"100%":"316px"}}>
-                <div>This Playlist:</div>
-                <div>{this.state.channel.playlist.title}</div>
-                <img src={this.state.channel.playlist.thumbnailUrl}></img>
-                <div style={{overflow:"hidden"}}><a href={`https://www.youtube.com/playlist?list=${this.state.channel.playlist.youtubeId}`}>{`youtube.com/playlist?list=${this.state.channel.playlist.youtubeId}`}</a></div>
-              </div>
-            :null}
-              <div>
-                {this.state.channel?<div style={{margin:"10px"}}>{this.state.channel.name.toUpperCase()}</div>:null}
-                {this.state.channel&&this.state.channel.description?<div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>:null}
-                {this.state.channel&&this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Tags: {this.state.channel.hashtags.map((h) => {return <span style={{border:"solid black 2px"}}> {`${h.tag}`} </span>})}</div>:null}
-                {this.state.channel?<Link to={`/users/${this.state.channel.user.id}`} style={{margin:"10px"}}>By: {this.state.channel.user.username}</Link>:null}
-              </div>
+          {this.props.showCover?<Entrance/>:null}
+          <div style={{height:"25px", width:"100%", backgroundColor:"white"}}></div>
+          <div id="blockSpaceholder" style={{height:height, width:this.state.vidWidth?this.state.vidWidth:"640px", margin:window.innerWidth<700?"0":"0 25px"}}>
+            <div id="absoluteWrapper" style={{height:height, width:this.state.vidWidth?this.state.vidWidth:"640px", position:"absolute"}}>
+              <VideoPlayer
+                channel={this.state.channel}
+                noChannel={this.state.noChannel}
+                showCover={this.props.showCover}
+                removeCover={this.props.removeCover}
+                dirty={this.props.dirty}
+                muted={this.props.muted}
+                toggleParentStateMuted={this.props.toggleParentStateMuted}
+                vidWidth={this.state.vidWidth}
+                match={this.props.match}
+                src={this.state.src}
+                defaultSrc={this.state.defaultSrc}
+                isYoutubeId={this.state.isYoutubeId}
+                progress={this.state.progress}
+                socketError={this.state.socket_error}
+                mute={this.state.mute}
+                loop={this.state.loop}
+                segment={this.state.segment}
+                emitterChannelId={this.state.emitterChannelId}
+                incrementChannel={this.incrementChannel}
+                decrementChannel={this.decrementChannel}
+                changeChannel={this.changeChannel}
+                numViewers={this.state.numViewers}
+                isFavorite={this.state.isFavorite}
+                addFavorite={this.addFavorite}
+                removeFavorite={this.removeFavorite}
+                segment={this.state.segment}
+                showChannelId={this.state.showChannelId}
+                allChannels={this.state.allChannels}
+                favoriteChannels={this.state.favoriteChannels}
+                hotChannels={this.state.hotChannels}
+                newChannels={this.state.newChannels}
+                selectedAllIndex={this.state.selectedAllIndex}
+                selectedFavoriteIndex={this.state.selectedFavoriteIndex}
+                selectedHotChannelIndex={this.state.selectedHotChannelIndex}
+                selectedNewChannelIndex={this.state.selectedNewChannelIndex}
+                flickColor={this.state.flickColor}
+                selectedFlick={this.state.selectedFlick}
+                flickChange={this.flickChange}
+                socket={socket}
+                getChannel={this.getChannel}
+                relatedChannels={this.state.relatedChannels}
+                height={height}
+              />
+            </div>
+          </div>
+          <div style={{backgroundColor:"white", minHeight:"400px", paddingTop:window.innerWidth<700?"32px":"62px"}}>
+            <div style={{width:"100%", maxWidth:"640px", display:window.innerWidth<700?"":"flex", zIndex:"5", margin:window.innerWidth<700?"0":"0 25px", padding:window.innerWidth<700?"0":"10px 0"}}>
+              {this.state.segment && this.state.segment.program?
+                <div style={{margin:window.innerWidth<700?"0":"0 4px 0 0", minHeight:"150px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
+                  <div>Now Playing:</div>
+                  <div>{this.state.segment.program.title}</div>
+                  <img src={this.state.segment.program.thumbnailUrl}></img>
+                  <div><a href={`https://www.youtube.com/watch?v=${this.state.segment.program.youtubeId}`}>{`youtube.com/watch?v=${this.state.segment.program.youtubeId}`}</a></div>
+                </div>
+              :
+                <div style={{margin:window.innerWidth<700?"0":"0 4px 0 0", minHeight:"150px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
+                  <div style={{margin:"10px"}}>No current channel programming</div>
+                </div>
+              }
+                <div style={{margin:window.innerWidth<700?"0":"0 0 0 4px", maxWidth:"640px", minHeight:"190px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"magenta", width:window.innerWidth<700?"100%":"316px"}}>
+                  {this.state.channel?
+                    <div>
+                      <div>This Playlist:</div>
+                      <div>{this.state.channel.playlist.title}</div>
+                      <img src={this.state.channel.playlist.thumbnailUrl}></img>
+                      <div style={{overflow:"hidden"}}><a href={`https://www.youtube.com/playlist?list=${this.state.channel.playlist.youtubeId}`}>{`youtube.com/playlist?list=${this.state.channel.playlist.youtubeId}`}</a></div>
+                    </div>
+                  :null}
+                </div>
+            </div>
+            <div style={{margin: window.innerWidth<700?"0":"0 25px", minHeight:"100px", maxWidth:"640px", border:"solid black 2px"}}>
+              {this.state.channel?<div style={{margin:"10px"}}>{this.state.channel.name.toUpperCase()}</div>:null}
+              {this.state.channel&&this.state.channel.description?<div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>:null}
+              {this.state.channel&&this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Tags: {this.state.channel.hashtags.map((h) => {return <span style={{border:"solid black 2px"}}> {`${h.tag}`} </span>})}</div>:null}
+              {this.state.channel?<Link to={`/users/${this.state.channel.user.id}`} style={{margin:"10px"}}>By: {this.state.channel.user.username}</Link>:null}
+            </div>
           </div>
         </div>
       </div>
