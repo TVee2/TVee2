@@ -220,7 +220,7 @@ class VideoPlayer extends Component {
     }
   }
 
-  d = () => {console.log("switching player"); this.setState({isCasting:!this.state.isCasting})}
+  // d = () => {console.log("switching player"); this.setState({isCasting:!this.state.isCasting})}
 
   upChannel= () => {
     this.channelChangeAppearanceUpdate()
@@ -396,7 +396,7 @@ class VideoPlayer extends Component {
             </div>
           </div>
           <div style={{width:"100%", backgroundColor:"black"}}></div>
-          {this.props.relatedChannels.length && !isMobile()?<div style={{position:"absolute", top:"180px", left:"1000px"}}><div>Related Channels</div>{this.props.relatedChannels.map((channel) => {return this.channelElem(channel)})}</div>:null}
+          {this.props.relatedChannels.length && !isMobile() && window.innerWidth>1000?<div style={{position:"absolute", left:"1000px"}}><div>Related Channels</div>{this.props.relatedChannels.map((channel) => {return this.channelElem(channel)})}</div>:null}
       </div>
     )
   }
