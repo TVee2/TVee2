@@ -325,7 +325,7 @@ class VideoPlayer extends Component {
       height = this.props.segment.program.height
     }
     return (
-      <div style={{width:this.props.vidWidth?this.props.vidWidth:"640px", backgroundColor:"black"}}>
+      <div style={{width:"100%", maxWidth:isFullscreen?"":"640px", backgroundColor:"black"}}>
           {this.props.showChannelId?
             <div style={{position:"absolute", color:this.props.flickColor, zIndex:"2", fontSize:"64px", top:"5px", left:"25px"}}>
               {this.props.match.params.channelId}
@@ -333,7 +333,7 @@ class VideoPlayer extends Component {
           :null}
           <div id="vidcontainer" className="video-container" style={{display:"grid", height:"100%", width:"100%"}}>
             <div className="noclick" style={{position:"absolute", height:"100%", width:"100%",  zIndex:5}}></div>
-            <div style={{zIndex:"-1", top:"50%", margin:"0", transform:"translate(0, -50%)", width:isFullscreen?"100%":(this.props.vidWidth?this.props.vidWidth:"640px"), height:isFullscreen?"160%":"900px", position:"absolute", backgroundColor:"black"}}>
+            <div style={{zIndex:"-1", top:"50%", margin:"0", transform:"translate(0, -50%)", width:"100%", height:isFullscreen?"160%":"900px", position:"absolute", backgroundColor:"black"}}>
               <div style={{visibility:vis6, position:"absolute", width:"100%", height:"100%"}}>
                 <div id="player" style={{position:"absolute", width:"100%", height:"100%"}}></div>
               </div>

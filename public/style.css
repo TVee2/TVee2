@@ -129,6 +129,7 @@ form div {
 .videobutton{
   height: 30px;
   width: 30px;
+  cursor:pointer;
   background-color: white;
   background-size: cover;
   display:inline-block;

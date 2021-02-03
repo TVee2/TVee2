@@ -6,6 +6,7 @@ import axios from 'axios'
 import io from 'socket.io-client'
 import history from '../history'
 import {Link} from 'react-router-dom'
+import PixBlock from './pix/components/PixBlock'
 var VideoPlayer = obj.VideoPlayer
 var socket = io()
 
@@ -31,7 +32,6 @@ export default class TV extends Component {
       showCover:true,
       collapse:false,
       showChat:false,
-      vidWidth:null,
       isYoutubeId:false,
       noChannel:false,
       numViewers:0,
@@ -62,47 +62,14 @@ export default class TV extends Component {
     if(window.innerWidth<=1000 || screen.width<=1000){
       this.setState({collapse:true})
     }
-    if(window.innerWidth <= 640 || screen.width <= 640){
-      var width
-      if(window.innerWidth < screen.width){
-        width=window.innerWidth
-      }else{
-        width=screen.width
-      }
-      this.setState({vidWidth:width})
-    }
-
-    window.addEventListener("resize", this.resizeListener, false)
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.resizeListener, false)
     if(this.state.channel){
       socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})
     }
     socket.off()
   }
-
-  resizeListener = () => {
-    if(window.innerWidth>=1000){
-      this.setState({collapse:false})
-    }
-    if(window.innerWidth<1000 || screen.width<1000){
-      this.setState({collapse:true})
-    }
-    if(window.innerWidth<=640 || screen.width<=640){
-      var width
-      if(window.innerWidth < screen.width){
-        width=window.innerWidth
-      }else{
-        width=screen.width
-      }
-      this.setState({vidWidth:width})
-    }else{
-      this.setState({vidWidth:null})
-    }   
-  }
-
 
   getRelatedChannels = () => {
     if(!this.state.channel.id){
@@ -428,8 +395,8 @@ export default class TV extends Component {
           />
           {this.props.showCover?<Entrance/>:null}
           <div style={{height:"25px", width:"100%", backgroundColor:"white"}}></div>
-          <div id="blockSpaceholder" style={{height:height, width:this.state.vidWidth?this.state.vidWidth:"640px", margin:window.innerWidth<700?"0":"0 25px"}}>
-            <div id="absoluteWrapper" style={{height:height, width:this.state.vidWidth?this.state.vidWidth:"640px", position:"absolute"}}>
+          <div id="blockSpaceholder" style={{height:height, maxWidth:"640px", width:"100%", margin:window.innerWidth<700?"0":"0 25px"}}>
+            <div id="absoluteWrapper" style={{height:height, maxWidth:"640px", width:"100%", position:"absolute"}}>
               <VideoPlayer
                 channel={this.state.channel}
                 noChannel={this.state.noChannel}
@@ -438,7 +405,6 @@ export default class TV extends Component {
                 dirty={this.props.dirty}
                 muted={this.props.muted}
                 toggleParentStateMuted={this.props.toggleParentStateMuted}
-                vidWidth={this.state.vidWidth}
                 match={this.props.match}
                 src={this.state.src}
                 defaultSrc={this.state.defaultSrc}
@@ -483,7 +449,7 @@ export default class TV extends Component {
                   <div>Now Playing:</div>
                   <div>{this.state.segment.program.title}</div>
                   <img src={this.state.segment.program.thumbnailUrl}></img>
-                  <div><a href={`https://www.youtube.com/watch?v=${this.state.segment.program.youtubeId}`}>{`youtube.com/watch?v=${this.state.segment.program.youtubeId}`}</a></div>
+                  <div><a src={`https://www.youtube.com/watch?v=${this.state.segment.program.youtubeId}`}>{`youtube.com/watch?v=${this.state.segment.program.youtubeId}`}</a></div>
                 </div>
               :
                 <div style={{margin:window.innerWidth<700?"0":"0 4px 0 0", minHeight:"150px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
@@ -501,12 +467,16 @@ export default class TV extends Component {
                   :null}
                 </div>
             </div>
-            <div style={{margin: window.innerWidth<700?"0":"0 25px", minHeight:"100px", maxWidth:"640px", border:"solid black 2px"}}>
-              {this.state.channel?<div style={{margin:"10px"}}>{this.state.channel.name.toUpperCase()}</div>:null}
-              {this.state.channel&&this.state.channel.description?<div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>:null}
-              {this.state.channel&&this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Tags: {this.state.channel.hashtags.map((h) => {return <span style={{border:"solid black 2px"}}> {`${h.tag}`} </span>})}</div>:null}
-              {this.state.channel?<Link to={`/users/${this.state.channel.user.id}`} style={{margin:"10px"}}>By: {this.state.channel.user.username}</Link>:null}
-            </div>
+            {this.state.channel && this.state.channel.user?
+              <div style={{margin: window.innerWidth<700?"0":"0 25px", minHeight:"100px", maxWidth:"640px", border:"solid black 2px"}}>
+                <div style={{margin:"10px"}}>{this.state.channel.name.toUpperCase()}</div>
+                <div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>
+                {this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Tags: {this.state.channel.hashtags.map((h) => {return <span style={{border:"solid black 2px"}}> {`${h.tag}`} </span>})}</div>:null}
+                <span>
+                  <Link to={`/users/${this.state.channel.user.id}`} style={{margin:"10px"}}> {this.state.channel.user.profilePix?<PixBlock pix={this.state.channel.user.profilePix} dim={16} adgrab={`channel${this.state.channel.id}`}/>:<img style={{height:"16px", width:"16px"}} src="/icons/userico.png"></img>} {this.state.channel.user.username}</Link>
+                </span>
+              </div>
+            :null}
           </div>
         </div>
       </div>
