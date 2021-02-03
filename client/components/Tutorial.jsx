@@ -12,7 +12,7 @@ export default class Tutorial extends Component {
   render() {
     return (
       <div style={{margin:"30px"}}>
-        <p><br/>
+        <p style={{overflowWrap:"anywhere"}}><br/>
           <h3>TVee2 is a curation based, youtube broadcaster service that combines the simple format of normal tv and the ease of accessibility of youtube.</h3>
 <br/><br/>
           If you click on the tv with fuzz in the navbar, it will bring you to that channels currently playing content. If logged in, here you can comment and make and post pixel images.  From the video control bar you can mute, fullscreen, flick the channel, keypad in a channel id and favorite a channel for easier access in the future.

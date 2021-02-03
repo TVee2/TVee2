@@ -202,11 +202,11 @@ router
   }
 
   var channels = await Channel.findAll({where:{userId:req.user.id}})
-  if(channels.length>=9){
-    return res.status(500).json({err:"user can't create more than 9 channels currently, delete an existing. for exceptions contact site"})
-  }
 
   try{
+    if(channels.length>=9){
+      throw Error("User can't create more than 9 channels currently, delete an existing channel. For exceptions contact admin@tvee2.com")
+    }
     var playlist
     if(youtubeChannelId){
       playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, req.user, 4*60*60)
@@ -214,12 +214,12 @@ router
       playlist = await uploadOrUpdatePlaylist(playlistId, null, req.user)
     }
     if(!playlist){
-      throw Error("seeding playlist id should be supplied, playlist is null")
+      throw Error("Youtube playlist id or youtube channel id must be provided")
     }
     var channel = await Channel.create({name, description, thumbnailUrl:playlist.thumbnailUrl, userId:req.user.id})
     var hashtags = hashtags.filter((h) => h)
     if(hashtags.some((h)=>{return h.length>15})){
-      return res.status(400).json(new Error("hashtag greater than 15 chars"))
+      return res.status(400).json(new Error("Hashtags must not be greater than 15 chars"))
     }
     if(hashtags.length){
       var hasharr = hashtags.map((htag) => {return {tag:htag}})
@@ -248,8 +248,8 @@ router
     if(playlist){
       playlist.destroy()
     }
-    console.log(err)
-    res.status(500).json(err);
+
+    res.status(500).json({message:err.message});
   }
 })
 

@@ -50,9 +50,9 @@ export default class Home extends Component {
   }
 
   channelElem = (channel) => {return (
-    <div style={{height:"150px", width:"150px", margin:"10px", cursor:"pointer", border:"solid black 2px", padding:"5px"}} onClick={this.goToChannel.bind(this, channel.id)}>
+    <div className="homelistcontainer" onClick={this.goToChannel.bind(this, channel.id)}>
       <Link to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link>
-      <img style={{margin:"10px", maxWidth:"120px", maxHeight:"120px"}} src={channel.thumbnailUrl}></img>
+      <img className="homelistimage" src={channel.thumbnailUrl}></img>
     </div>
   )}
 

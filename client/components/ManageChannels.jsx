@@ -189,7 +189,7 @@ export default class ManageChannels extends Component {
     var htag4 = document.getElementById("htag4").value
 
     var hashtags = [htag1, htag2, htag3, htag4]
-    if(name.length==0 || (playlistId.length==0) || (youtubeChannelId && youtubeChannelId.length==0)){
+    if(name.length==0 || ((playlistId && playlistId.length==0) && (youtubeChannelId && youtubeChannelId.length==0))){
       this.setState({channelSubmitMessage:"name and playlistid or youtubeChannelId are required"})
     }else if(name.length > 7){
       this.setState({channelSubmitMessage:"name cannot be more than 7 characters"})
@@ -217,7 +217,7 @@ export default class ManageChannels extends Component {
         this.getChannels()
       })
       .catch((err) => {
-        this.setState({channelSubmitMessage: err.message})
+        this.setState({channelSubmitMessage: err.response.data.message, debounceChannelSubmit:false})
       })
     }
   }

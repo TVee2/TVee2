@@ -17,6 +17,10 @@ export default class ChannelBrowse extends Component {
     window.removeEventListener('resize', this.updateSize)   
   }
 
+  updateSize = () => {
+    this.forceUpdate()
+  }
+
   getNext30 = () => {
     var now = new Date()
     var minutes = now.getMinutes()
@@ -43,7 +47,8 @@ export default class ChannelBrowse extends Component {
   render() {
     var now = new Date().getTime()
     var elem = document.getElementById("scheduleitem0")
-    var winwidth = window.innerWidth
+    var winwidth = document.body.clientWidth;
+
     var scaler = winwidth*10 
     return (
       <div>
@@ -71,19 +76,19 @@ export default class ChannelBrowse extends Component {
               {
                channel.timeslots.map((timeslot, i) => {
                 if(i==0){
-                  var left = winwidth * (timeslot.starttime - now) / (3*60*60*1000)
-                  var width = (winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000)) + left
+                  var left = Math.floor(winwidth * (timeslot.starttime - now) / (3*60*60*1000))
+                  var width = Math.floor((winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000)) + left)
                   if(left<0){
                     left = 0
                   }
                 }else{
-                  var left = winwidth * (timeslot.starttime - now) / (3*60*60*1000)
-                  var width = (winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000))
-                  widthAccumulator+=width
-                  if(widthAccumulator>window.innerWidth){
-                    width=window.innerWidth-left
-                  }
+                  var left = Math.floor(winwidth * (timeslot.starttime - now) / (3*60*60*1000))
+                  var width = Math.floor((winwidth * (timeslot.endtime - timeslot.starttime) / (3*60*60*1000)))
                 }
+                  widthAccumulator+=width
+                  if(widthAccumulator>winwidth){
+                    width=winwidth-left
+                  }
                 return (<div
                   id={`za${timeslot.id}`}
                   onMouseLeave={() => {document.getElementById(`za${timeslot.id}`).classList.toggle('overflowhidden'); document.getElementById(`zz${timeslot.id}`).classList.toggle('zout')}}

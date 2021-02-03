@@ -16,7 +16,7 @@ class Navbar extends Component {
   }
 
   componentDidMount(){
-    // window.addEventListener('resize', this.updateSize)
+    window.addEventListener('resize', this.updateSize)
   }
 
   componentWillUnmount(){
@@ -73,6 +73,9 @@ class Navbar extends Component {
                         </div>
                         <div style={{margin:"1em"}}>
                           <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/me">Me</NavLink>
+                        </div>
+                        <div style={{margin:"1em"}}>
+                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/howto">README</NavLink>
                         </div>
                       </div>
                     </nav>
