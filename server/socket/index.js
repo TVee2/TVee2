@@ -6,6 +6,7 @@ const {Op} = require('sequelize')
 const { turnOnChannelEmitter } = require('../channelEmitter')
 const {seedNext24HrTimeslots, seedNext2hrSegments, verifyAndUpdatePlaylists} = require('../scheduleSeeders')
 const {uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist} = require('../api/crudHelpers')
+const seedDurationLimit = process.env.SEED_DURATION_LIMIT
 
 var seedAllChannels = async ()=>{
   var channels = await Channel.findAll()
@@ -29,7 +30,7 @@ var updateChannelPlaylists = async () => {
         uploadOrUpdatePlaylist(null, channel.playlistId, channel.user)
         .then((pl) => {console.log("updated " + pl.id)})
       }else if(channel.playlist && channel.playlist.youtubeChannelId){
-        uploadOrUpdateChannelPlaylist(null, channel.playlistId, channel.user, 3*60*60)
+        uploadOrUpdateChannelPlaylist(null, channel.playlistId, channel.user, seedDurationLimit || 4*60*60)
         .then((pl) => {console.log("updated " + pl.id)})
       }
     })

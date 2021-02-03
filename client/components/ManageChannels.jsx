@@ -86,11 +86,15 @@ export default class ManageChannels extends Component {
   getChannels = () => {
     axios.get('/api/channels/editable')
    .then((ret) => {
-      if(ret.data.length){      
-        this.setState({channels:ret.data, selectedChannelId:ret.data[0].id}, () => {
-          this.getChannel(this.state.selectedChannelId)
-          this.getChannelSchedule(this.state.selectedChannelId)
-        })
+      if(ret.data.length){
+        if(this.state.selectedChannelId){
+          this.setState({channels:ret.data})
+        }else{
+          this.setState({channels:ret.data, selectedChannelId:ret.data[0].id}, () => {
+            this.getChannel(this.state.selectedChannelId)
+            this.getChannelSchedule(this.state.selectedChannelId)
+          })
+        }
       }
     })
   }
@@ -135,7 +139,11 @@ export default class ManageChannels extends Component {
   }
 
   onChannelChange = (e) => {
-    this.setState({selectedChannelId: e.target.value, timeslots:{today:[], tomorrow:[]}}, () => {
+    this.changeToChannel(e)
+  }
+
+  changeToChannel = (e, id) => {
+    this.setState({selectedChannelId: id?id:e.target.value, timeslots:{today:[], tomorrow:[]}}, () => {
       this.getChannel(this.state.selectedChannelId)
       this.getChannelSchedule(this.state.selectedChannelId)
     })
@@ -172,21 +180,21 @@ export default class ManageChannels extends Component {
     if(this.state.debounceChannelSubmit){
       return
     }
-    var name = document.getElementById("channelname").value
-    var description = document.getElementById("channeldescription").value
-    var defaultVideoId = document.getElementById("defaultvideoid").value
+    var name = document.getElementById("channelnamecreate").value
+    var description = document.getElementById("channeldescriptioncreate").value
+    var defaultVideoId = document.getElementById("defaultvideoidcreate").value
 
-    var ispl = !!document.getElementById("playlistid")
-    var isyci = !!document.getElementById("youtubeChannelId")
+    var ispl = !!document.getElementById("playlistidcreate")
+    var isyci = !!document.getElementById("youtubeChannelIdcreate")
 
-    var playlistId = ispl?document.getElementById("playlistid").value:null
-    var youtubeChannelId = isyci?document.getElementById("youtubeChannelId").value:null
+    var playlistId = ispl?document.getElementById("playlistidcreate").value:null
+    var youtubeChannelId = isyci?document.getElementById("youtubeChannelIdcreate").value:null
 
 
-    var htag1 = document.getElementById("htag1").value
-    var htag2 = document.getElementById("htag2").value
-    var htag3 = document.getElementById("htag3").value
-    var htag4 = document.getElementById("htag4").value
+    var htag1 = document.getElementById("htag1create").value
+    var htag2 = document.getElementById("htag2create").value
+    var htag3 = document.getElementById("htag3create").value
+    var htag4 = document.getElementById("htag4create").value
 
     var hashtags = [htag1, htag2, htag3, htag4]
     if(name.length==0 || ((playlistId && playlistId.length==0) && (youtubeChannelId && youtubeChannelId.length==0))){
@@ -202,19 +210,21 @@ export default class ManageChannels extends Component {
     }else{
       this.setState({channelSubmitMessage:"working...", debounceChannelSubmit:true})
       axios.post('/api/channels', {name, description, defaultVideoId, youtubeChannelId, playlistId, hashtags})
-      .then(() => {
+      .then((res) => {
         this.setState({channelSubmitMessage:"", debounceChannelSubmit:false})
-        document.getElementById("channelname").value=""
-        document.getElementById("channeldescription").value=""
-        document.getElementById("defaultvideoid").value=""
-        ispl?document.getElementById("playlistid").value="":null
-        isyci?document.getElementById("youtubeChannelId").value="":null
-        document.getElementById("htag1").value = ""
-        document.getElementById("htag2").value = ""
-        document.getElementById("htag3").value = ""
-        document.getElementById("htag4").value = ""
-
+        document.getElementById("channelnamecreate").value=""
+        document.getElementById("channeldescriptioncreate").value=""
+        document.getElementById("defaultvideoidcreate").value=""
+        ispl?document.getElementById("playlistidcreate").value="":null
+        isyci?document.getElementById("youtubeChannelIdcreate").value="":null
+        document.getElementById("htag1create").value = ""
+        document.getElementById("htag2create").value = ""
+        document.getElementById("htag3create").value = ""
+        document.getElementById("htag4create").value = ""
+        
         this.getChannels()
+        this.changeToChannel(null, res.data.id)
+        this.setState({activeTab:channelTabData[1]})
       })
       .catch((err) => {
         this.setState({channelSubmitMessage: err.response.data.message, debounceChannelSubmit:false})
@@ -244,7 +254,6 @@ export default class ManageChannels extends Component {
 
   requestChannelEdit = (obj) => {
     this.setState({disableChannelSelect:true})
-
     axios.put(`/api/channels/${this.state.selectedChannel.id}`, obj)
     .then(() => {
       this.setState({disableChannelSelect:false})
@@ -347,33 +356,33 @@ export default class ManageChannels extends Component {
           <form onSubmit={this.channelSubmit}>
             <br/>
             <label>Channel Name:</label>
-            <input type="text" id="channelname" name="channelname"/><br/>
+            <input type="text" id="channelnamecreate" name="channelnamecreate"/><br/>
             <br/>
             <label>Enter 4 hashtags:</label>
-            <input type="text" id="htag1" name="htag1"/><br/>
-            <input type="text" id="htag2" name="htag2"/><br/>
-            <input type="text" id="htag3" name="htag3"/><br/>
-            <input type="text" id="htag4" name="htag4"/><br/>
+            <input type="text" id="htag1create" name="htag1create"/><br/>
+            <input type="text" id="htag2create" name="htag2create"/><br/>
+            <input type="text" id="htag3create" name="htag3create"/><br/>
+            <input type="text" id="htag4create" name="htag4create"/><br/>
             <br/>
             <label>Channel Description (optional):</label>
-            <textarea type="text" id="channeldescription" name="channeldescription"/><br/>
+            <textarea type="text" id="channeldescriptioncreate" name="channeldescriptioncreate"/><br/>
             <br/>
             <label>Default Video Youtube ID (optional):</label>
-            <input type="text" id="defaultvideoid" name="defaultvideoid"/><br/>
+            <input type="text" id="defaultvideoidcreate" name="defaultvideoidcreate"/><br/>
 
-            <label htmlFor="playlist">Youtube Playlist Upload</label><br/>
-            <input type="radio" onChange={this.radioChange} id="playlist" name="uploadtype" value="playlist"/>
-            <label htmlFor="channelcreator">Youtube Channel Upload</label><br/>
-            <input type="radio" onChange={this.radioChange} id="channelcreator" name="uploadtype" value="channelcreator"/>
+            <label htmlFor="playlistcreate">Youtube Playlist Upload</label><br/>
+            <input type="radio" onChange={this.radioChange} id="playlistcreate" name="uploadtype" value="playlistcreate"/>
+            <label htmlFor="channelcreatorcreate">Youtube Channel Upload</label><br/>
+            <input type="radio" onChange={this.radioChange} id="channelcreatorcreate" name="uploadtype" value="channelcreatorcreate"/>
             
             <br/>
-            {this.state.selectedRadio=="playlist"?<div>
+            {this.state.selectedRadio=="playlistcreate"?<div>
               <label>Looping Playlist Youtube ID:</label>
-              <input type="text" id="playlistid" name="playlistid"/>
+              <input type="text" id="playlistidcreate" name="playlistidcreate"/>
             </div>:null}
-            {this.state.selectedRadio=="channelcreator"?<div>
+            {this.state.selectedRadio=="channelcreatorcreate"?<div>
               <label>Youtube Channel Id:</label>
-              <input type="text" id="youtubeChannelId" name="youtubeChannelId"/>
+              <input type="text" id="youtubeChannelIdcreate" name="youtubeChannelIdcreate"/>
             </div>:null}
             <br/><br/>
             <input disabled={!this.state.selectedRadio} type="submit" value="submit" />
@@ -425,7 +434,7 @@ export default class ManageChannels extends Component {
               <input type="submit" value="submit" />
             </form>
             </div>:null}
-            <div>Tags - {channel && channel.hashtags && channel.hashtags.length?channel.hashtags.map((h) => {return <div key={`hash${h.tag.id}`}>{h.tag}</div>}):"none"}</div>
+            <div>Tags - {channel && channel.hashtags && channel.hashtags.length?channel.hashtags.map((h, i) => {return <div key={`hash${i}`}>{h.tag}</div>}):"none"}</div>
             <button onClick={this.toggleShowHashtagEdit}>Edit</button>
             {this.state.showHashtagEdit?<div><div>Edit tags</div>
             <form onSubmit={this.changeHashtags}>

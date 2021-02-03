@@ -12,16 +12,16 @@ export default class Tutorial extends Component {
   render() {
     return (
       <div style={{margin:"30px"}}>
-        <p style={{overflowWrap:"anywhere"}}><br/>
+        <div style={{overflowWrap:"anywhere"}}><br/>
           <h3>TVee2 is a curation based, youtube broadcaster service that combines the simple format of normal tv and the ease of accessibility of youtube.</h3>
 <br/><br/>
           If you click on the tv with fuzz in the navbar, it will bring you to that channels currently playing content. If logged in, here you can comment and make and post pixel images.  From the video control bar you can mute, fullscreen, flick the channel, keypad in a channel id and favorite a channel for easier access in the future.
 <br/><br/>
           When a channel is created the youtube playlist or youtube channel’s content will be looped through and used as broadcasting content.
 <br/><br/>
-          If a channel is used, only the most recent ~4 hours of content willl be used for the channel.  This will be updated nightly, so if the channel uploads more videos, the channel will update as well daily.
+          If a channel is used, only the most recent 74 playlist items or ~4 hours of content willl be used for the channel.  The content updates nightly. So if the channel uploads more videos, the videos will be added to the channel that night.
 <br/><br/>
-          If a playlist is used, the entire playlist will be uploaded and all playlist items will be featured on channel.
+          If a playlist is used, the most recent 74 items will be uploaded and all playlist items will be featured on channel.
 <br/><br/><br/>
           Creating a channel:<br/>
           <ol>
@@ -52,7 +52,7 @@ export default class Tutorial extends Component {
 <br/><br/>
           Any video less than 25 seconds will not be featured on channel.<br/>
           Make sure any playlist or channel is set to public, it’s items are videos, and that videos are accessible in the desired region<br/>
-        </p>
+        </div>
         <p>Please contact admin@tvee2.com with any questions or concerns.</p>
         <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
       </div>

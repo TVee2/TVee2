@@ -124,7 +124,7 @@ export default class ManageMe extends Component {
             {this.state.showPlippiBar?<PixBar selectPixHandler={this.setProfilePix} dim={64}/>:null}
             <div style={{backgroundColor:this.state.user.color, margin:"20px"}}>
               <div>Profile picture set to:</div>
-              <div><PixBlock adgrab="mprof" pix={this.state.user.profilePix} dim={256}/></div>
+              <div><PixBlock adgrab="mprof" pix={this.state.user.profilePix} dim={64}/></div>
 
               <div>Username: {this.state.user.username}</div>
               <div>Email: {this.state.user.email}</div>

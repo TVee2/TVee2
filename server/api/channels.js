@@ -7,6 +7,8 @@ const {Op} = require("sequelize");
 const roomVisitors = require('../socket/index.js').roomVisitors()
 
 const {uploadProgram, uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist} = require('./crudHelpers')
+var channelUploadLimit = process.env.CHANNEL_UPLOAD_LIMIT
+const seedDurationLimit = process.env.SEED_DURATION_LIMIT
 
 module.exports = router
 
@@ -202,14 +204,15 @@ router
   }
 
   var channels = await Channel.findAll({where:{userId:req.user.id}})
-
+  var uploadLimit = channelUploadLimit || 3
   try{
-    if(channels.length>=9){
-      throw Error("User can't create more than 9 channels currently, delete an existing channel. For exceptions contact admin@tvee2.com")
+    if(channels.length>=uploadLimit){
+      throw Error(`User can't create more than ${channelUploadLimit} channels currently while youtube api requests are limited, delete an existing channel. For exceptions contact admin@tvee2.com`)
     }
     var playlist
     if(youtubeChannelId){
-      playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, req.user, 4*60*60)
+      console.log("at upload channel")
+      playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, req.user, seedDurationLimit || 4*60*60)
     }else if(playlistId){
       playlist = await uploadOrUpdatePlaylist(playlistId, null, req.user)
     }

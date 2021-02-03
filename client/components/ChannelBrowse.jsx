@@ -54,6 +54,7 @@ export default class ChannelBrowse extends Component {
       <div>
         {this.props.page!==1?<button onClick={this.props.getFirstPage}>First</button>:null}
         {this.props.page!==1?<button onClick={this.props.getPrevPage}>Prev</button>:null}
+        <span> Page: {this.props.page} </span>
         {this.props.page!==this.props.pages?<button onClick={this.props.getNextPage}>Next</button>:null}
         {this.props.page!==this.props.pages?<button onClick={this.props.getLastPage}>Last</button>:null}
         <br/>
@@ -116,6 +117,7 @@ export default class ChannelBrowse extends Component {
         })}
         {this.props.page!==1?<button onClick={this.props.getFirstPage}>First</button>:null}
         {this.props.page!==1?<button onClick={this.props.getPrevPage}>Prev</button>:null}
+        <span> Page: {this.props.page} </span>
         {this.props.page!==this.props.pages?<button onClick={this.props.getNextPage}>Next</button>:null}
         {this.props.page!==this.props.pages?<button onClick={this.props.getLastPage}>Last</button>:null}
         <br/><br/>

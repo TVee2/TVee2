@@ -5,6 +5,7 @@ const youtube = google.youtube('v3');
 const auth = new google.auth.GoogleAuth({
   scopes: ['https://www.googleapis.com/auth/youtube'],
 });
+const playlistItemLimit = process.env.PLAYLIST_ITEM_LIMIT
 google.options({auth});
 
 parseDuration = (item) => {
@@ -40,6 +41,7 @@ parseDuration = (item) => {
 }
 
 var buildPlaylistItems = async(items, playlist_instance) => {
+  console.log(items.length)
   for(var j = 0;j<items.length;j++){
     var item = items[j].vid
     if(!item){
@@ -119,12 +121,15 @@ buildPlaylistAndGetItems = async (playlistId, user, seedDuration) => {
   if(!parseInt(totalResults)){
     throw new Error("playlist does not contain items")
   }
+
   var resultsPerPage = items_meta.pageInfo.resultsPerPage
   var thumbedResults = 0
   var items = []
   var nextPageToken = items_meta.nextPageToken
   var add = []
   var cumulative_duration = 0
+  var item_cap_counter = 0
+  var playlistItemCap = playlistItemLimit || 75
 
   while(parseInt(totalResults)>thumbedResults){
     var items_new_meta = []
@@ -142,13 +147,13 @@ buildPlaylistAndGetItems = async (playlistId, user, seedDuration) => {
     }
 
     if(seedDuration){
-      add = items_meta.items.filter((item)=>{cumulative_duration = cumulative_duration + parseDuration(item.vid); return cumulative_duration < seedDuration})
+      add = items_meta.items.filter((item)=>{cumulative_duration = cumulative_duration + parseDuration(item.vid); item_cap_counter = item_cap_counter + 1; return (cumulative_duration < seedDuration && item_cap_counter < playlistItemCap)})
     }else{
-      add = items_meta.items
+      add = items_meta.items.filter((item)=>{item_cap_counter = item_cap_counter + 1; return item_cap_counter < playlistItemCap})
     }
     items = items.concat(add)
 
-    if(totalResults<=thumbedResults || cumulative_duration > seedDuration){
+    if(thumbedResults >= totalResults || cumulative_duration >= seedDuration || item_cap_counter >= playlistItemCap){
       break
     }
 
@@ -168,40 +173,35 @@ buildPlaylistAndGetItems = async (playlistId, user, seedDuration) => {
 module.exports.uploadOrUpdatePlaylist = async (playlistYoutubeId, playlistInstanceId, user) => {
   var playlist_instance
   var playlistId
-  try{
-    if(!playlistYoutubeId && !playlistInstanceId){
-      throw new Error("no parameters given")
-    }
-    if(playlistInstanceId){
-      playlist_instance = await Playlist.findByPk(playlistInstanceId) 
-      if(!playlist_instance){
-          throw new Error("no playlist instance found")
-      }
-      if(playlistYoutubeId){
-        playlistId = playlistYoutubeId
-      }else{
-        playlistId = playlist_instance.youtubeId
-      }
-      var {playlist_obj, items} = await buildPlaylistAndGetItems(playlistId, user)
-      await playlist_instance.update(playlist_obj)
-      await PlaylistItem.destroy({where:{playlistId:playlist_instance.id}})
-    }else{
-
-      playlistId = playlistYoutubeId
-      var {playlist_obj, items} = await buildPlaylistAndGetItems(playlistId, user)
-      playlist_instance = await Playlist.create(playlist_obj)
-    }
-
-    return buildPlaylistItems(items, playlist_instance) 
-  }catch(err){
-    console.log(err)
+  if(!playlistYoutubeId && !playlistInstanceId){
+    throw new Error("no parameters given")
   }
+  if(playlistInstanceId){
+    playlist_instance = await Playlist.findByPk(playlistInstanceId) 
+    if(!playlist_instance){
+        throw new Error("no playlist instance found")
+    }
+    if(playlistYoutubeId){
+      playlistId = playlistYoutubeId
+    }else{
+      playlistId = playlist_instance.youtubeId
+    }
+    var {playlist_obj, items} = await buildPlaylistAndGetItems(playlistId, user)
+    await playlist_instance.update(playlist_obj)
+    await PlaylistItem.destroy({where:{playlistId:playlist_instance.id}})
+  }else{
+
+    playlistId = playlistYoutubeId
+    var {playlist_obj, items} = await buildPlaylistAndGetItems(playlistId, user)
+    playlist_instance = await Playlist.create(playlist_obj)
+  }
+
+  return buildPlaylistItems(items, playlist_instance) 
 }
 
 module.exports.uploadOrUpdateChannelPlaylist = async (youtubeChannelId, playlistInstanceId, user, seedDuration) => {
   var playlistId
   var playlist_instance
-  try{
     if(!youtubeChannelId && !playlistInstanceId){
       throw new Error("no parameters given")
     }
@@ -223,19 +223,15 @@ module.exports.uploadOrUpdateChannelPlaylist = async (youtubeChannelId, playlist
         part: 'status, contentDetails, snippet',
         id: youtubeChannelId
       })
-      var channel_item = channel_meta.data.items[0]
+      var channel_item = channel_meta.data && channel_meta.data.items?channel_meta.data.items[0]:null
       if(!channel_item){
-        throw new Error("channel may be set to private")
+        throw new Error("channel id may be invalid or channel may be set to private")
       }
       playlistId = channel_item["contentDetails"]["relatedPlaylists"]["uploads"]
       var {playlist_obj, items} = await buildPlaylistAndGetItems(playlistId, user, seedDuration)
       playlist_instance = await Playlist.create(playlist_obj)
     }
-
     return buildPlaylistItems(items, playlist_instance)
-  }catch(err){
-    console.log(err)
-  }
 }
 
 module.exports.uploadProgram = async (youtubeId, user) => {
@@ -251,15 +247,11 @@ module.exports.uploadProgram = async (youtubeId, user) => {
 
   var embeddable = item.status.embeddable
   if(!embeddable){
-    return res.json({err:"Not embeddable or set to private"});
+    throw new Error("Not embeddable or set to private")
   }
-  try{
-    var duration = parseDuration(item)
-    var title = item.snippet.title
-    var thumbnailUrl = item.snippet.thumbnails.default.url
-    var program = await Program.create({title, duration, youtubeId, thumbnailUrl, userId:user.id})
-    return program
-  }catch(err){
-    throw new Error(err)
-  }
+  var duration = parseDuration(item)
+  var title = item.snippet.title
+  var thumbnailUrl = item.snippet.thumbnails.default.url
+  var program = await Program.create({title, duration, youtubeId, thumbnailUrl, userId:user.id})
+  return program
 }
