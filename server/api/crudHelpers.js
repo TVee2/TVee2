@@ -41,7 +41,6 @@ parseDuration = (item) => {
 }
 
 var buildPlaylistItems = async(items, playlist_instance) => {
-  console.log(items.length)
   for(var j = 0;j<items.length;j++){
     var item = items[j].vid
     if(!item){
