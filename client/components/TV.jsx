@@ -449,7 +449,7 @@ export default class TV extends Component {
                   <div>Now Playing:</div>
                   <div>{this.state.segment.program.title}</div>
                   <img src={this.state.segment.program.thumbnailUrl}></img>
-                  <div><a src={`https://www.youtube.com/watch?v=${this.state.segment.program.youtubeId}`}>{`youtube.com/watch?v=${this.state.segment.program.youtubeId}`}</a></div>
+                  <div style={{overflow:"hidden"}}><a href={`https://www.youtube.com/watch?v=${this.state.segment.program.youtubeId}`}>{`youtube.com/watch?v=${this.state.segment.program.youtubeId}`}</a></div>
                 </div>
               :
                 <div style={{margin:window.innerWidth<700?"0":"0 4px 0 0", minHeight:"150px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>
