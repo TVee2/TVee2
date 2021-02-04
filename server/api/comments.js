@@ -56,7 +56,7 @@ router
   .then((pix) => {
     Post.create({pixId:req.body.pix.id, userId:req.user.id, channelId:req.body.channelId})
     .then((post)=>{
-      Post.findByPk(post.id, {include:[{model:User}, {model:Pix}, {model: Comment}]})
+      Post.findByPk(post.id, {include:[{model:User, include:[{model:Pix, as:"profilePix"}]}, {model:Pix}, {model: Comment}]})
       .then((post)=>{
         var io = req.app.locals.io
         io.emit(`c${post.channelId}`, post)
