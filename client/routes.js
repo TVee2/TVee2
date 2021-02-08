@@ -133,7 +133,7 @@ class Routes extends Component {
           )}
         />
         <Route path="/howto" render={(props) => (
-            <Tutorial/>
+            <Tutorial user={this.props.user}/>
           )}
         />
         <Route path="/login" component={LoginSignup} />

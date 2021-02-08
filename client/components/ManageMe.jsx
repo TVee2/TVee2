@@ -95,7 +95,8 @@ export default class ManageMe extends Component {
     })
   }
 
-  passwordUpdate = () => {
+  passwordUpdate = (e) => {
+    e.preventDefault()
     var password = document.getElementById("password").value
     var confirmpassword = document.getElementById("confirmpassword").value
 
@@ -137,10 +138,10 @@ export default class ManageMe extends Component {
             <div>Change your password</div>
             <form onSubmit={this.passwordUpdate}>
               <label htmlFor="password">New Password:</label>
-              <input type="text" id="password" name="password"/><br/>
+              <input type="password" id="password" name="password"/><br/>
               <label htmlFor="confirmpassword">Confirm Password:</label>
-              <input type="text" id="confirmpassword" name="confirmpassword"/><br/>
-              <input type="submit" value="Upadte Password" />
+              <input type="password" id="confirmpassword" name="confirmpassword"/><br/>
+              <input type="submit" value="Update Password" />
             </form>
             <div>{this.state.message}</div>
           </div>

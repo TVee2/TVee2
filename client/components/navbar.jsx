@@ -65,17 +65,19 @@ class Navbar extends Component {
                     <nav>
                       <div>
                         {/* The navbar will show these NavLinks after you log in */}
-                        <div style={{margin:"1em"}}>
-                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/channels">Channels</NavLink>
-                        </div>
-                        <div style={{margin:"1em"}}>
-                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/lists">Playlists</NavLink>
-                        </div>
+                        {this.props.isAdmin?<div>
+                          <div style={{margin:"1em"}}>
+                            <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/channels">Channels</NavLink>
+                          </div>
+                          <div style={{margin:"1em"}}>
+                            <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/lists">Playlists</NavLink>
+                          </div>
+                          <div style={{margin:"1em"}}>
+                            <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/howto">README</NavLink>
+                          </div>
+                        </div>:null}
                         <div style={{margin:"1em"}}>
                           <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/me">Me</NavLink>
-                        </div>
-                        <div style={{margin:"1em"}}>
-                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/howto">README</NavLink>
                         </div>
                       </div>
                     </nav>

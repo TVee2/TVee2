@@ -207,7 +207,7 @@ router
   var uploadLimit = channelUploadLimit || 3
   try{
     if(channels.length>=uploadLimit){
-      throw Error(`User can't create more than ${channelUploadLimit} channels currently while youtube api requests are limited, delete an existing channel. For exceptions contact admin@tvee2.com`)
+      throw Error(`User can't create more than ${channelUploadLimit || 3} channels currently while youtube api requests are limited, delete an existing channel. For exceptions contact admin@tvee2.com`)
     }
     var playlist
     if(youtubeChannelId){
