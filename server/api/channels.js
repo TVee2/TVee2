@@ -195,7 +195,7 @@ router
 .post('/', async (req, res, next) => {
   var {name, description, defaultVideoId, playlistId, youtubeChannelId, hashtags} = req.body
 
-  if(name.length>7){
+  if(name.length>15){
     return res.status(400).json(new Error("name length too long"))
   }else if(description.length>1000){
     return res.status(400).json(new Error("description length too long"))

@@ -199,8 +199,8 @@ export default class ManageChannels extends Component {
     var hashtags = [htag1, htag2, htag3, htag4]
     if(name.length==0 || ((playlistId && playlistId.length==0) && (youtubeChannelId && youtubeChannelId.length==0))){
       this.setState({channelSubmitMessage:"name and playlistid or youtubeChannelId are required"})
-    }else if(name.length > 7){
-      this.setState({channelSubmitMessage:"name cannot be more than 7 characters"})
+    }else if(name.length > 15){
+      this.setState({channelSubmitMessage:"name cannot be more than 15 characters"})
     }else if(!name.match(/^\w+$/)){
       this.setState({channelSubmitMessage:"name can only be alphanumeric characters and underscore"})
     }else if(description.length > 1000){
