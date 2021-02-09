@@ -107,6 +107,10 @@ export default class ManageMe extends Component {
 
     axios.post(`/api/users/resetme`, {password})
     .then((res) => {
+      document.getElementById("password").value = ""
+      document.getElementById("confirmpassword").value = ""
+      this.setState({message:"password updated successfully"})
+
     })
     .catch((err) => {
       this.setState({message:err})

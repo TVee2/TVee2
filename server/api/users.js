@@ -131,11 +131,11 @@ router.get('/', async (req, res, next) => {
   var user = req.user
   user.password = req.body.password
   user.save()
-  .then((res)=>{
-    return res.status(200).flash("updated password")
+  .then(()=>{
+    return res.json({message:"updated password"})
   })
   .catch((err) => {
-    res.flash(err)
+    console.log(err)
   })
 })
 
