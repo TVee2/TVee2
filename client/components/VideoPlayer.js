@@ -347,7 +347,7 @@ class VideoPlayer extends Component {
             <img src="/no_channel.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis8, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             <video
               style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis7, position:"absolute", top:"50%", transform: "translateY(-50%)"}}
-              src="/videos/test3.mp4"
+              src="/videos/tvee2placeholder.mp4"
               autoPlay
               muted={true}
               loop={true}

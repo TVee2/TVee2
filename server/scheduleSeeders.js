@@ -1,7 +1,7 @@
 module.exports = {seedNext2hrSegments, seedNext24HrTimeslots}
 const {User, Channel, Playlist, Timeslot, Segment, PlaylistItem, Program} = require('./db/models')
 const {Op} = require('sequelize')
-
+const videoDurationMax = process.env.VIDEO_DURATION_MAX
 async function seedNext2hrSegments(channelId){
   var now = new Date().getTime()
   var timeslots = []
@@ -65,7 +65,7 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
 
   //seed programs for all timeslot items
   var item_arr = []
-  var durmax = 25
+  var durmax = videoDurationMax || 25
   for(var i=0;i<items.length;i++){
     if(items[i].embeddable && parseInt(items[i].duration) > durmax){
       var program = await Program.findOrCreate({where: {title:items[i].title, thumbnailUrl:items[i].thumbnailUrl, width:items[i].width, height:items[i].height, duration:items[i].duration, youtubeId:items[i].youtubeId}})
@@ -92,7 +92,7 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
 
   while(timecounter < (now+(60*60*24))) {
     if(!item_arr.length){
-      console.log("no videos in playlist or items are less than 25 seconds")
+      console.log("no videos in playlist or playlist items are less than video duration maximum")
       break
     }
     var {title, thumbnailUrl, duration, youtubeId, position} = item_arr[j].item
