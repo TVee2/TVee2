@@ -7,6 +7,7 @@ const auth = new google.auth.GoogleAuth({
 });
 const playlistItemLimit = process.env.PLAYLIST_ITEM_LIMIT
 google.options({auth});
+var countryCode = process.env.COUNTRY_CODE || "US"
 
 parseDuration = (item) => {
   var str = item.contentDetails.duration
@@ -59,10 +60,14 @@ var buildPlaylistItems = async(items, playlist_instance) => {
     var duration = parseDuration(item)
 
     var embeddable = item.status.embeddable
-    var countryCode = 'US'
 
-    if(item && item.contentDetails && item.contentDetails.regionRestriction && item.contentDetails.regionRestriction.blocked){
-      embeddable = !item.contentDetails.regionRestriction.blocked.includes(countryCode) && embeddable
+    if(item && item.contentDetails && item.contentDetails.regionRestriction && (item.contentDetails.regionRestriction.blocked || item.contentDetails.regionRestriction.allowed)){
+      if(item.contentDetails.regionRestriction.blocked && item.contentDetails.regionRestriction.blocked.includes(countryCode)){
+        embeddable = false
+      }
+      if(item.contentDetails.regionRestriction.allowed && !item.contentDetails.regionRestriction.allowed.includes(countryCode)){
+        embeddable = false
+      }
     }
 
     var title = item.snippet.title
