@@ -166,10 +166,7 @@ class Routes extends Component {
           />
         )}
         {/* Displays our Login component as a fallback */}
-
-        {isLoggedIn? (
-          <Redirect to={`/tv/${this.state.cookieChannelId?this.state.cookieChannelId:1}`}/>
-        ):<Route component={LoginSignup} />}
+        <Redirect to={`/tv/${this.state.cookieChannelId?this.state.cookieChannelId:1}`}/>
       </Switch>
     )
   }
