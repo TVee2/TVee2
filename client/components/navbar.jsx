@@ -94,7 +94,7 @@ class Navbar extends Component {
               </div>
             ) : (
               <div style={{margin:"0 14px"}}>
-                <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton schedule" to="/browse"></NavLink>
+                <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton schedule" to="/tvbrowse"></NavLink>
                 <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton login" to="/login"></NavLink>
               </div>
             )}
