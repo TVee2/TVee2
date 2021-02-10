@@ -484,6 +484,7 @@ export default class TV extends Component {
                 getChannel={this.getChannel}
                 relatedChannels={this.state.relatedChannels}
                 height={height}
+                user={this.props.user}
               />
             </div>
           </div>

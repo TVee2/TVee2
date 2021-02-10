@@ -395,11 +395,12 @@ class VideoPlayer extends Component {
                   </div>
                 </div>
                 <div style={{display:window.innerWidth<700?"flex":"none", margin:"0 15px"}}>
-                  <div style={{color:"white", fontSize:window.innerWidth<700?"20px":"30px", margin:window.innerWidth<700?"0 14px":"14px"}}>{this.props.numViewers}</div>
-                  {this.props.isFavorite?
+                  <div style={{color:"white", fontSize:window.innerWidth<700?"19px":"30px", margin:window.innerWidth<700?"3px 14px 0 14px":"14px"}}>{this.props.numViewers}</div>
+                  {this.props.user && this.props.user.id?
+                    (this.props.isFavorite?
                     <button onClick = {this.props.removeFavorite} className = "videobutton favorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>
-                    :
-                    <button onClick = {this.props.addFavorite} className = "videobutton notfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>}
+                    :<button onClick = {this.props.addFavorite} className = "videobutton notfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>)
+                  :null}
                 </div>
                 <div style={{display:window.innerWidth<700?"none":"flex", backgroundColor:"black", margin:"0 14px"}}>
                   <button className = "videobutton keypad" style={{imageRendering:"pixelated", backgroundSize:"cover"}} onClick={() => {this.setState({showKeypad:!this.state.showKeypad})}} ></button>   
@@ -407,11 +408,13 @@ class VideoPlayer extends Component {
                     <input value={this.state.controlChannelOnChange} id="channelchange" onChange={this.channelInputOnChange} style={{fontSize:window.innerWidth<700?"20px":"30px", margin:window.innerWidth<700?"0":"14px 0", display:"inline-block", height:window.innerWidth<700?"20px":"30px", width:window.innerWidth<700?"50px":"84px"}}></input>
                     <button className="videobutton" onClick={this.switchChannel} style={{padding:"0px", fontSize:"10px", display:"inline-block", verticalAlign:"super"}}>Go</button>
                   </div>
-                  <div style={{color:"white", fontSize:window.innerWidth<700?"20px":"30px", margin:window.innerWidth<700?"0 14px":"14px"}}>{this.props.numViewers}</div>
-                  {this.props.isFavorite?
+                  <div style={{color:"white", fontSize:window.innerWidth<700?"19px":"30px", margin:window.innerWidth<700?"3px 14px 0 14px":"14px"}}>{this.props.numViewers}</div>
+                  {this.props.user && this.props.user.id?
+                    (this.props.isFavorite?
                     <button onClick = {this.props.removeFavorite} className = "videobutton favorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>
                     :
-                    <button onClick = {this.props.addFavorite} className = "videobutton notfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>}
+                    <button onClick = {this.props.addFavorite} className = "videobutton notfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>)
+                  :null}
                 </div>
               </div>
             </div>

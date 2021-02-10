@@ -285,7 +285,7 @@ router
     limit: 10,
   })
   .then((channels) => {
-    var related10 = getRandomNoItemsFromArr(channels, 10)
+    var related10 = getRandomNoItemsFromArr(channels, 5)
     res.status(200).json(related10)
     return
   })
@@ -325,7 +325,7 @@ router
       return db.query(`SELECT DISTINCT channels.id, channels.\"name\", channels.\"thumbnailUrl\", channels.\"defaultProgramId\" FROM channels JOIN channelhashtags ON channels.id = channelhashtags.\"channelId\" JOIN hashtags on hashtags.id = channelhashtags.\"hashtagId\" WHERE tag IN ${list} AND NOT channelhashtags.\"channelId\" = ${fav.id}`, { type: QueryTypes.SELECT })
     })
     .then((channels) => {
-      var related10 = getRandomNoItemsFromArr(channels, 10)
+      var related10 = getRandomNoItemsFromArr(channels, 5)
       res.status(200).json(related10)
       return
     })
