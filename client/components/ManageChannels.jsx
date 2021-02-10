@@ -47,6 +47,7 @@ export default class ManageChannels extends Component {
       disableChannelSelect:false,
       debounceChannelSubmit:false,
       showChannelDescriptionEdit:false,
+      showChannelNameEdit:false,
       showHashtagEdit:false,
       showPlaceholderEdit:false,
       showPlaylistIdEdit:false,
@@ -61,6 +62,10 @@ export default class ManageChannels extends Component {
   componentDidMount() {
     this.getChannels()
     this.getPlaylists()
+  }
+
+  toggleShowChannelNameEdit = () => {
+    this.setState({showHashtagEdit:false, showChannelNameEdit:!this.state.showChannelNameEdit, showChannelDescriptionEdit:false, showPlaceholderEdit:false, showPlaylistIdEdit:false, showYoutubeChannelIdEdit:false})
   }
 
   toggleShowChannelDescriptionEdit = () => {
@@ -263,6 +268,12 @@ export default class ManageChannels extends Component {
     })
   }
 
+  changeName = () => {
+    event.preventDefault()
+    var name = document.getElementById("channelnameedit").value
+    this.requestChannelEdit({name})
+  }
+
   changeDescription = () => {
     event.preventDefault()
     var description = document.getElementById("description").value
@@ -408,8 +419,15 @@ export default class ManageChannels extends Component {
             <div>CHANNEL INFORMATION</div>
             <div>Address - {channel.id}</div>
             <div>Name - {channel.name}</div>
+            <button onClick={this.toggleShowChannelNameEdit}>Edit</button>
+            {this.state.showChannelNameEdit?<div>
+            <div>Change channel name</div>
+              <form onSubmit={this.changeName}>
+                <input type="text" id="channelnameedit" name="channelnameedit" defaultValue={channel.name}/><br/>
+                <input type="submit" value="submit" />
+              </form>
+            </div>:null}
             <div>Description - {channel.description?channel.description:"none"}</div>
-
             <button onClick={this.toggleShowChannelDescriptionEdit}>Edit</button>
             {this.state.showChannelDescriptionEdit?<div>
             <div>Change channel description</div>

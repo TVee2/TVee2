@@ -59,25 +59,25 @@ class Routes extends Component {
   }
 
   getNextPage = () => {
-    this.setState({page:this.state.page+1}, () => {
+    this.setState({channels:[], page:this.state.page+1}, () => {
       this.getChannelsPage()
     })
   }
 
   getFirstPage = () => {
-    this.setState({page:1}, () => {
+    this.setState({channels:[], page:1}, () => {
       this.getChannelsPage()
     })
   }
 
   getPrevPage = () => {
-    this.setState({page:this.state.page-1}, () => {
+    this.setState({channels:[], page:this.state.page-1}, () => {
       this.getChannelsPage()
     })
   }
 
   getLastPage = () => {
-    this.setState({page:this.state.pages}, () => {
+    this.setState({channels:[], page:this.state.pages}, () => {
       this.getChannelsPage()
     })
   }

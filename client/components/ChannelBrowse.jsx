@@ -39,7 +39,7 @@ export default class ChannelBrowse extends Component {
     next5.push({time:first_round+60*60*1000})
     next5.push({time:first_round+90*60*1000})
     next5.push({time:first_round+120*60*1000})
-    next5.push({time:first_round+150*60*1000})
+    // next5.push({time:first_round+150*60*1000})
 
     return next5
   }

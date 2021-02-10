@@ -48,6 +48,7 @@ router
       {model: Playlist},
       {model: Program, as: "defaultProgram"},
     ],
+    where:{active:true},
     order: [['createdAt', 'ASC']],
     limit: 50
   })
@@ -488,7 +489,7 @@ router
 
 .put('/:id', async (req, res, next) => {
   // //
-  // //get single channel
+  // //edit single channel
   // //
   var hashtags = req.body.hashtags 
   if(hashtags){
@@ -513,12 +514,12 @@ router
   var defaultVideoId = req.body.defaultVid
   var channel = await Channel.findByPk(req.params.id)
   var playlist = await Playlist.findByPk(channel.playlistId)
-  var {description} = req.body
+  var {name, description} = req.body
   try{
     if(playlistId || youtubeChannelId){
       await playlist.update({ youtubeId:playlistId, youtubeChannelId:youtubeChannelId })
     }
-    await channel.update({ description })
+    await channel.update({ name, description })
     if(defaultVideoId){
       var program = await uploadProgram(defaultVideoId, req.user)
       await channel.setDefaultProgram(program)
