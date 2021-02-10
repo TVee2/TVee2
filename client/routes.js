@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter, Route, Switch, Redirect} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {Login, Signup, Home} from './components'
+import {Login, Signup, Recommend} from './components'
 import LoginSignup from './components/LoginSignup'
 import TV from './components/TV'
 import Scheduler from './components/Scheduler'
@@ -30,7 +30,23 @@ class Routes extends Component {
   constructor() {
     super()
 
-    this.state = {channels:[], showCover:true, chtimeslots:[], muted:true, dirty:false, page: 1, pages:null, debounceGetChannels:false,}
+    this.state = {channels:[], cookieChannelId:null, showCover:true, chtimeslots:[], muted:true, dirty:false, page: 1, pages:null, debounceGetChannels:false,}
+  }
+
+  componentWillMount() {
+    var cookieChannelId = this.getCookie("c")
+    this.setState({cookieChannelId})
+  }
+
+  getCookie = (name) => {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for(var i=0;i < ca.length;i++) {
+          var c = ca[i];
+          while (c.charAt(0)==' ') c = c.substring(1,c.length);
+          if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+      }
+      return null;
   }
 
   componentDidMount() {
@@ -95,7 +111,7 @@ class Routes extends Component {
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route path="/home" component={Home} />
+        <Route path="/recommend" component={Recommend} />
         <Route path="/entrance" component={Entrance} />
         <Route path="/tv/:channelId" render={(props) => (
           <TV  {...props}
@@ -150,8 +166,9 @@ class Routes extends Component {
           />
         )}
         {/* Displays our Login component as a fallback */}
+
         {isLoggedIn? (
-           <Route component={Home} />
+          <Redirect to={`/tv/${this.state.cookieChannelId?this.state.cookieChannelId:1}`}/>
         ):<Route component={LoginSignup} />}
       </Switch>
     )

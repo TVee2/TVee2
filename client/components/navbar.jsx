@@ -48,14 +48,13 @@ class Navbar extends Component {
         <nav>
           <div style={{display:"flex", justifyContent:"space-between"}}>
             <div style={{margin:"0 14px"}}>
-              <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton home" to="/home"></NavLink>
+              <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton browse" to="/home"></NavLink>
               <div onClick={()=>{history.push('/home')}} className="logoword" style={{cursor:"pointer", display:window.innerWidth<450?"none":"inline-block"}}></div>
             </div>
 
             {this.props.isLoggedIn ? (
               <div style={{margin:"0 14px 0 0"}}>
-                <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton browse" to="/tvbrowse"></NavLink>
-
+                <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton schedule" to="/tvbrowse"></NavLink>
                 <div tabIndex="0"
                 onFocus={this.onFocusHandler}
                 onBlur={this.onBlurHandler}
@@ -72,12 +71,15 @@ class Navbar extends Component {
                           <div style={{margin:"1em"}}>
                             <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/lists">Playlists</NavLink>
                           </div>
-                          <div style={{margin:"1em"}}>
-                            <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/howto">README</NavLink>
-                          </div>
                         </div>:null}
                         <div style={{margin:"1em"}}>
+                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/recommend">QuickPlay</NavLink>
+                        </div>                        
+                        <div style={{margin:"1em"}}>
                           <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/me">Me</NavLink>
+                        </div>
+                        <div style={{margin:"1em"}}>
+                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/howto">README</NavLink>
                         </div>
                       </div>
                     </nav>
@@ -92,7 +94,7 @@ class Navbar extends Component {
               </div>
             ) : (
               <div style={{margin:"0 14px"}}>
-                <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton browse" to="/tvbrowse"></NavLink>
+                <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton schedule" to="/browse"></NavLink>
                 <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton login" to="/login"></NavLink>
               </div>
             )}

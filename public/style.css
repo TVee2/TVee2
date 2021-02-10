@@ -48,6 +48,14 @@ a {
   background-image: url('./icons/browse.png')
 }
 
+.schedule{
+  background-image: url('./icons/transparent_schedule.png')
+}
+
+.recommend{
+  background-image: url('./icons/transparent_recommend.png')
+}
+
 .manage{
   background-image: url('./icons/manage.png')
 }
@@ -74,6 +82,10 @@ a {
 }
 
 @media only screen and (max-width: 530px) {
+  .homelistanchor{
+    font-size: x-small;
+  }
+
   .homelistcontainer{
     height:98px;
     width:98px;

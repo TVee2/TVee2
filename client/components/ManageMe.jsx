@@ -134,9 +134,10 @@ export default class ManageMe extends Component {
               <div>Username: {this.state.user.username}</div>
               <div>Email: {this.state.user.email}</div>
               <div>Member Since: {this.state.user.createdAt}</div>
-              <div>{this.state.favorites.map((channel) => {
-                return <div>{channel.name}<img src={channel.thumbnailUrl}></img><button onClick={this.unfavorite.bind(this, channel.id)}>unfavorite</button></div>
-              })}</div>
+              <br/><h4>Favorites</h4>
+              <div>{this.state.favorites.length?this.state.favorites.map((channel) => {
+                return <div><div>{channel.name}</div><img src={channel.thumbnailUrl}></img><button onClick={this.unfavorite.bind(this, channel.id)}>unfavorite</button></div>
+              }):<div>You have no favorites</div>}</div>
             </div>
             <br/><br/>
             <div>Change your password</div>

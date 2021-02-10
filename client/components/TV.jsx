@@ -134,6 +134,7 @@ export default class TV extends Component {
     if(!channelId){
       channelId = this.props.match.params.channelId
     }
+    document.cookie = `c=${channelId}`
     this.getComments(channelId)
     axios.get(`/api/channels/${channelId}`)
     .then((res) => {

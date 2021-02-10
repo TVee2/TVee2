@@ -4,5 +4,5 @@
  * having to figure out which file they belong to!
  */
 export {default as Navbar} from './navbar'
-export {default as Home} from './Home'
+export {default as Recommend} from './Recommend'
 export {Login, Signup} from './auth-form'

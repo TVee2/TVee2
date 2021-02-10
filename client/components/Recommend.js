@@ -3,7 +3,7 @@ import axios from 'axios'
 import history from '../history'
 import {Link} from 'react-router-dom'
 
-export default class Home extends Component {
+export default class Recommend extends Component {
   constructor(props) {
     super(props)
 
@@ -51,7 +51,7 @@ export default class Home extends Component {
 
   channelElem = (channel) => {return (
     <div className="homelistcontainer" onClick={this.goToChannel.bind(this, channel.id)}>
-      <Link to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link>
+      <Link className="homelistanchor" to={`/tv/${channel.id}`}>{channel.id} - {channel.name}</Link>
       <img className="homelistimage" src={channel.thumbnailUrl}></img>
     </div>
   )}
@@ -60,29 +60,26 @@ export default class Home extends Component {
     return (
       <div>
         {this.state.favoriteChannels.length?<div>
-          <div>Favorite Channels</div>
-          <div style={{display:"flex", flexWrap:"wrap"}}>{this.state.favoriteChannels.map((channel) => {
+          <h4>Favorite Channels</h4>
+          <div style={{display:"flex"}}>{this.state.favoriteChannels.map((channel) => {
             return this.channelElem(channel)
           })}</div>
         </div>:null}
-
         {this.state.activeChannels.length?<div>
-          <div>Most Active Channels</div>
-          <div style={{display:"flex", flexWrap:"wrap"}}>{this.state.activeChannels.map((channel) => {
+          <h4>Most Active Channels</h4>
+          <div style={{display:"flex"}}>{this.state.activeChannels.map((channel) => {
             return this.channelElem(channel)
           })}</div>
         </div>:null}
-
         {this.state.newChannels.length?<div>          
-          <div>New Channels</div>
-          <div style={{display:"flex", flexWrap:"wrap"}}>{this.state.newChannels.map((channel) => {
+          <h4>New Channels</h4>
+          <div style={{display:"flex"}}>{this.state.newChannels.map((channel) => {
             return this.channelElem(channel)
           })}</div>
         </div>:null}
-
         {this.state.recommendedChannels.length?<div>
-          <div>You Might Like:</div>
-          <div style={{display:"flex", flexWrap:"wrap"}}>{this.state.recommendedChannels.map((channel) => {
+          <h4>You Might Like:</h4>
+          <div style={{display:"flex"}}>{this.state.recommendedChannels.map((channel) => {
             return this.channelElem(channel)
           })}</div>
        </div>:null}
