@@ -363,6 +363,9 @@ export default class TV extends Component {
   }
 
   changeChannel = (id) => {
+    if(this.state.channelChanged){
+      return
+    }
     history.push(`/tv/${id}`)
     if(this.state.channel){
       socket.emit('roomleave', {channelId: this.state.channel.id, userId:this.props.user.id})

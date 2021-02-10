@@ -29,7 +29,8 @@ class VideoPlayer extends Component {
       controlChannelOnChange:"",
       vidStatus:null,
       relatedChannels:[],
-      isMobileNotVisible:false
+      isMobileNotVisible:false,
+      opacity:0,
     }
     this.videoplayer=null
     this.defaultVideoPlayer=null
@@ -210,13 +211,23 @@ class VideoPlayer extends Component {
   }
 
   fullscreen=()=>{
-    var elem = document.getElementById("vidcontainer")
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) { /* Safari */
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { /* IE11 */
-      elem.msRequestFullscreen();
+    var isFullscreen
+    if(document.fullscreenElement|| document.webkitFullscreenElement || document.mozFullScreenElement){
+      isFullscreen=true
+    }else{
+      isFullscreen=false
+    }
+    if(isFullscreen){
+      document.exitFullscreen()
+    }else{
+      var elem = document.getElementById("vidcontainer")
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+      }
     }
   }
 
@@ -280,6 +291,16 @@ class VideoPlayer extends Component {
     if ((e.target.value === '' || re.test(e.target.value)) && e.target.value.length<6) {
       this.setState({controlChannelOnChange:e.target.value})
     }
+  }
+
+  mouseEnter = () => {
+      console.log('mouse enter')
+      this.setState({opacity: 1})
+  }
+
+  mouseLeave = () => {
+      console.log('mouse leave')
+      this.setState({opacity: 0})
   }
 
   render() {
@@ -353,48 +374,50 @@ class VideoPlayer extends Component {
               loop={true}
               controls={false}
             />
-          </div>
-          <div style={{backgroundColor:"black", position:"absolute", display:"flex", top:this.props.height?this.props.height:0, width:"100%", zIndex:"5"}}>
-            <div style={{display:"flex", flexFlow:"wrap", justifyContent:"space-between", width:"100%"}}>
-              <div style={{display:"flex", backgroundColor:"black"}}>
-                <div style={{margin:"0 15px 0 5px"}}>
-                  {this.props.muted?<button className="videobutton mute" onClick={this.toggleMute}></button>:<button className="videobutton unmute" onClick={this.toggleMute}></button>}
-                  <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
-                </div>
-                <div style={{display:"flex"}}>
-                  <div style={{display:"flex", margin:"0 4px"}}>
-                    <button className = "videobutton upchannel" style={{imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.upChannel} ></button>
-                    <button className = "videobutton downchannel" style={{imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.downChannel} ></button>   
+            <div id="controlBar" onMouseLeave={this.mouseLeave} onMouseEnter={this.mouseEnter} style={{opacity:isFullscreen?this.state.opacity:1, backgroundColor:"black", position:"absolute", display:"flex", top:isFullscreen?"":(this.props.height?this.props.height:0), bottom:isFullscreen?0:"", width:"100%", zIndex:"5"}}>
+              <div style={{display:"flex", flexFlow:"wrap", justifyContent:"space-between", width:"100%"}}>
+                <div style={{display:"flex", backgroundColor:"black"}}>
+                  <div style={{margin:"0 15px 0 5px"}}>
+                    {this.props.muted?<button className="videobutton mute" onClick={this.toggleMute}></button>:<button className="videobutton unmute" onClick={this.toggleMute}></button>}
+                    <button className="videobutton fullscreen" onClick={this.fullscreen}></button>
                   </div>
-                  <div style={{display:"flex", margin:"0 4px"}}>
-                    {this.props.allChannels.length && null?<div className = "videobutton subbutton flickall" style={{ border:this.props.selectedFlick=="all"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.props.flickChange.bind(this, "all")} ></div>:null}
-                    {this.props.favoriteChannels.length?<div className = "videobutton subbutton flickfavorite" style={{ border:this.props.selectedFlick=="favorite"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.props.flickChange.bind(this, "favorite")}></div>:null}
-                    {this.props.hotChannels.length?<div className = "videobutton subbutton flickhot" style={{ border:this.props.selectedFlick=="hot"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.props.flickChange.bind(this, "hot")} ></div>:null}
-                    {this.props.newChannels.length?<div className = "videobutton subbutton flicknew" style={{ border:this.props.selectedFlick=="new"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.props.flickChange.bind(this, "new")} ></div>:null}
+                  <div style={{display:"flex"}}>
+                    <div style={{display:"flex", margin:"0 4px"}}>
+                      <button className = "videobutton upchannel" style={{imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.upChannel} ></button>
+                      <button className = "videobutton downchannel" style={{imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.downChannel} ></button>   
+                    </div>
+                    <div style={{display:"flex", margin:"0 4px"}}>
+                      {this.props.allChannels.length && null?<div className = "videobutton subbutton flickall" style={{ border:this.props.selectedFlick=="all"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.props.flickChange.bind(this, "all")} ></div>:null}
+                      {this.props.favoriteChannels.length?<div className = "videobutton subbutton flickfavorite" style={{ border:this.props.selectedFlick=="favorite"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.props.flickChange.bind(this, "favorite")}></div>:null}
+                      {this.props.hotChannels.length?<div className = "videobutton subbutton flickhot" style={{ border:this.props.selectedFlick=="hot"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.props.flickChange.bind(this, "hot")} ></div>:null}
+                      {this.props.newChannels.length?<div className = "videobutton subbutton flicknew" style={{ border:this.props.selectedFlick=="new"?`solid ${this.props.flickColor} 2px`:"", imageRendering:"pixelated", backgroundSize:"cover"}} onClick={this.props.flickChange.bind(this, "new")} ></div>:null}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div style={{display:window.innerWidth<700?"flex":"none", margin:"0 15px"}}>
-                <div style={{color:"white", fontSize:window.innerWidth<700?"20px":"30px", margin:window.innerWidth<700?"0 14px":"14px"}}>{this.props.numViewers}</div>
-                {this.props.isFavorite?
-                  <button onClick = {this.props.removeFavorite} className = "videobutton favorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>
-                  :
-                  <button onClick = {this.props.addFavorite} className = "videobutton notfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>}
-              </div>
-              <div style={{display:window.innerWidth<700?"none":"flex", backgroundColor:"black", margin:"0 14px"}}>
-                <button className = "videobutton keypad" style={{imageRendering:"pixelated", backgroundSize:"cover"}} onClick={() => {this.setState({showKeypad:!this.state.showKeypad})}} ></button>   
-                <div style={{visibility:this.state.showKeypad?"":"hidden", display:"flex"}}>
-                  <input value={this.state.controlChannelOnChange} id="channelchange" onChange={this.channelInputOnChange} style={{fontSize:window.innerWidth<700?"20px":"30px", margin:window.innerWidth<700?"0":"14px 0", display:"inline-block", height:window.innerWidth<700?"20px":"30px", width:window.innerWidth<700?"50px":"84px"}}></input>
-                  <button className="videobutton" onClick={this.switchChannel} style={{padding:"0px", fontSize:"10px", display:"inline-block", verticalAlign:"super"}}>Go</button>
+                <div style={{display:window.innerWidth<700?"flex":"none", margin:"0 15px"}}>
+                  <div style={{color:"white", fontSize:window.innerWidth<700?"20px":"30px", margin:window.innerWidth<700?"0 14px":"14px"}}>{this.props.numViewers}</div>
+                  {this.props.isFavorite?
+                    <button onClick = {this.props.removeFavorite} className = "videobutton favorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>
+                    :
+                    <button onClick = {this.props.addFavorite} className = "videobutton notfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>}
                 </div>
-                <div style={{color:"white", fontSize:window.innerWidth<700?"20px":"30px", margin:window.innerWidth<700?"0 14px":"14px"}}>{this.props.numViewers}</div>
-                {this.props.isFavorite?
-                  <button onClick = {this.props.removeFavorite} className = "videobutton favorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>
-                  :
-                  <button onClick = {this.props.addFavorite} className = "videobutton notfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>}
+                <div style={{display:window.innerWidth<700?"none":"flex", backgroundColor:"black", margin:"0 14px"}}>
+                  <button className = "videobutton keypad" style={{imageRendering:"pixelated", backgroundSize:"cover"}} onClick={() => {this.setState({showKeypad:!this.state.showKeypad})}} ></button>   
+                  <div style={{visibility:this.state.showKeypad?"":"hidden", display:"flex"}}>
+                    <input value={this.state.controlChannelOnChange} id="channelchange" onChange={this.channelInputOnChange} style={{fontSize:window.innerWidth<700?"20px":"30px", margin:window.innerWidth<700?"0":"14px 0", display:"inline-block", height:window.innerWidth<700?"20px":"30px", width:window.innerWidth<700?"50px":"84px"}}></input>
+                    <button className="videobutton" onClick={this.switchChannel} style={{padding:"0px", fontSize:"10px", display:"inline-block", verticalAlign:"super"}}>Go</button>
+                  </div>
+                  <div style={{color:"white", fontSize:window.innerWidth<700?"20px":"30px", margin:window.innerWidth<700?"0 14px":"14px"}}>{this.props.numViewers}</div>
+                  {this.props.isFavorite?
+                    <button onClick = {this.props.removeFavorite} className = "videobutton favorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>
+                    :
+                    <button onClick = {this.props.addFavorite} className = "videobutton notfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>}
+                </div>
               </div>
             </div>
           </div>
+          
+
           <div style={{width:"100%", backgroundColor:"black"}}></div>
           {this.props.relatedChannels.length && !isMobile() && window.innerWidth>1000?<div style={{position:"absolute", left:"1000px"}}><div>Related Channels</div>{this.props.relatedChannels.map((channel) => {return this.channelElem(channel)})}</div>:null}
       </div>
