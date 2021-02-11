@@ -1,7 +1,7 @@
 module.exports = {seedNext2hrSegments, seedNext24HrTimeslots}
 const {User, Channel, Playlist, Timeslot, Segment, PlaylistItem, Program} = require('./db/models')
 const {Op} = require('sequelize')
-const videoDurationMax = process.env.VIDEO_DURATION_MAX
+const videoDurationMin = process.env.VIDEO_DURATION_MIN
 async function seedNext2hrSegments(channelId){
   var now = new Date().getTime()
   var timeslots = []
@@ -65,9 +65,9 @@ async function seedNext24HrTimeslots(channelId, seedSegments){
 
   //seed programs for all timeslot items
   var item_arr = []
-  var durmax = videoDurationMax || 25
+  var durmin = videoDurationMin || 25
   for(var i=0;i<items.length;i++){
-    if(items[i].embeddable && parseInt(items[i].duration) > durmax){
+    if(items[i].embeddable && parseInt(items[i].duration) > durmin){
       var program = await Program.findOrCreate({where: {title:items[i].title, thumbnailUrl:items[i].thumbnailUrl, width:items[i].width, height:items[i].height, duration:items[i].duration, youtubeId:items[i].youtubeId}})
       if(Array.isArray(program)){
         program = program[0]

@@ -19,6 +19,7 @@
     "postinstall": "touch secrets.jss",
     "seed": "node script/seed.js",
     "popsegments": "node script/seeddailysegments.js",
+    "seedchannels": "node script/seedChannelsFromFile.js",
     "start": "node server",
     "dev": "NODE_ENV='development' npm run build-client-watch & NODE_ENV='development' npm run start-server",
     "start-server": "nodemon server -e html,js,scss --ignore public --ignore client",

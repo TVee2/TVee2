@@ -8,6 +8,9 @@ const {seedNext24HrTimeslots, seedNext2hrSegments, verifyAndUpdatePlaylists} = r
 const {uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist} = require('../api/crudHelpers')
 const seedDurationLimit = process.env.SEED_DURATION_LIMIT
 
+objIO = {}
+module.exports.objIO = objIO
+
 var seedAllChannels = async ()=>{
   var channels = await Channel.findAll()
   
@@ -38,6 +41,7 @@ var updateChannelPlaylists = async () => {
 }
 
 module.exports.startSeeding = io => {
+  objIO.io = io
   // updateChannelPlaylists()
   io.on('connection', socket => {
     socket.on('roomenter', (data) => {

@@ -8,6 +8,10 @@ const auth = new google.auth.GoogleAuth({
 const playlistItemLimit = process.env.PLAYLIST_ITEM_LIMIT
 google.options({auth});
 var countryCode = process.env.COUNTRY_CODE || "US"
+const seedDurationLimit = process.env.SEED_DURATION_LIMIT
+const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders')
+const {objIO} = require('../socket')
+const { turnOnChannelEmitter } = require('../channelEmitter')
 
 parseDuration = (item) => {
   var str = item.contentDetails.duration
@@ -40,6 +44,42 @@ parseDuration = (item) => {
   }
   return duration
 }
+
+buildPlaylistFromId = async (name, description, defaultVideoId, playlistId, youtubeChannelId, hashtags, user) => {
+    var playlist
+    if(youtubeChannelId){
+      console.log("at upload channel")
+      playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, user, seedDurationLimit || 4*60*60)
+    }else if(playlistId){
+      playlist = await uploadOrUpdatePlaylist(playlistId, null, user)
+    }
+    if(!playlist){
+      throw Error("Youtube playlist id or youtube channel id must be provided")
+    }
+    var channel = await Channel.create({name, description, thumbnailUrl:playlist.thumbnailUrl, userId:user.id})
+    var hashtags = hashtags.filter((h) => h)
+    if(hashtags.some((h)=>{return h.length>15})){
+      return res.status(400).json(new Error("Hashtags must not be greater than 15 chars"))
+    }
+    if(hashtags.length){
+      var hasharr = hashtags.map((htag) => {return {tag:htag}})
+      var hashtags = await Promise.all(hasharr.map((h)=>Hashtag.findOrCreate({where:h}).then((arr)=>arr[0])))
+      await channel.setHashtags(hashtags)
+    }
+    if(!defaultVideoId){
+      defaultVideoId = "CZBhCmniILE"
+    }
+    var program = await uploadProgram(defaultVideoId, user)
+    await channel.setDefaultProgram(program)
+
+    await channel.setPlaylist(playlist)
+    await seedNext24HrTimeslots(channel.id, true)
+
+    channel = await Channel.findByPk(channel.id, {include:[{model:User}]})
+    console.log(`channel id:${channel.id} - name:${channel.name} successfully created`)
+    return channel
+}
+
 
 var buildPlaylistItems = async(items, playlist_instance) => {
   for(var j = 0;j<items.length;j++){
@@ -98,7 +138,7 @@ var buildPlaylistItems = async(items, playlist_instance) => {
   return playlist_instance
 }
 
-buildPlaylistAndGetItems = async (playlistId, user, seedDuration) => {
+var buildPlaylistAndGetItems = async (playlistId, user, seedDuration) => {
   var playlist_meta = await youtube.playlists.list({
     part: 'status, contentDetails, snippet',
     id: playlistId
@@ -174,7 +214,7 @@ buildPlaylistAndGetItems = async (playlistId, user, seedDuration) => {
   return {playlist_obj, items}
 }
 
-module.exports.uploadOrUpdatePlaylist = async (playlistYoutubeId, playlistInstanceId, user) => {
+var uploadOrUpdatePlaylist = async (playlistYoutubeId, playlistInstanceId, user) => {
   var playlist_instance
   var playlistId
   if(!playlistYoutubeId && !playlistInstanceId){
@@ -203,7 +243,7 @@ module.exports.uploadOrUpdatePlaylist = async (playlistYoutubeId, playlistInstan
   return buildPlaylistItems(items, playlist_instance) 
 }
 
-module.exports.uploadOrUpdateChannelPlaylist = async (youtubeChannelId, playlistInstanceId, user, seedDuration) => {
+var uploadOrUpdateChannelPlaylist = async (youtubeChannelId, playlistInstanceId, user, seedDuration) => {
   var playlistId
   var playlist_instance
     if(!youtubeChannelId && !playlistInstanceId){
@@ -238,7 +278,7 @@ module.exports.uploadOrUpdateChannelPlaylist = async (youtubeChannelId, playlist
     return buildPlaylistItems(items, playlist_instance)
 }
 
-module.exports.uploadProgram = async (youtubeId, user) => {
+var uploadProgram = async (youtubeId, user) => {
   const yvid = await youtube.videos.list({
     part: 'status, contentDetails, snippet',
     id: youtubeId
@@ -259,3 +299,5 @@ module.exports.uploadProgram = async (youtubeId, user) => {
   var program = await Program.create({title, duration, youtubeId, thumbnailUrl, userId:user.id})
   return program
 }
+
+module.exports = {buildPlaylistFromId, uploadOrUpdatePlaylist, uploadProgram}

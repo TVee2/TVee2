@@ -6,10 +6,9 @@ const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders
 const {Op} = require("sequelize");
 const roomVisitors = require('../socket/index.js').roomVisitors()
 
-const {uploadProgram, uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist} = require('./crudHelpers')
+const {uploadProgram, uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist, buildPlaylistFromId} = require('./crudHelpers')
 var channelUploadLimit = process.env.CHANNEL_UPLOAD_LIMIT
-const seedDurationLimit = process.env.SEED_DURATION_LIMIT
-
+var {objIO} = require('../socket')
 module.exports = router
 
 var get10MostActiveChannels = () => {
@@ -211,37 +210,8 @@ router
     if(channels.length>=uploadLimit){
       throw Error(`User can't create more than ${channelUploadLimit || 3} channels currently while youtube api requests are limited, delete an existing channel. For exceptions contact admin@tvee2.com`)
     }
-    var playlist
-    if(youtubeChannelId){
-      console.log("at upload channel")
-      playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, req.user, seedDurationLimit || 4*60*60)
-    }else if(playlistId){
-      playlist = await uploadOrUpdatePlaylist(playlistId, null, req.user)
-    }
-    if(!playlist){
-      throw Error("Youtube playlist id or youtube channel id must be provided")
-    }
-    var channel = await Channel.create({name, description, thumbnailUrl:playlist.thumbnailUrl, userId:req.user.id})
-    var hashtags = hashtags.filter((h) => h)
-    if(hashtags.some((h)=>{return h.length>15})){
-      return res.status(400).json(new Error("Hashtags must not be greater than 15 chars"))
-    }
-    if(hashtags.length){
-      var hasharr = hashtags.map((htag) => {return {tag:htag}})
-      var hashtags = await Promise.all(hasharr.map((h)=>Hashtag.findOrCreate({where:h}).then((arr)=>arr[0])))
-      await channel.setHashtags(hashtags)
-    }
-    if(!defaultVideoId){
-      defaultVideoId = "CZBhCmniILE"
-    }
-    var program = await uploadProgram(defaultVideoId, req.user)
-    await channel.setDefaultProgram(program)
-
-    await channel.setPlaylist(playlist)
-    await seedNext24HrTimeslots(channel.id, true)
-
-    channel = await Channel.findByPk(channel.id, {include:[{model:User}]})
-    var io = req.app.locals.io
+    var channel = await buildPlaylistFromId(name, description, defaultVideoId, playlistId, youtubeChannelId, hashtags, req.user)
+    var io = objIO.io
     turnOnChannelEmitter(channel, io)
     res.status(201).json(channel)
   } catch(err) {
