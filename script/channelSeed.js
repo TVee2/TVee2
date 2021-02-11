@@ -44,7 +44,7 @@ module.exports = [{name:"nbc news", channelId:"UCeY0bbntWzzVIaj2z3QigXg"},
 
 {name:"wwe", channelId:"UCJ5v_MCY6GNUBTO8-D3XoAg"},
 
-{name:"gmhikaru- UCweCc7bSMX5J4jEH7HFImng"},
+{name:"gmhikaru", channelId:"UCweCc7bSMX5J4jEH7HFImng"},
 
 {name:"agadmator", channelId:"UCL5YbN5WLFD8dLIegT5QAbA"},
 
