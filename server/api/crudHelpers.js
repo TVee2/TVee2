@@ -110,6 +110,10 @@ var buildPlaylistItems = async(items, playlist_instance) => {
       }
     }
 
+    if(item.snippet.liveBroadcastContent!=="none"){
+      embeddable = false
+    }
+
     var title = item.snippet.title
     var thumbnailUrl = item.snippet.thumbnails.default.url
     var playlistItem
