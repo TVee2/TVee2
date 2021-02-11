@@ -274,9 +274,13 @@ router
 
 .post('/refreshandreseed', async (req, res, next) => {
   var {channelId} = req.body
+  console.log("segment destroy start", new Date().getTime())
   await Segment.destroy({where:{channelId}})
+  console.log("timeslot destroy start", new Date().getTime())
   await Timeslot.destroy({where:{channelId}})
+  console.log("seed  start", new Date().getTime())
   await seedNext24HrTimeslots(channelId, true)
+  console.log("json start", new Date().getTime())
   res.json({message: "channel refreshed"})
 })
 
