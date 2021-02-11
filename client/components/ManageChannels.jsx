@@ -482,7 +482,7 @@ export default class ManageChannels extends Component {
           }
           <div style={{color:"red"}}>{this.state.activateMessage}</div>
           <div>DELETE THIS CHANNEL <button onClick={this.deleteChannel}>DELETE</button></div>
-          <div>DELETE FUTURE TIMESLOTS AND RESEED WITH CURRENT PLAYLIST
+          <div>UPDATE PLAYLIST AND REFRESH SCHEDULE
             <button onClick={this.channelRefreshAndReseed}>SUBMIT</button>
             <div style={{color:"red"}}>{this.state.reseedMessage}</div>
             (if playlist id changed this will delete all future timeslots and seed new timeslots from updated playlist, otherwise schedule will update nightly)

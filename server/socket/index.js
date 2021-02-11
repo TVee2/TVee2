@@ -4,7 +4,7 @@ const {User, Segment, Schedule, Program, Channel, Timeslot, Playlist, PlaylistIt
 const {Op} = require('sequelize')
 
 const { turnOnChannelEmitter } = require('../channelEmitter')
-const {seedNext24HrTimeslots, seedNext2hrSegments, verifyAndUpdatePlaylists} = require('../scheduleSeeders')
+const {seedNext24HrTimeslots, seedNext2hrSegments, verifyAndUpdatePlaylists, updateChannelPlaylists} = require('../scheduleSeeders')
 const {uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist} = require('../api/crudHelpers')
 const seedDurationLimit = process.env.SEED_DURATION_LIMIT
 
@@ -25,24 +25,8 @@ module.exports.roomVisitors = () => {
   return roomVisitors
 }
 
-var updateChannelPlaylists = async () => {
-  Channel.findAll({include:[{model:User}, {model:Playlist}]})
-  .then((channels) => {
-    channels.forEach((channel)=>{
-      if(channel.playlist && channel.playlist.youtubeId){
-        uploadOrUpdatePlaylist(null, channel.playlistId, channel.user)
-        .then((pl) => {console.log("updated " + pl.id)})
-      }else if(channel.playlist && channel.playlist.youtubeChannelId){
-        uploadOrUpdateChannelPlaylist(null, channel.playlistId, channel.user, seedDurationLimit || 4*60*60)
-        .then((pl) => {console.log("updated " + pl.id)})
-      }
-    })
-  })
-}
-
 module.exports.startSeeding = io => {
   objIO.io = io
-  // updateChannelPlaylists()
   io.on('connection', socket => {
     socket.on('roomenter', (data) => {
       //data should maybe be room enter, room leave

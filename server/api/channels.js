@@ -6,7 +6,7 @@ const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders
 const {Op} = require("sequelize");
 const roomVisitors = require('../socket/index.js').roomVisitors()
 
-const {uploadProgram, uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist, buildPlaylistFromId} = require('./crudHelpers')
+const {uploadProgram, uploadOrUpdatePlaylist, uploadOrUpdateChannelPlaylist, buildPlaylistFromId, updateChannelPlaylists} = require('./crudHelpers')
 var channelUploadLimit = process.env.CHANNEL_UPLOAD_LIMIT
 var {objIO} = require('../socket')
 module.exports = router
@@ -248,6 +248,8 @@ router
   await Segment.destroy({where:{channelId}})
   console.log("timeslot destroy start", new Date().getTime())
   await Timeslot.destroy({where:{channelId}})
+  console.log("update start")
+  await updateChannelPlaylists(channelId)
   console.log("seed  start", new Date().getTime())
   await seedNext24HrTimeslots(channelId, true)
   console.log("json start", new Date().getTime())

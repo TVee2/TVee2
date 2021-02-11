@@ -13,7 +13,7 @@ const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders
 const {objIO} = require('../socket')
 const { turnOnChannelEmitter } = require('../channelEmitter')
 
-parseDuration = (item) => {
+var parseDuration = (item) => {
   var str = item.contentDetails.duration
   let n = str.length;
   let duration = 0;
@@ -45,7 +45,27 @@ parseDuration = (item) => {
   return duration
 }
 
-buildPlaylistFromId = async (name, description, defaultVideoId, playlistId, youtubeChannelId, hashtags, user) => {
+var updateChannelPlaylists = async (channelId) => {
+  var channels
+  if(channelId){
+    channels = await Channel.findAll({where:{id:channelId}, include:[{model:User}, {model:Playlist}]})
+  }else{
+    channels = await Channel.findAll({include:[{model:User}, {model:Playlist}]})
+  }
+  var channel
+  var i
+  while(i<channels.length){
+    channel = channels[i]
+    if(channel.playlist && channel.playlist.youtubeId){
+      await uploadOrUpdatePlaylist(null, channel.playlistId, channel.user)
+    }else if(channel.playlist && channel.playlist.youtubeChannelId){
+      await uploadOrUpdateChannelPlaylist(null, channel.playlistId, channel.user, seedDurationLimit || 4*60*60)
+    }
+    i++;
+  }
+}
+
+var buildPlaylistFromId = async (name, description, defaultVideoId, playlistId, youtubeChannelId, hashtags, user) => {
     var playlist
     if(youtubeChannelId){
       console.log("at upload channel")
@@ -242,6 +262,7 @@ var uploadOrUpdatePlaylist = async (playlistYoutubeId, playlistInstanceId, user)
       playlistId = playlist_instance.youtubeId
     }
     var {playlist_obj, items} = await buildPlaylistAndGetItems(playlistId, user)
+    console.log("UPDATED LOCO", items, playlist_obj)
     await playlist_instance.update(playlist_obj)
     await PlaylistItem.destroy({where:{playlistId:playlist_instance.id}})
   }else{
@@ -311,4 +332,4 @@ var uploadProgram = async (youtubeId, user) => {
   return program
 }
 
-module.exports = {buildPlaylistFromId, uploadOrUpdatePlaylist, uploadProgram}
+module.exports = {buildPlaylistFromId, uploadOrUpdatePlaylist, uploadProgram, updateChannelPlaylists}
