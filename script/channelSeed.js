@@ -8,9 +8,9 @@ module.exports = [{name:"nbc news", channelId:"UCeY0bbntWzzVIaj2z3QigXg"},
 
 {name:"univision", channelId:"UC32TdiIsh_5X8tKr_9rKQyA"},
 
-{name:"seonkyoung longest", channelId:"UCIvA9ZGeoR6CH2e0DZtvxzw"},
-
 {name:"amazing cooking", channelId:"UC65bBCzteDiLpPfBQu38xmg"},
+
+{name:"seonkyoung longest", channelId:"UCIvA9ZGeoR6CH2e0DZtvxzw"},
 
 {name:"tasty", channelId:"UCJFp8uSYCjXOMnkUyb3CQ3Q"},
 
@@ -22,7 +22,7 @@ module.exports = [{name:"nbc news", channelId:"UCeY0bbntWzzVIaj2z3QigXg"},
 
 {name:"YT Popular Music Videos", playlistId:"PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI"},
 
-{name:"smtown", channelId:"UCEf_Bc-KVd7onSeifS3py9g"},
+{name:"YT Trending Music Videos", playlistId:"PLFgquLnL59ak1QNHmrUSjNM6WTegpgX__"},
 
 {name:"noisey", channelId:"UC0iwHRFpv2_fpojZgQhElEQ"},
 
@@ -43,8 +43,6 @@ module.exports = [{name:"nbc news", channelId:"UCeY0bbntWzzVIaj2z3QigXg"},
 {name:"formula 1", channelId:"UCB_qr75-ydFVKSF9Dmo6izg"},
 
 {name:"wwe", channelId:"UCJ5v_MCY6GNUBTO8-D3XoAg"},
-
-{name:"lol esports", channelId:"UCvqRdlKsE5Q8mf8YXbdIJLw"},
 
 {name:"gmhikaru- UCweCc7bSMX5J4jEH7HFImng"},
 
@@ -98,3 +96,4 @@ module.exports = [{name:"nbc news", channelId:"UCeY0bbntWzzVIaj2z3QigXg"},
 
 {name:"animations", channelId:"PLMTS_siZ5QCnYgEjRCyCpco2t2bJsQjOy"},
 
+]
