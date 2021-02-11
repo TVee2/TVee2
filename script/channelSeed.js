@@ -94,6 +94,6 @@ module.exports = [{name:"nbc news", channelId:"UCeY0bbntWzzVIaj2z3QigXg"},
 
 {name:"movieclips trailers", channelId:"UCi8e0iOVk1fEOogdfu4YgfA"},
 
-{name:"animations", channelId:"PLMTS_siZ5QCnYgEjRCyCpco2t2bJsQjOy"},
+{name:"animations", playlistId:"PLMTS_siZ5QCnYgEjRCyCpco2t2bJsQjOy"},
 
 ]
