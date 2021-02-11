@@ -522,8 +522,6 @@ router
     }
     if (channel) {
       turnOffChannelEmitter(channel)
-      debugger
-      console.log("test")
       return channel.destroy()
     } else {
       throw new Error('No channel found with matching id.')

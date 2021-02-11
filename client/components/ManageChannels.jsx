@@ -92,14 +92,10 @@ export default class ManageChannels extends Component {
     axios.get('/api/channels/editable')
    .then((ret) => {
       if(ret.data.length){
-        if(this.state.selectedChannelId){
-          this.setState({channels:ret.data})
-        }else{
-          this.setState({channels:ret.data, selectedChannelId:ret.data[0].id}, () => {
-            this.getChannel(this.state.selectedChannelId)
-            this.getChannelSchedule(this.state.selectedChannelId)
-          })
-        }
+        this.setState({channels:ret.data, selectedChannelId:ret.data[0].id}, () => {
+          this.getChannel(this.state.selectedChannelId)
+          this.getChannelSchedule(this.state.selectedChannelId)
+        })
       }
     })
   }
@@ -247,10 +243,10 @@ export default class ManageChannels extends Component {
     })
   }
 
-  deleteChannel = (id) => {
+  deleteChannel = () => {
     var r = confirm("Are you sure you want to delete this channel?");
     if (r == true) {
-      axios.delete(`/api/channels/${id}`)
+      axios.delete(`/api/channels/${this.state.selectedChannel.id}`)
       .then((res) => {
         this.getChannels()
       })
