@@ -191,7 +191,14 @@ var buildPlaylistAndGetItems = async (playlistId, user, seedDuration) => {
     }
 
     if(seedDuration){
-      add = items_meta.items.filter((item)=>{cumulative_duration = cumulative_duration + parseDuration(item.vid); item_cap_counter = item_cap_counter + 1; return (cumulative_duration < seedDuration && item_cap_counter < playlistItemCap)})
+      add = items_meta.items.filter((item)=>{
+        if(!item.vid){
+          return false
+        }
+        cumulative_duration = cumulative_duration + parseDuration(item.vid);
+        item_cap_counter = item_cap_counter + 1;
+        return (cumulative_duration < seedDuration && item_cap_counter < playlistItemCap)
+      })
     }else{
       add = items_meta.items.filter((item)=>{item_cap_counter = item_cap_counter + 1; return item_cap_counter < playlistItemCap})
     }
