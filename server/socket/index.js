@@ -124,9 +124,12 @@ module.exports.startSeeding = io => {
   )
 
   new CronJob(
-  '0 23 * * *',
+  '0 * * * *',
   () => {
+    console.log("deleting previous segments")
     Segment.destroy({where: {time:{[Op.lt]:Math.floor((new Date().getTime())/1000)}}})
+    console.log("deleting previous timeslots")
+    Timeslot.destroy({where: {endtime:{[Op.lt]:Math.floor((new Date().getTime())/1000)}}})
   },
   null,
   true,
