@@ -206,6 +206,7 @@ router
 
   var channels = await Channel.findAll({where:{userId:req.user.id}})
   var uploadLimit = channelUploadLimit || 3
+
   try{
     if(channels.length>=uploadLimit){
       throw Error(`User can't create more than ${channelUploadLimit || 3} channels currently while youtube api requests are limited, delete an existing channel. For exceptions contact admin@tvee2.com`)
@@ -230,10 +231,11 @@ router
       var hashtags = await Promise.all(hasharr.map((h)=>Hashtag.findOrCreate({where:h}).then((arr)=>arr[0])))
       await channel.setHashtags(hashtags)
     }
-    if(defaultVideoId){
-      var program = await uploadProgram(defaultVideoId, req.user)
-      await channel.setDefaultProgram(program)
+    if(!defaultVideoId){
+      defaultVideoId = "CZBhCmniILE"
     }
+    var program = await uploadProgram(defaultVideoId, req.user)
+    await channel.setDefaultProgram(program)
 
     await channel.setPlaylist(playlist)
     await seedNext24HrTimeslots(channel.id, true)

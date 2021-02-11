@@ -12,6 +12,13 @@ var isMobile = () => {if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Ope
   }
 }
 
+var isIOS = () => {if(/iPhone|iPad|iPod/i.test(navigator.userAgent)){
+    return true
+  }else{
+    return false
+  }
+}
+
 class VideoPlayer extends Component {
   constructor(props) {
     super(props)
@@ -135,7 +142,7 @@ class VideoPlayer extends Component {
       });
 
     var defaultPlayer = new YT.Player('timefiller', {
-        playerVars: { 'autoplay': 1, 'controls': 0, 'playsinline':1},
+        playerVars: { 'autoplay': 1, 'controls': 0, 'playsinline':1, 'loop':1},
         events: {
           'onReady': this.onDefaultPlayerReady,
           'onStateChange': this.onDefaultPlayerStateChange
@@ -145,21 +152,6 @@ class VideoPlayer extends Component {
     this.videoplayer = ytplayer
     Ytplayer.player = ytplayer
     this.defaultVideoPlayer = defaultPlayer
-    
-    this.getRelatedChannels()
-
-    // vid.onplay = () => {
-    //   console.log("playing")
-    //   this.setState({playing:true, fill_time:false, init_loading:false})
-    // }
-
-    // vid.oncanplaythrough= () => {console.log("oncanplaythrough - remove debounce"); this.setState({debounce:false})}
-
-
-    // vid.onended = () => {
-    //   console.log("ended")
-    //   this.setState({fill_time:true, playing:false})
-    // }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -197,12 +189,10 @@ class VideoPlayer extends Component {
       }
     }
 
-    if(this.props.src !== prevProps.src && !this.state.isMobileNotVisible) {
+    if(this.props.src !== prevProps.src && this.props.src!=="no source" && !this.state.isMobileNotVisible) {
       if(this.props.isYoutubeId){
         if(this.videoplayer&&this.videoplayer.loadVideoById){
           console.log("trying to play", this.props.src)
-          this.getRelatedChannels()
-
           this.videoplayer.setVolume(100)
           this.videoplayer.loadVideoById(this.props.src, this.props.progress)
         }
@@ -270,17 +260,6 @@ class VideoPlayer extends Component {
       this.videoplayer.mute()
     }
     this.setState({channelJustChanged:true, controlChannelOnChange:"", init_loading:true})
-    this.getRelatedChannels()
-  }
-
-  getRelatedChannels = () => {
-    if(!this.props.channel){
-      return
-    }
-    axios.get(`/api/channels/related/${this.props.channel.id}`)
-    .then((ret) => {
-      this.setState({relatedChannels:ret.data})
-    })
   }
 
   toggleMute = () => {
@@ -330,7 +309,7 @@ class VideoPlayer extends Component {
     }else if(this.state.init_loading){
       vis3=""
     }else if(hide_main){
-      if(this.props.defaultSrc){
+      if(this.props.defaultSrc && !isIOS()){
         vis2=""
       }else{
         vis7=""
@@ -366,14 +345,8 @@ class VideoPlayer extends Component {
             <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_channel.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis8, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
-            <video
-              style={{width: '100%', gridColumn:"1", gridRow:"1", visibility:vis7, position:"absolute", top:"50%", transform: "translateY(-50%)"}}
-              src="/videos/tvee2placeholder.mp4"
-              autoPlay
-              muted={true}
-              loop={true}
-              controls={false}
-            />
+            <img src="/videos/tvee2.gif" style={{width:"100%", gridColumn:"1", gridRow:"1", visibility:vis7, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
+
             <div id="controlBar" onMouseLeave={this.mouseLeave} onMouseEnter={this.mouseEnter} style={{opacity:isFullscreen?this.state.opacity:1, backgroundColor:"black", position:"absolute", display:"flex", top:isFullscreen?"":(this.props.height?this.props.height:0), bottom:isFullscreen?0:"", width:"100%", zIndex:"5"}}>
               <div style={{display:"flex", flexFlow:"wrap", justifyContent:"space-between", width:"100%"}}>
                 <div style={{display:"flex", backgroundColor:"black"}}>
