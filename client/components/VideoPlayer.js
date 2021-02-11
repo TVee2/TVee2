@@ -127,6 +127,7 @@ class VideoPlayer extends Component {
     };
 
     var ytplayer = new YT.Player('player', {
+        playerVars: { 'autoplay': 1, 'controls': 0, 'playsinline':1},
         events: {
           'onReady': this.onYTPlayerReady,
           'onStateChange': this.onYTPlayerStateChange
@@ -134,6 +135,7 @@ class VideoPlayer extends Component {
       });
 
     var defaultPlayer = new YT.Player('timefiller', {
+        playerVars: { 'autoplay': 1, 'controls': 0, 'playsinline':1},
         events: {
           'onReady': this.onDefaultPlayerReady,
           'onStateChange': this.onDefaultPlayerStateChange
@@ -294,12 +296,10 @@ class VideoPlayer extends Component {
   }
 
   mouseEnter = () => {
-      console.log('mouse enter')
       this.setState({opacity: 1})
   }
 
   mouseLeave = () => {
-      console.log('mouse leave')
       this.setState({opacity: 0})
   }
 

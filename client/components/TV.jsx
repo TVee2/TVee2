@@ -398,8 +398,11 @@ export default class TV extends Component {
   render() {
     let width = window.innerWidth;
     let smallwindow=false
+    let collapse = this.state.collapse
     if(width<1000){
       smallwindow=true
+    }else{
+      collapse = false
     }
 
     var botheight
@@ -433,7 +436,7 @@ export default class TV extends Component {
           <Chat
             smallwindow={smallwindow}
             showChat={this.state.showChat}
-            collapse={this.state.collapse}
+            collapse={collapse}
             {...this.props}
             getComments={this.getComments}
             comments={this.state.comments}
