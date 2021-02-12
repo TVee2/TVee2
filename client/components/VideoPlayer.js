@@ -320,10 +320,10 @@ class VideoPlayer extends Component {
       vis1=""
     }
 
-    var height
-    if(this.props.segment && this.props.segment.program){
-      height = this.props.segment.program.height
-    }
+    var height = this.props.height
+    // if(this.props.segment && this.props.segment.program){
+    //   height = this.props.segment.program.height
+    // }
     return (
       <div style={{width:"100%", maxWidth:isFullscreen?"":"640px", backgroundColor:"black"}}>
           {this.props.showChannelId?
@@ -342,8 +342,8 @@ class VideoPlayer extends Component {
               </div>
             </div>
             <img src="/static.gif" id="static" style={{width:"100%", height:isFullscreen?"100%":height, gridColumn:"1", gridRow:"1", visibility:vis3, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
-            <img src="/no_signal.png" style={{width:"100%", height:window.innerWidth<640?(window.innerWidth*3/4):"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
-            <img src="/no_signal.png" style={{width:"100%", height:window.innerWidth<640?(window.innerWidth*3/4):"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":height, gridColumn:"1", gridRow:"1", visibility:vis4, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":height, gridColumn:"1", gridRow:"1", visibility:vis5, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/no_channel.png" style={{width:"100%", height:isFullscreen?"100%":"", gridColumn:"1", gridRow:"1", visibility:vis8, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/videos/tvee2.gif" style={{width:"100%", gridColumn:"1", gridRow:"1", visibility:vis7, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
 

@@ -58,10 +58,15 @@ export default class TV extends Component {
     // this.getFavoriteChannels()
     // this.getHotChannels()
 
+    window.addEventListener('resize', this.updateSize)
     this.getChannel()
     if(window.innerWidth<=1000 || screen.width<=1000){
       this.setState({collapse:true})
     }
+  }
+
+  componentWillUnmount(){
+    window.removeEventListener('resize', this.updateSize)   
   }
 
   componentWillUnmount() {
@@ -179,7 +184,7 @@ export default class TV extends Component {
           socket.emit('roomenter', {channelId: channel.id, userId:this.props.user.id})
         })
       }else{
-        this.setState({noChannel:true})
+        this.setState({channel:[], numViewers:0, channelChanged:false, noChannel:true, defaultSrc:null, showChannelId:false})
       }
     })
     .catch((err) => {
@@ -510,7 +515,7 @@ export default class TV extends Component {
                 </div>
               }
                 <div style={{margin:window.innerWidth<700?"0":"0 0 0 4px", maxWidth:"640px", minHeight:"190px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"magenta", width:window.innerWidth<700?"100%":"316px"}}>
-                  {this.state.channel?
+                  {this.state.channel&&this.state.channel.playlist?
                     <div>
                       <div>This Playlist:</div>
                       <div>{this.state.channel.playlist.title}</div>
