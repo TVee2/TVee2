@@ -60,7 +60,7 @@ class Navbar extends Component {
                 onBlur={this.onBlurHandler}
                 style={{display:"inline-block", outline:"none"}}>
                   <div className="headerButton manage" style={{backgroundColor:this.state.showManageHamburger?"papayawhip":"white"}}></div>
-                  <div style={{margin:"-13px 8px", width:"100px", visibility:this.state.showManageHamburger?"":"hidden", position:"absolute", backgroundColor:"whitesmoke"}}>
+                  <div style={{margin:"-13px 8px", border:"1px solid black", zIndex:15, width:"115px", visibility:this.state.showManageHamburger?"":"hidden", position:"absolute", backgroundColor:"whitesmoke"}}>
                     <nav>
                       <div>
                         {/* The navbar will show these NavLinks after you log in */}
