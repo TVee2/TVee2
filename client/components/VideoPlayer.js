@@ -431,12 +431,6 @@ class VideoPlayer extends Component {
                     </form>
                     <button className="largevideobutton" onClick={this.switchChannel} style={{padding:"0px", height:"70px", width:"70px", fontSize:"45px", display:"inline-block", verticalAlign:"super"}}>Go</button>
                   </div>
-                  {this.props.user && this.props.user.id?
-                    (this.props.isFavorite?
-                    <button onClick = {this.props.removeFavorite} className = "largevideobutton favorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>
-                    :
-                    <button onClick = {this.props.addFavorite} className = "largevideobutton notfavorite" style={{imageRendering:"pixelated", backgroundSize:"cover"}}></button>)
-                  :null}
                 </div>
               </div>
             </div>
