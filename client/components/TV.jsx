@@ -489,7 +489,7 @@ export default class TV extends Component {
               />
             </div>
           </div>
-          <div style={{backgroundColor:"white", minHeight:"400px", paddingTop:window.innerWidth<700?"32px":"62px"}}>
+          <div style={{backgroundColor:"white", minHeight:"400px", paddingTop:window.innerWidth<700?"32px":"48px"}}>
             <div style={{width:"100%", maxWidth:"640px", display:window.innerWidth<700?"":"flex", zIndex:"5", margin:window.innerWidth<700?"0":"0 25px", padding:window.innerWidth<700?"0":"10px 0"}}>
               {this.state.segment && this.state.segment.program?
                 <div style={{margin:window.innerWidth<700?"0":"0 4px 0 0", minHeight:"150px", display:"inline-block", padding:"10px", border:"solid black 2px", backgroundColor:"yellowgreen", width:window.innerWidth<700?"100%":"316px"}}>

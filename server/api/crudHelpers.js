@@ -130,6 +130,10 @@ var buildPlaylistItems = async(items, playlist_instance) => {
       }
     }
 
+    if(item && item.contentDetails && item.contentDetails.contentRating && item.contentDetails.contentRating.ytRating=="ytAgeRestricted"){
+      embeddable = false
+    }
+
     if(item.snippet.liveBroadcastContent!=="none"){
       embeddable = false
     }

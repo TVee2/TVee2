@@ -52,7 +52,7 @@ export default class Tutorial extends Component {
               Tips to remember:  
     <br/><br/>
               Any video less than 25 seconds will not be featured on channel.<br/>
-              Make sure any playlist or channel is set to public, it’s items are videos, and that videos are accessible in the desired region<br/>
+              Make sure any playlist or channel is set to public, it’s items are videos, videos are accessible in the desired region, that they are not age restricted and is not live broadcast content or upcoming content<br/>
             </div>:null}
             </div>
         <p>Please contact admin@tvee2.com with any questions or concerns.</p>

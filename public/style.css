@@ -26,7 +26,7 @@ a {
   background-color: white;
   background-size: cover;
   display:inline-block;
-  margin: 20px 4px;
+  margin: 25px 4px 10px 4px;
   border-radius:5px;
   image-rendering: pixelated;
   background-image: url('./icons/logoword.png')
@@ -138,6 +138,19 @@ form div {
   --connected-color: white;
 }
 
+.largevideobutton{
+  font-size:0px;
+  height: 80px;
+  width: 80px;
+  margin:10px;
+  cursor:pointer;
+  background-color: white;
+  background-size: cover;
+  display:inline-block;
+  border-radius:5px;
+  image-rendering: pixelated;
+}
+
 .videobutton{
   font-size:0px;
   height: 30px;
@@ -146,7 +159,7 @@ form div {
   background-color: white;
   background-size: cover;
   display:inline-block;
-  margin: 14px 4px;
+  margin: 10px 4px;
   border-radius:5px;
   image-rendering: pixelated;
 }
