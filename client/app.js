@@ -6,7 +6,6 @@ const App = () => {
   return (
     <div>
       <Navbar />
-      <div style={{height:"72px"}}></div>
       <Routes />
     </div>
   )

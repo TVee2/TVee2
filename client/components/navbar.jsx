@@ -43,7 +43,7 @@ class Navbar extends Component {
 
   render() {
     return (
-      <div id="topBarContainer" style={{height:"72px", position:"absolute", zIndex:"13", backgroundColor:"white", width:"100%"}}>
+      <div id="topBarContainer" style={{zIndex:"13", backgroundColor:"white", width:"100%"}}>
         <BackgroundColor/>
         <nav>
           <div style={{display:"flex", justifyContent:"space-between"}}>

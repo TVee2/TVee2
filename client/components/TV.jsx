@@ -30,7 +30,6 @@ export default class TV extends Component {
       comments:[],
       emitterChannelId:null,
       showCover:true,
-      collapse:false,
       showChat:false,
       isYoutubeId:false,
       noChannel:false,
@@ -60,9 +59,6 @@ export default class TV extends Component {
 
     window.addEventListener('resize', this.updateSize)
     this.getChannel()
-    if(window.innerWidth<=1000 || screen.width<=1000){
-      this.setState({collapse:true})
-    }
   }
 
   componentWillUnmount(){
@@ -405,17 +401,11 @@ export default class TV extends Component {
   }
 
   render() {
-    let width = window.innerWidth;
     let smallwindow=false
-    let collapse = this.state.collapse
-    if(width<1000){
-      smallwindow=true
-    }else{
-      // collapse = false
-      smallwindow = false
+    if(window.innerWidth<=1000 || screen.width<=1000){
+      smallwindow = true
     }
 
-    // var botheight
     var height
     var ratio
     if(this.state.height == 360){
@@ -439,12 +429,11 @@ export default class TV extends Component {
 
     return (
       <div>
-        {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"72px"}} onClick={this.toggleChat}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
+        {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"65px"}} onClick={this.toggleChat}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
         <div>
           <Chat
             smallwindow={smallwindow}
             showChat={this.state.showChat}
-            collapse={collapse}
             {...this.props}
             getComments={this.getComments}
             comments={this.state.comments}

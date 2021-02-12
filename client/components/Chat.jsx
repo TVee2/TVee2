@@ -91,9 +91,8 @@ export default class App extends React.Component {
     const user = this.props.user
     var display_chat
     var smallwindow = this.props.smallwindow
-    var collapse = this.props.collapse
     var showChat = this.props.showChat
-    var visibility = !this.props.collapse || (this.props.collapse && this.props.showChat)//show if no collapse, // show if collapse and showchat is true
+    var visibility = smallwindow?(this.props.showChat):true
     return (
       <Provider store={store}>
         <div style={{backgroundColor:"white", zIndex:"10", border: "1px solid black", visibility:visibility?"":"hidden", width:window.innerwidth<300?"95%":"300px", position:"absolute", left:smallwindow?"":"665px", right:smallwindow?"0px":"", display:smallwindow?"block":"inline-block", margin:smallwindow?"0px":"0 30px"}}>
