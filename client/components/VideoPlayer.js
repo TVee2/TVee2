@@ -341,10 +341,10 @@ class VideoPlayer extends Component {
                 <div id="timefiller" style={{position:"absolute", width:"100%", height:"100%"}}></div>
               </div>
             </div>
-            <img src="/static.gif" id="static" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis3, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
-            <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
-            <img src="/no_signal.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
-            <img src="/no_channel.png" style={{width:"100%", height:isFullscreen?"100%":"360px", gridColumn:"1", gridRow:"1", visibility:vis8, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/static.gif" id="static" style={{width:"100%", height:isFullscreen?"100%":height, gridColumn:"1", gridRow:"1", visibility:vis3, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_signal.png" style={{width:"100%", height:window.innerWidth<640?(window.innerWidth*3/4):"360px", gridColumn:"1", gridRow:"1", visibility:vis4, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_signal.png" style={{width:"100%", height:window.innerWidth<640?(window.innerWidth*3/4):"360px", gridColumn:"1", gridRow:"1", visibility:vis5, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
+            <img src="/no_channel.png" style={{width:"100%", height:isFullscreen?"100%":"", gridColumn:"1", gridRow:"1", visibility:vis8, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
             <img src="/videos/tvee2.gif" style={{width:"100%", gridColumn:"1", gridRow:"1", visibility:vis7, position:"absolute", top:"50%", transform: "translateY(-50%)"}}></img>
 
             <div id="controlBar" onMouseLeave={this.mouseLeave} onMouseEnter={this.mouseEnter} style={{opacity:isFullscreen?this.state.opacity:1, backgroundColor:"black", position:"absolute", display:"flex", top:isFullscreen?"":(this.props.height?this.props.height:0), bottom:isFullscreen?0:"", width:"100%", zIndex:"5"}}>

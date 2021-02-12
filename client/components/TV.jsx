@@ -395,6 +395,10 @@ export default class TV extends Component {
     })
   }
 
+  toggleChat = () => {
+    this.setState({showChat:!this.state.showChat})
+  }
+
   render() {
     let width = window.innerWidth;
     let smallwindow=false
@@ -402,36 +406,35 @@ export default class TV extends Component {
     if(width<1000){
       smallwindow=true
     }else{
-      collapse = false
+      // collapse = false
+      smallwindow = false
     }
 
-    var botheight
+    // var botheight
     var height
+    var ratio
     if(this.state.height == 360){
       //height is actually 480
-      height = "480px"
-      if(window.innerWidth<425){
-        botheight = "632px"
-      }else if(window.innerWidth<700){
-        botheight = "620px"
+      ratio = 3/4
+      if(window.innerWidth<640){
+        height = `${window.innerWidth*ratio}px`
       }else{
-        botheight = "650px"
+        height = "480px"
       }
+
     }else{
       //height is 360
-      height = "360px"
-      if(window.innerWidth<425){
-        botheight = "523px"
-      }else if(window.innerWidth<700){
-        botheight = "488px"
+      ratio = 9/16
+      if(window.innerWidth<640){
+        height = `${window.innerWidth*ratio}px`
       }else{
-        botheight = "535px"
+        height = "360px"
       }
     }
 
     return (
       <div>
-        {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"72px"}} onClick={() => {this.setState({showChat:!this.state.showChat})}}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
+        {smallwindow?<button style={{position:"absolute", zIndex:"11", right:"25px", top:"72px"}} onClick={this.toggleChat}>{`${this.state.showChat?">":"<"}`} Chat</button>:null}
         <div>
           <Chat
             smallwindow={smallwindow}
