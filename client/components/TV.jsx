@@ -245,8 +245,13 @@ export default class TV extends Component {
     })
     if(indexor!==0 && !indexor){
       this.state.allChannels.find((channel, i) => {
-        if(channel.id > parseInt(this.props.match.params.channelId)){
-          nextIndex = i - 1
+        var currentChannel = parseInt(this.props.match.params.channelId)
+        if(channel.id > currentChannel){
+          if(i==0){
+            nextIndex = this.state.allChannels.length - 1
+          }else{
+            nextIndex = i - 1
+          }
           return true
         }
       })  
@@ -256,6 +261,7 @@ export default class TV extends Component {
     }
     if(!nextIndex && nextIndex !== 0){
       if(indexor - 1 < 0){
+
         nextIndex = channelArr.length - 1
       }else{
         nextIndex = indexor - 1
@@ -265,7 +271,6 @@ export default class TV extends Component {
     var obj = {}
     obj[key] = nextIndex
     this.setState(obj)
-
     this.changeChannel(channelArr[nextIndex].id)
 
 
