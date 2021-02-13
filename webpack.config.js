@@ -1,4 +1,5 @@
 const isDev = process.env.NODE_ENV === 'development'
+var webpack = require('webpack');
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
@@ -29,5 +30,10 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       },
     ]
-  }
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
+  ],
 }

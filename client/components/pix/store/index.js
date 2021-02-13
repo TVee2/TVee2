@@ -9,9 +9,17 @@ import room from './room'
 import post from './post'
 
 const reducer = combineReducers({self, color, pix, room, post})
+
+var mid = []
+mid.push(thunkMiddleware)
+if(NODE_ENV=='development'){
+  mid.push(createLogger({collapsed: true}))
+}
+
 const middleware = composeWithDevTools(
-  applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
+  applyMiddleware(...mid)
 )
+
 const store = createStore(reducer, middleware)
 
 export default store

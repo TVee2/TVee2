@@ -5,8 +5,15 @@ import {composeWithDevTools} from 'redux-devtools-extension'
 import user from './user'
 
 const reducer = combineReducers({user})
+
+var mid = []
+mid.push(thunkMiddleware)
+if(NODE_ENV=='development'){
+  mid.push(createLogger({collapsed: true}))
+}
+
 const middleware = composeWithDevTools(
-  applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
+  applyMiddleware(...mid)
 )
 const store = createStore(reducer, middleware)
 
