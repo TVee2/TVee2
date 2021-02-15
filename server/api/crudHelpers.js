@@ -5,10 +5,10 @@ const youtube = google.youtube('v3');
 const auth = new google.auth.GoogleAuth({
   scopes: ['https://www.googleapis.com/auth/youtube'],
 });
-const playlistItemLimit = process.env.PLAYLIST_ITEM_LIMIT
 google.options({auth});
 var countryCode = process.env.COUNTRY_CODE || "US"
-const seedDurationLimit = process.env.SEED_DURATION_LIMIT
+const playlistItemLimit = parseInt(process.env.PLAYLIST_ITEM_LIMIT)
+const seedDurationLimit = parseInt(process.env.SEED_DURATION_LIMIT)
 const {seedNext24HrTimeslots, seedNext2hrSegments} = require('../scheduleSeeders')
 const {objIO} = require('../socket')
 const { turnOnChannelEmitter } = require('../channelEmitter')
@@ -68,7 +68,6 @@ var updateChannelPlaylists = async (channelId) => {
 var buildPlaylistFromId = async (name, description, defaultVideoId, playlistId, youtubeChannelId, hashtags, user) => {
     var playlist
     if(youtubeChannelId){
-      console.log("at upload channel")
       playlist = await uploadOrUpdateChannelPlaylist(youtubeChannelId, null, user, seedDurationLimit || 4*60*60)
     }else if(playlistId){
       playlist = await uploadOrUpdatePlaylist(playlistId, null, user)
@@ -266,7 +265,6 @@ var uploadOrUpdatePlaylist = async (playlistYoutubeId, playlistInstanceId, user)
       playlistId = playlist_instance.youtubeId
     }
     var {playlist_obj, items} = await buildPlaylistAndGetItems(playlistId, user)
-    console.log("UPDATED LOCO", items, playlist_obj)
     await playlist_instance.update(playlist_obj)
     await PlaylistItem.destroy({where:{playlistId:playlist_instance.id}})
   }else{
