@@ -41,21 +41,9 @@ class Navbar extends Component {
     this.setState({showManageHamburger:true})
   }
 
-  render() {
-    return (
-      <div id="topBarContainer" style={{zIndex:"13", backgroundColor:"white", width:"100%"}}>
-        <BackgroundColor/>
-        <nav>
-          <div style={{display:"flex", justifyContent:"space-between"}}>
-            <div style={{margin:"0 14px"}}>
-              <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton browse" to="/home"></NavLink>
-              <div onClick={()=>{history.push('/home')}} className="logoword" style={{cursor:"pointer", display:window.innerWidth<450?"none":"inline-block"}}></div>
-            </div>
-
-            {this.props.isLoggedIn ? (
-              <div style={{margin:"0 14px 0 0"}}>
-                <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton schedule" to="/tvbrowse"></NavLink>
-                <div tabIndex="0"
+  hamburger = ()=>{
+    return(
+              <div tabIndex="0"
                 onFocus={this.onFocusHandler}
                 onBlur={this.onBlurHandler}
                 style={{display:"inline-block", outline:"none"}}>
@@ -72,19 +60,47 @@ class Navbar extends Component {
                             <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/lists">Playlists</NavLink>
                           </div>
                         </div>:null}
-                        <div style={{margin:"1em"}}>
-                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/recommend">QuickPlay</NavLink>
-                        </div>                        
-                        <div style={{margin:"1em"}}>
-                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/me">Me</NavLink>
+                        {this.props.isLoggedIn?
+                        <div>
+                          <div style={{margin:"1em"}}>
+                            <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/recommend">QuickPlay</NavLink>
+                          </div>
+                          <div style={{margin:"1em"}}>
+                            <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/manage/me">Me</NavLink>
+                          </div>
                         </div>
+                        :null}                    
                         <div style={{margin:"1em"}}>
                           <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/howto">README</NavLink>
+                        </div>
+                        <div style={{margin:"1em"}}>
+                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/privacy">Privacy Policy</NavLink>
+                        </div>
+                        <div style={{margin:"1em"}}>
+                          <NavLink activeStyle={{ backgroundColor: "papayawhip" }} to="/termsconditions">Terms and Conditions</NavLink>
                         </div>
                       </div>
                     </nav>
                   </div>
                 </div>
+    )
+  }
+
+  render() {
+    return (
+      <div id="topBarContainer" style={{zIndex:"13", backgroundColor:"white", width:"100%"}}>
+        <BackgroundColor/>
+        <nav>
+          <div style={{display:"flex", justifyContent:"space-between"}}>
+            <div style={{margin:"0 14px"}}>
+              <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton browse" to="/home"></NavLink>
+              <div onClick={()=>{history.push('/home')}} className="logoword" style={{cursor:"pointer", display:window.innerWidth<450?"none":"inline-block"}}></div>
+            </div>
+
+            {this.props.isLoggedIn ? (
+              <div style={{margin:"0 14px 0 0"}}>
+                <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton schedule" to="/tvbrowse"></NavLink>
+                {this.hamburger()}
                 <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton question" to="/howto"></NavLink>
 
                 {this.props.isAdmin?<NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton admin" to="/admin"></NavLink>:null}
@@ -95,6 +111,7 @@ class Navbar extends Component {
             ) : (
               <div style={{margin:"0 14px"}}>
                 <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton schedule" to="/tvbrowse"></NavLink>
+                {this.hamburger()}
                 <NavLink activeStyle={{ backgroundColor: "papayawhip" }} className="headerButton login" to="/login"></NavLink>
               </div>
             )}

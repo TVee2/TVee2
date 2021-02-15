@@ -9,6 +9,8 @@ import Scheduler from './components/Scheduler'
 import Entrance from './components/Entrance'
 import {me} from './store'
 import ChannelBrowse from './components/ChannelBrowse'
+import Privacy from './components/Privacypolicy'
+import Termsconditions from './components/Termsconditions'
 import ManageVideos from './components/ManageVideos'
 import ManageLists from './components/ManageLists'
 import ManageChannels from './components/ManageChannels'
@@ -150,6 +152,14 @@ class Routes extends Component {
         />
         <Route path="/howto" render={(props) => (
             <Tutorial user={this.props.user}/>
+          )}
+        />
+        <Route path="/privacy" render={(props) => (
+            <Privacy user={this.props.user}/>
+          )}
+        />
+        <Route path="/termsconditions" render={(props) => (
+            <Termsconditions user={this.props.user}/>
           )}
         />
         <Route path="/login" component={LoginSignup} />

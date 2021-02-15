@@ -521,7 +521,7 @@ export default class TV extends Component {
             </div>
             {this.state.channel && this.state.channel.user?
               <div style={{margin: window.innerWidth<700?"0":"0 25px", minHeight:"100px", maxWidth:"640px", border:"solid black 2px"}}>
-                <div style={{margin:"10px"}}>{this.state.channel.name.toUpperCase()}</div>
+                <div style={{margin:"10px"}}>{this.state.channel.id} - {this.state.channel.name.toUpperCase()}</div>
                 {this.state.channel.description?<div style={{margin:"10px"}}>Description: {this.state.channel.description}</div>:null}
                 {this.state.channel.hashtags.length?<div style={{margin:"10px"}}>Tags: {this.state.channel.hashtags.map((h) => {return <span style={{border:"solid black 2px"}}> {`${h.tag}`} </span>})}</div>:null}
                 <span>
