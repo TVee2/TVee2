@@ -28,7 +28,7 @@ module.exports = [
 
 {name:"YT Trending Music Videos", playlistId:"PLFgquLnL59ak1QNHmrUSjNM6WTegpgX__"},
 
-{name:"NPR Tiny Desk", playlistId:"UC4eYXhJI4-7wSWc8UNRwD4A"},
+{name:"NPR Tiny Desk", channelId:"UC4eYXhJI4-7wSWc8UNRwD4A"},
 
 {name:"Noisey", channelId:"UC0iwHRFpv2_fpojZgQhElEQ"},
 
