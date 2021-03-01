@@ -409,6 +409,7 @@ class VideoPlayer extends Component {
                       position:"absolute",
                       width:"320px",
                       height:"300px",
+                      display:isFullscreen?"":"none",
                       bottom:0,
                       zIndex:"5"
               }}>
